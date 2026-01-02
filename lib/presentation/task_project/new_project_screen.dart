@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
-import 'package:tasklyai/models/project_model.dart';
+import 'package:tasklyai/data/requests/project_req.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 
 class NewProjectScreen extends StatefulWidget {
@@ -73,15 +73,14 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(),
-        title: const Text('New Project'),
+        title: Text('New Project', style: textTheme.titleMedium),
         actions: [
           TextButton(
             onPressed: canSave
                 ? () {
                     context.read<ProjectProvider>().createProject(
                       context,
-                      ProjectModel(
+                      ProjectReq(
                         name: nameController.text,
                         description: descController.text,
                         color: selectedColor.toHex(),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
+import 'package:tasklyai/presentation/home/home_screen.dart';
 import 'package:tasklyai/presentation/notes/note_screen.dart';
+import 'package:tasklyai/presentation/profile/profile_screen.dart';
 import 'package:tasklyai/presentation/task_project/task_project_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -11,39 +13,58 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 2; // mặc định vào Tasks (Home)
+  int index = 0;
 
-  final screens = const [
-    SizedBox(), // Home (dashboard sau)
-    NotesScreen(), // Home (dashboard sau)
-    TaskProjectScreen(), // Home (dashboard sau)
-    SizedBox(), // Home (dashboard sau)
-    SizedBox(), // Home (dashboard sau)
-  ];
+  final keys = List.generate(5, (_) => GlobalKey<NavigatorState>());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[currentIndex],
+      body: IndexedStack(
+        index: index,
+        children: List.generate(5, (i) {
+          return Navigator(
+            key: keys[i],
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(builder: (_) => _rootScreen(i));
+            },
+          );
+        }),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
+        currentIndex: index,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: primaryColor,
         unselectedItemColor: Colors.black54,
-        onTap: (index) {
-          setState(() => currentIndex = index);
+        onTap: (i) {
+          if (i == index) {
+            keys[i].currentState?.popUntil((r) => r.isFirst);
+          } else {
+            setState(() => index = i);
+          }
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.note), label: 'Notes'),
           BottomNavigationBarItem(icon: Icon(Icons.check_box), label: 'Tasks'),
-          BottomNavigationBarItem(icon: Icon(Icons.auto_awesome), label: 'AI'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Alerts',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
+  }
+
+  Widget _rootScreen(int index) {
+    switch (index) {
+      case 0:
+        return const HomeScreen();
+      case 1:
+        return const NotesScreen();
+      case 2:
+        return const TaskProjectScreen();
+      case 3:
+        return const ProfileScreen();
+      default:
+        return const SizedBox();
+    }
   }
 }

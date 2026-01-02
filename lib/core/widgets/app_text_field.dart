@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasklyai/core/configs/extention.dart';
 
 class AppTextField extends StatelessWidget {
   final String hint;
@@ -7,6 +8,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final int? maxLines;
+  final void Function(String)? onChanged;
 
   const AppTextField({
     super.key,
@@ -16,16 +18,22 @@ class AppTextField extends StatelessWidget {
     this.controller,
     this.validator,
     this.maxLines,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.theme.textTheme;
+
     return TextFormField(
       controller: controller,
       obscureText: isPassword,
       maxLines: maxLines ?? 1,
+      style: textTheme.bodyMedium,
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
         hintText: hint,
+        hintStyle: textTheme.bodySmall?.copyWith(color: Colors.grey),
         prefixIcon: icon != null ? Icon(icon) : null,
         suffixIcon: isPassword ? const Icon(Icons.visibility_off) : null,
         filled: true,
@@ -36,6 +44,7 @@ class AppTextField extends StatelessWidget {
         ),
       ),
       validator: validator,
+      onChanged: onChanged,
     );
   }
 }

@@ -28,20 +28,6 @@ class NoteCard extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.orange.withAlpha(38),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  'Not opened',
-                  style: TextStyle(fontSize: 12, color: Colors.orange),
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -49,7 +35,7 @@ class NoteCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              _tag(note.tags.firstOrNull ?? '', note.color.toColor()),
+              _tag(note.category),
 
               const Spacer(),
               Text(
@@ -63,14 +49,20 @@ class NoteCard extends StatelessWidget {
     );
   }
 
-  Widget _tag(String text, Color color) {
+  Widget _tag(Category? category) {
+    if (category == null) {
+      return SizedBox.shrink();
+    }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withAlpha(38),
+        color: category.color.toColor().withAlpha(38),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(text, style: TextStyle(color: color, fontSize: 12)),
+      child: Text(
+        category.name,
+        style: TextStyle(color: category.color.toColor(), fontSize: 12),
+      ),
     );
   }
 }

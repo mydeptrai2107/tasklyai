@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/models/note_model.dart';
-import 'package:tasklyai/presentation/notes/add_note_screen.dart';
+import 'package:tasklyai/presentation/notes/create_note_screen.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/voice_note_screen.dart';
 import 'package:tasklyai/presentation/notes/widgets/note_card.dart';
@@ -44,9 +44,9 @@ class _NotesScreenState extends State<NotesScreen> {
           FloatingActionButton(
             backgroundColor: const Color(0xFF5B5CEB),
             onPressed: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => AddNoteScreen()),
+                MaterialPageRoute(builder: (_) => CreateNoteScreen()),
               );
             },
             child: const Icon(Icons.add, color: Colors.white),

@@ -10,7 +10,7 @@ class NoteModel {
   String user;
   String title;
   String content;
-  dynamic category;
+  Category? category;
   List<String> tags;
   String color;
   bool isPinned;
@@ -43,7 +43,9 @@ class NoteModel {
     user: json["user"],
     title: json["title"],
     content: json["content"],
-    category: json["category"],
+    category: json["category"] == null
+        ? null
+        : Category.fromJson(json["category"]),
     tags: List<String>.from(json["tags"].map((x) => x)),
     color: json["color"],
     isPinned: json["isPinned"],
@@ -83,4 +85,17 @@ class AiSuggestions {
   Map<String, dynamic> toJson() => {
     "tasks": List<dynamic>.from(tasks.map((x) => x)),
   };
+}
+
+class Category {
+  String id;
+  String name;
+  String color;
+
+  Category({required this.id, required this.name, required this.color});
+
+  factory Category.fromJson(Map<String, dynamic> json) =>
+      Category(id: json["_id"], name: json["name"], color: json["color"]);
+
+  Map<String, dynamic> toJson() => {"_id": id, "name": name, "color": color};
 }

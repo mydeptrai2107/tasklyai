@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/main_screen.dart';
+import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/repository/auth_repository.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -15,6 +17,7 @@ class AuthProvider extends ChangeNotifier {
       await repository.login(email, password);
 
       if (context.mounted) {
+        context.read<ProfileProvider>().findMe();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainScreen()),

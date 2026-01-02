@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:tasklyai/presentation/notes/add_note_screen.dart';
+import 'package:tasklyai/presentation/notes/create_note_screen.dart';
 
 class VoiceNoteScreen extends StatefulWidget {
   const VoiceNoteScreen({super.key});
@@ -75,7 +75,7 @@ class _VoiceNoteScreenState extends State<VoiceNoteScreen> {
                   : () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => AddNoteScreen()),
+                        MaterialPageRoute(builder: (_) => CreateNoteScreen()),
                       );
                     },
               child: const Text('Use this note'),

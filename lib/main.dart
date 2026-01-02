@@ -3,8 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/local_storage.dart';
 import 'package:tasklyai/presentation/auth/auth_screen.dart';
 import 'package:tasklyai/presentation/auth/provider/auth_provider.dart';
+import 'package:tasklyai/presentation/category/provider/category_provider.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
+import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +18,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => NoteProvider()),
         ChangeNotifierProvider(create: (context) => ProjectProvider()),
+        ChangeNotifierProvider(create: (context) => TaskProvider()),
+        ChangeNotifierProvider(create: (context) => CategoryProvider()),
+        ChangeNotifierProvider(create: (context) => ProfileProvider()),
       ],
       child: const MainApp(),
     ),

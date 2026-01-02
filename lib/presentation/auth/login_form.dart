@@ -68,6 +68,7 @@ class _LoginFormState extends State<LoginForm> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 padding: const EdgeInsets.symmetric(vertical: 14),
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -81,7 +82,7 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 }
               },
-              child: const Text('Đăng nhập →'),
+              child: const Text('Đăng nhập'),
             ),
           ),
         ],

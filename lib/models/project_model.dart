@@ -1,6 +1,8 @@
-import 'dart:convert';
+// To parse this JSON data, do
+//
+//     final projectModel = projectModelFromJson(jsonString);
 
-import 'package:tasklyai/core/configs/formater.dart';
+import 'dart:convert';
 
 ProjectModel projectModelFromJson(String str) =>
     ProjectModel.fromJson(json.decode(str));
@@ -8,31 +10,36 @@ ProjectModel projectModelFromJson(String str) =>
 String projectModelToJson(ProjectModel data) => json.encode(data.toJson());
 
 class ProjectModel {
-  String? user;
+  String id;
+  String user;
   String name;
   String description;
   String color;
-  String? icon;
-  String? status;
+  String icon;
+  String status;
   DateTime startDate;
   DateTime endDate;
-  int? progress;
-  DateTime? createdAt;
+  int progress;
+  DateTime createdAt;
+  TaskStats taskStats;
 
   ProjectModel({
-    this.user,
+    required this.id,
+    required this.user,
     required this.name,
     required this.description,
     required this.color,
-    this.icon,
-    this.status,
+    required this.icon,
+    required this.status,
     required this.startDate,
     required this.endDate,
-    this.progress,
-    this.createdAt,
+    required this.progress,
+    required this.createdAt,
+    required this.taskStats,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) => ProjectModel(
+    id: json["_id"],
     user: json["user"],
     name: json["name"],
     description: json["description"],
@@ -43,13 +50,56 @@ class ProjectModel {
     endDate: DateTime.parse(json["endDate"]),
     progress: json["progress"],
     createdAt: DateTime.parse(json["createdAt"]),
+    taskStats: TaskStats.fromJson(json["taskStats"]),
   );
 
   Map<String, dynamic> toJson() => {
+    "_id": id,
+    "user": user,
     "name": name,
     "description": description,
     "color": color,
-    "startDate": Formatter.dateJson(startDate),
-    "endDate": Formatter.dateJson(endDate),
+    "icon": icon,
+    "status": status,
+    "startDate": startDate.toIso8601String(),
+    "endDate": endDate.toIso8601String(),
+    "progress": progress,
+    "createdAt": createdAt.toIso8601String(),
+    "taskStats": taskStats.toJson(),
+  };
+}
+
+class TaskStats {
+  int total;
+  int completed;
+  int inProgress;
+  int notStarted;
+
+  TaskStats({
+    required this.total,
+    required this.completed,
+    required this.inProgress,
+    required this.notStarted,
+  });
+
+  factory TaskStats.fromJson(Map<String, dynamic> json) => TaskStats(
+    total: json["total"] ?? 0,
+    completed: json["completed"] ?? 0,
+    inProgress: json["inProgress"] ?? 0,
+    notStarted: json["notStarted"] ?? 0,
+  );
+
+  double process() {
+    if (total == 0) {
+      return 0;
+    }
+    return completed / total;
+  }
+
+  Map<String, dynamic> toJson() => {
+    "total": total,
+    "completed": completed,
+    "inProgress": inProgress,
+    "notStarted": notStarted,
   };
 }

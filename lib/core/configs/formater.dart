@@ -71,4 +71,13 @@ class Formatter {
         '-${date.month.toString().padLeft(2, '0')}'
         '-${date.day.toString().padLeft(2, '0')}';
   }
+
+  bool isOverdue(DateTime dueDate) {
+    final now = DateTime.now();
+
+    final today = DateTime(now.year, now.month, now.day);
+    final due = DateTime(dueDate.year, dueDate.month, dueDate.day);
+
+    return due.isBefore(today);
+  }
 }

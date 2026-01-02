@@ -1,0 +1,234 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/core/configs/formater.dart';
+import 'package:tasklyai/core/enum/priority_enum.dart';
+import 'package:tasklyai/core/theme/color_app.dart';
+import 'package:tasklyai/core/widgets/app_text_field.dart';
+import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/task_project/widgets/edit_subtask.dart';
+import 'package:tasklyai/presentation/task_project/widgets/list_project_add_task.dart';
+import 'package:tasklyai/presentation/task_project/widgets/priority_widget.dart';
+import 'package:tasklyai/presentation/task_project/widgets/task_status_widget.dart';
+
+class TaskDetailScreen extends StatefulWidget {
+  const TaskDetailScreen(this.task, {super.key});
+
+  final TaskModel task;
+
+  @override
+  State<TaskDetailScreen> createState() => _TaskDetailScreenState();
+}
+
+class _TaskDetailScreenState extends State<TaskDetailScreen> {
+  late TextEditingController _titleController;
+  late TextEditingController _descController;
+  late TextEditingController _deadlineController;
+  late Priority prioritySelected;
+  late String projectSelected;
+  late List<Subtask> subtasks;
+
+  @override
+  void initState() {
+    _titleController = TextEditingController(text: widget.task.title);
+    _descController = TextEditingController(text: widget.task.description);
+    _deadlineController = TextEditingController(
+      text: Formatter.dateJson(widget.task.dueDate),
+    );
+    prioritySelected = widget.task.priority;
+    projectSelected = widget.task.project.id;
+    subtasks = widget.task.subtasks;
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _deadlineController.dispose();
+    _titleController.dispose();
+    _descController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = context.theme.textTheme;
+    final task = widget.task;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task Details', style: textTheme.titleMedium),
+        centerTitle: true,
+        actions: [_buildSave(context, task)],
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TaskStatusWidget(task),
+            // task title
+            Text('Task Title', style: textTheme.bodyMedium),
+            SizedBox(height: 6),
+            AppTextField(
+              controller: _titleController,
+              hint: 'Enter task title...',
+              onChanged: (value) {
+                setState(() {});
+              },
+            ),
+            SizedBox(height: 16),
+
+            // description
+            Text('Description', style: textTheme.bodyMedium),
+            SizedBox(height: 6),
+            AppTextField(
+              controller: _descController,
+              hint: 'Add details about this task...',
+              maxLines: 4,
+              onChanged: (value) {
+                setState(() {});
+              },
+            ),
+            SizedBox(height: 16),
+
+            // project
+            Row(
+              spacing: 8,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.folder_outlined, size: 16),
+                Text('Project', style: textTheme.bodyMedium),
+              ],
+            ),
+            SizedBox(height: 6),
+            ListProjectAddTask(
+              projectSelected: projectSelected,
+              onTap: (value) {
+                setState(() {
+                  projectSelected = value;
+                  update(context, task.id, {'project': value});
+                });
+              },
+            ),
+            SizedBox(height: 16),
+
+            // Priority
+            Row(
+              spacing: 8,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.flag_outlined, size: 16),
+                Text('Priority', style: textTheme.bodyMedium),
+              ],
+            ),
+            SizedBox(height: 6),
+            PriorityWidget(
+              selected: prioritySelected,
+              ontap: (priority) {
+                prioritySelected = priority;
+                update(context, task.id, {"priority": priority.label});
+                setState(() {});
+              },
+            ),
+            SizedBox(height: 16),
+
+            // Deadline
+            Row(
+              spacing: 8,
+              children: [
+                Icon(Icons.calendar_today, size: 16),
+                Text('Deadline', style: textTheme.bodyMedium),
+              ],
+            ),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () {
+                pickDate(context: context, task: task, isStart: false);
+              },
+              child: AbsorbPointer(
+                child: AppTextField(
+                  controller: _deadlineController,
+                  hint: 'dd/MM/yyyy',
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            // sub task
+            EditSubtask(subtasks, task.id),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void update(
+    BuildContext context,
+    String taskId,
+    Map<String, dynamic> params,
+  ) {
+    context.read<TaskProvider>().updateTask(
+      context: context,
+      taskId: taskId,
+      params: params,
+    );
+  }
+
+  DateTime? deadline;
+
+  Future<void> pickDate({
+    required BuildContext context,
+    required TaskModel task,
+    required bool isStart,
+  }) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: task.dueDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      setState(() {
+        deadline = picked;
+        _deadlineController.text = Formatter.dateJson(deadline!);
+        update(context, task.id, {"dueDate": deadline!.toIso8601String()});
+      });
+    }
+  }
+
+  Widget _buildSave(BuildContext context, TaskModel task) {
+    final textTheme = context.theme.textTheme;
+    return Consumer<TaskProvider>(
+      builder: (context, value, child) {
+        final isDisable =
+            _titleController.text.trim() == task.title &&
+            _descController.text.trim() == task.description;
+        return GestureDetector(
+          onTap: () {
+            if (!isDisable) {
+              update(context, task.id, {
+                "title": _titleController.text.trim(),
+                "description": _descController.text.trim(),
+              });
+            }
+          },
+          child: Container(
+            margin: EdgeInsets.only(right: 16),
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            decoration: BoxDecoration(
+              color: isDisable ? Colors.grey : primaryColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'Save',
+              style: textTheme.bodySmall?.copyWith(color: Colors.white),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

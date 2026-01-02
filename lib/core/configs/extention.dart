@@ -45,3 +45,15 @@ extension ColorHexX on Color {
     return '#${hex.padLeft(withAlpha ? 8 : 6, '0').toUpperCase()}';
   }
 }
+
+extension PercentFormatter on double {
+  String toPercent() {
+    final value = toStringAsFixed(2);
+    final trimmed = value.endsWith('.00')
+        ? value.substring(0, value.length - 3)
+        : value
+              .replaceFirst(RegExp(r'0+$'), '')
+              .replaceFirst(RegExp(r'\.$'), '');
+    return '$trimmed%';
+  }
+}
