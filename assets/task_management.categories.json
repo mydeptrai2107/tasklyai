@@ -1,0 +1,209 @@
+[{
+  "_id": {
+    "$oid": "6957e642e1d4490dcdbeec01"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "work",
+  "color": "#22C55E",
+  "icon": "tag",
+  "type": "note",
+  "createdAt": {
+    "$date": "2026-01-02T15:37:38.581Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T15:37:38.581Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6957e6a8e1d4490dcdbeec1a"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Learning",
+  "color": "#0F59EB",
+  "icon": "tag",
+  "type": "note",
+  "createdAt": {
+    "$date": "2026-01-02T15:39:20.505Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T15:39:20.505Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6957e7a3e1d4490dcdbeec23"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Health",
+  "color": "#3B82F6",
+  "icon": "tag",
+  "type": "note",
+  "createdAt": {
+    "$date": "2026-01-02T15:43:31.426Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T15:43:31.426Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6957eee4e1d4490dcdbeec95"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Person",
+  "color": "#14B8A6",
+  "icon": "tag",
+  "type": "note",
+  "createdAt": {
+    "$date": "2026-01-02T16:14:28.099Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T16:14:28.099Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958bf21573b101e1cc3a0b5"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Phân Tích Yêu Cầu",
+  "color": "#10B981",
+  "icon": "tag",
+  "type": "task",
+  "createdAt": {
+    "$date": "2026-01-03T07:02:57.393Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T07:02:57.393Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958bf21573b101e1cc3a0bb"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Thiết Kế Thuật Toán",
+  "color": "#3B82F6",
+  "icon": "palette",
+  "type": "task",
+  "createdAt": {
+    "$date": "2026-01-03T07:02:57.418Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T07:02:57.418Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958bf21573b101e1cc3a0c3"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Gửi Email",
+  "color": "#84CC16",
+  "icon": "mail",
+  "type": "task",
+  "createdAt": {
+    "$date": "2026-01-03T07:02:57.436Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T07:02:57.436Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Lập Trình",
+  "color": "#3B82F6",
+  "icon": "code",
+  "type": "task",
+  "createdAt": {
+    "$date": "2026-01-03T09:08:50.828Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T09:08:50.828Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958dca210ccc50d210ebe10"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Testing",
+  "color": "#14B8A6",
+  "icon": "tag",
+  "type": "task",
+  "createdAt": {
+    "$date": "2026-01-03T09:08:50.843Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T09:08:50.843Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a99884c"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Email",
+  "color": "#F59E0B",
+  "icon": "mail",
+  "type": "task",
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.744Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:13:02.744Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695920aa646d4e0b7a998a75"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Family",
+  "color": "#14B8A6",
+  "icon": "tag",
+  "type": "note",
+  "createdAt": {
+    "$date": "2026-01-03T13:59:06.930Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:59:06.930Z"
+  },
+  "__v": 0
+}]

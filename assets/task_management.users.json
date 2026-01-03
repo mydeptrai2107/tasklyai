@@ -1,0 +1,50 @@
+[{
+  "_id": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "email": "test@example.com",
+  "password": "$2a$10$3FiWflzhrrskkthsxkiYQOIMPO/.odGKFad0Rd5LLtIy6DhO/5q9i",
+  "name": "Nguyễn Văn Test",
+  "avatar": null,
+  "preferences": {
+    "defaultPriority": "Trung bình",
+    "notificationEnabled": true,
+    "notificationAdvanceMinutes": 15,
+    "theme": "auto"
+  },
+  "lastActive": {
+    "$date": "2026-01-03T14:31:16.113Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-01T09:49:11.994Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T14:31:16.114Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695919d4646d4e0b7a99886f"
+  },
+  "email": "myln@gmail.com",
+  "password": "$2a$10$Q4mWrdMFafffY0eJ0e.nUOxBgi17Marz5yEZQgusZlydcCfYfnh0S",
+  "name": "Ngoc My",
+  "avatar": null,
+  "preferences": {
+    "defaultPriority": "Trung bình",
+    "notificationEnabled": true,
+    "notificationAdvanceMinutes": 15,
+    "theme": "auto"
+  },
+  "lastActive": {
+    "$date": "2026-01-03T13:29:56.518Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-03T13:29:56.519Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:29:56.519Z"
+  },
+  "__v": 0
+}]

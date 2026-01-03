@@ -1,0 +1,691 @@
+[{
+  "_id": {
+    "$oid": "69576a64e1d4490dcdbee822"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Hoàn thành bài tập Python",
+  "description": "Bài OOP",
+  "project": {
+    "$oid": "69569c1a3161ddc84e5ff9db"
+  },
+  "category": null,
+  "priority": "Cao",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": {
+    "$date": "2024-12-31T17:00:00.000Z"
+  },
+  "completedAt": null,
+  "estimatedMinutes": null,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": false,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-02T06:49:08.435Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T06:49:08.435Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69576e1fe1d4490dcdbee845"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Finish project proposal",
+  "description": "Complete the Q1 project proposal and send to stakeholders",
+  "project": {
+    "$oid": "6956a0f13161ddc84e5ff9f5"
+  },
+  "category": null,
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": {
+    "$date": "2026-01-13T17:00:00.000Z"
+  },
+  "completedAt": null,
+  "estimatedMinutes": null,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": false,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-02T07:05:03.995Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T07:05:03.995Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695772f9e1d4490dcdbee865"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Hoàn thành bài tập Python",
+  "description": "Bài OOP",
+  "project": {
+    "$oid": "69569c1a3161ddc84e5ff9db"
+  },
+  "category": null,
+  "priority": "Cao",
+  "status": "Đang làm",
+  "startDate": null,
+  "dueDate": {
+    "$date": "2024-12-31T17:00:00.000Z"
+  },
+  "completedAt": null,
+  "estimatedMinutes": null,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "subtasks": [
+    {
+      "title": "Create draft",
+      "isCompleted": false,
+      "_id": {
+        "$oid": "695772f9e1d4490dcdbee866"
+      }
+    },
+    {
+      "title": "Review with team",
+      "isCompleted": false,
+      "_id": {
+        "$oid": "695772f9e1d4490dcdbee867"
+      }
+    }
+  ],
+  "createdFromNote": null,
+  "aiGenerated": false,
+  "createdAt": {
+    "$date": "2026-01-02T07:25:45.427Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T17:43:30.016Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695778e5e1d4490dcdbee885"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Buy birthday gift",
+  "description": "Sarah's birthday is coming up",
+  "project": {
+    "$oid": "6956a0f13161ddc84e5ff9f5"
+  },
+  "category": null,
+  "priority": "Khẩn cấp",
+  "status": "Hoàn thành",
+  "startDate": null,
+  "dueDate": {
+    "$date": "2026-01-22T17:00:00.000Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-02T14:15:25.078Z"
+  },
+  "estimatedMinutes": null,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "subtasks": [
+    {
+      "title": "Create draft",
+      "isCompleted": false,
+      "_id": {
+        "$oid": "6957cea2e1d4490dcdbeeb0b"
+      }
+    },
+    {
+      "title": "Review with team",
+      "isCompleted": true,
+      "_id": {
+        "$oid": "6957cea2e1d4490dcdbeeb0c"
+      }
+    }
+  ],
+  "createdFromNote": null,
+  "aiGenerated": false,
+  "createdAt": {
+    "$date": "2026-01-02T07:51:01.142Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T14:15:26.452Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6957792ae1d4490dcdbee890"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Buy birthday gift",
+  "description": "Sarah's birthday is coming up",
+  "project": {
+    "$oid": "6956a0f13161ddc84e5ff9f5"
+  },
+  "category": null,
+  "priority": "Thấp",
+  "status": "Hoàn thành",
+  "startDate": null,
+  "dueDate": {
+    "$date": "2026-01-06T17:00:00.000Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-02T16:52:59.674Z"
+  },
+  "estimatedMinutes": null,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "subtasks": [
+    {
+      "title": "Create draft",
+      "isCompleted": false,
+      "_id": {
+        "$oid": "6957792ae1d4490dcdbee891"
+      }
+    }
+  ],
+  "createdFromNote": null,
+  "aiGenerated": false,
+  "createdAt": {
+    "$date": "2026-01-02T07:52:10.552Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T17:08:54.441Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a998840"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Viết code theo yêu cầu cho bài tập Python môn học.",
+  "description": "",
+  "project": {
+    "$oid": "695915de646d4e0b7a99883e"
+  },
+  "category": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 60,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.719Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:13:02.719Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a998844"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Chạy thử code đã viết và sửa lỗi nếu có.",
+  "description": "",
+  "project": {
+    "$oid": "695915de646d4e0b7a99883e"
+  },
+  "category": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 30,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.730Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:13:02.730Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a998848"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Nén file bài tập Python hoặc lưu lên GitHub.",
+  "description": "",
+  "project": {
+    "$oid": "695915de646d4e0b7a99883e"
+  },
+  "category": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 15,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.737Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:13:02.737Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a99884e"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Soạn email phản hồi cho khách hàng về tiến độ công việc.",
+  "description": "",
+  "project": {
+    "$oid": "695915de646d4e0b7a99883e"
+  },
+  "category": {
+    "$oid": "695915de646d4e0b7a99884c"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 30,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.747Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:13:02.747Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a998852"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Đính kèm tài liệu liên quan vào email phản hồi cho khách hàng.",
+  "description": "",
+  "project": {
+    "$oid": "695915de646d4e0b7a99883e"
+  },
+  "category": {
+    "$oid": "695915de646d4e0b7a99884c"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 15,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.754Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:13:02.754Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a998856"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Xác nhận đã nhận được yêu cầu từ khách hàng trong email.",
+  "description": "",
+  "project": {
+    "$oid": "695915de646d4e0b7a99883e"
+  },
+  "category": {
+    "$oid": "695915de646d4e0b7a99884c"
+  },
+  "priority": "Trung bình",
+  "status": "Hoàn thành",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": {
+    "$date": "2026-01-03T13:37:24.032Z"
+  },
+  "estimatedMinutes": 10,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.761Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:37:24.033Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a99899e"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Viết code theo yêu cầu cho bài tập Python môn học.",
+  "description": "",
+  "project": {
+    "$oid": "6959202d646d4e0b7a99899c"
+  },
+  "category": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 60,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.714Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:57:01.714Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a9989a2"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Chạy thử code đã viết và kiểm tra kết quả.",
+  "description": "",
+  "project": {
+    "$oid": "6959202d646d4e0b7a99899c"
+  },
+  "category": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 30,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.739Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:57:01.739Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a9989a6"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Sửa lỗi trong code nếu có sau khi chạy thử.",
+  "description": "",
+  "project": {
+    "$oid": "6959202d646d4e0b7a99899c"
+  },
+  "category": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 30,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.749Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:57:01.749Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a9989aa"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Nén file bài tập Python hoặc lưu lên GitHub.",
+  "description": "",
+  "project": {
+    "$oid": "6959202d646d4e0b7a99899c"
+  },
+  "category": {
+    "$oid": "6958dca210ccc50d210ebe0a"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 15,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.759Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:57:01.759Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a9989ae"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Soạn email phản hồi cho khách hàng về tiến độ công việc.",
+  "description": "",
+  "project": {
+    "$oid": "6959202d646d4e0b7a99899c"
+  },
+  "category": {
+    "$oid": "695915de646d4e0b7a99884c"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 30,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.775Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:57:01.775Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a9989b2"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Đính kèm tài liệu liên quan trong email phản hồi cho khách hàng.",
+  "description": "",
+  "project": {
+    "$oid": "6959202d646d4e0b7a99899c"
+  },
+  "category": {
+    "$oid": "695915de646d4e0b7a99884c"
+  },
+  "priority": "Trung bình",
+  "status": "Chưa bắt đầu",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": null,
+  "estimatedMinutes": 15,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [],
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.789Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:57:01.789Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a9989b6"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Xác nhận đã nhận được yêu cầu từ khách hàng trong email.",
+  "description": "",
+  "project": {
+    "$oid": "6958dca210ccc50d210ebe00"
+  },
+  "category": {
+    "$oid": "695915de646d4e0b7a99884c"
+  },
+  "priority": "Cao",
+  "status": "Hoàn thành",
+  "startDate": null,
+  "dueDate": null,
+  "completedAt": {
+    "$date": "2026-01-03T13:58:18.744Z"
+  },
+  "estimatedMinutes": 15,
+  "reminderDate": null,
+  "reminderSent": false,
+  "tags": [],
+  "createdFromNote": null,
+  "aiGenerated": true,
+  "subtasks": [
+    {
+      "title": "Lay thong tin khach hang",
+      "isCompleted": true,
+      "_id": {
+        "$oid": "69592071646d4e0b7a998a37"
+      }
+    },
+    {
+      "title": "Lien he khach hang",
+      "isCompleted": false,
+      "_id": {
+        "$oid": "69592071646d4e0b7a998a38"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.799Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:58:18.744Z"
+  },
+  "__v": 0
+}]

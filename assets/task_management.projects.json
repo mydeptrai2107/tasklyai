@@ -1,0 +1,181 @@
+[{
+  "_id": {
+    "$oid": "69569c1a3161ddc84e5ff9db"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Học tập",
+  "description": "Dự án học tập",
+  "color": "#4A90E2",
+  "icon": "folder",
+  "status": "active",
+  "startDate": {
+    "$date": "2001-01-01T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2001-12-31T00:00:00.000Z"
+  },
+  "progress": 0,
+  "createdAt": {
+    "$date": "2026-01-01T16:08:58.295Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-01T16:08:58.295Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6956a0f13161ddc84e5ff9f5"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Do An",
+  "description": "Hoan thanh do an tot nghiep de ra truong",
+  "color": "#0FF980",
+  "icon": "folder",
+  "status": "active",
+  "startDate": {
+    "$date": "2026-01-13T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-01-24T00:00:00.000Z"
+  },
+  "progress": 0,
+  "createdAt": {
+    "$date": "2026-01-01T16:29:37.452Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-01T16:29:37.452Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958bf21573b101e1cc3a0b3"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Bài Tập Python",
+  "description": "Tự động tạo từ AI - 3/1/2026",
+  "color": "#6366F1",
+  "icon": "folder",
+  "status": "active",
+  "startDate": null,
+  "endDate": null,
+  "progress": 0,
+  "createdAt": {
+    "$date": "2026-01-03T07:02:57.383Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T07:02:57.383Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958bf21573b101e1cc3a0c1"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Email Khách Hàng",
+  "description": "Tự động tạo từ AI - 3/1/2026",
+  "color": "#06B6D4",
+  "icon": "folder",
+  "status": "active",
+  "startDate": null,
+  "endDate": null,
+  "progress": 0,
+  "createdAt": {
+    "$date": "2026-01-03T07:02:57.433Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T07:02:57.433Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6958dca210ccc50d210ebe00"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Ghi Nhớ sâu",
+  "description": "Hoàn thành các bài tập Python trong khóa học lập trình",
+  "color": "#3B82F6",
+  "icon": "code",
+  "status": "active",
+  "startDate": {
+    "$date": "2026-01-03T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-01-31T00:00:00.000Z"
+  },
+  "progress": 0,
+  "createdAt": {
+    "$date": "2026-01-03T09:08:50.782Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T09:08:50.782Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695915de646d4e0b7a99883e"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Python",
+  "description": "Hoàn thành các bài tập Python trong khóa học lập trình",
+  "color": "#673AB7",
+  "icon": "folder",
+  "status": "active",
+  "startDate": {
+    "$date": "2026-01-03T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-01-24T00:00:00.000Z"
+  },
+  "progress": 0,
+  "createdAt": {
+    "$date": "2026-01-03T13:13:02.704Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:13:02.704Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6959202d646d4e0b7a99899c"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "name": "Hoc Python",
+  "description": "Hoan thanh khoa hoc python",
+  "color": "#9C27B0",
+  "icon": "folder",
+  "status": "active",
+  "startDate": {
+    "$date": "2026-01-07T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-01-30T00:00:00.000Z"
+  },
+  "progress": 0,
+  "createdAt": {
+    "$date": "2026-01-03T13:57:01.704Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:57:01.704Z"
+  },
+  "__v": 0
+}]

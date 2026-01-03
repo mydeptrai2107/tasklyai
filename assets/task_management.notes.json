@@ -1,0 +1,97 @@
+[{
+  "_id": {
+    "$oid": "695644683161ddc84e5ff843"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Công việc hôm nay",
+  "content": "Cần hoàn thành bài tập Python và gửi email khách hàng",
+  "category": null,
+  "tags": [
+    "work",
+    "coding"
+  ],
+  "color": "#FF5733",
+  "isPinned": false,
+  "isArchived": false,
+  "reminderDate": null,
+  "attachments": [],
+  "aiSuggestions": {
+    "tasks": []
+  },
+  "lastOpenedAt": {
+    "$date": "2026-01-01T09:54:48.774Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-01T09:54:48.776Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-01T09:54:48.776Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6957f3c4e1d4490dcdbeecd7"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Meeting Notes - Product Review",
+  "content": "Discussed Q4 roadmap and feature priorities. Key decisions: Launch mobile app by December, Focus on AI integration for Q1 next year, Allocate budget for user research",
+  "category": {
+    "$oid": "6957e642e1d4490dcdbeec01"
+  },
+  "tags": [],
+  "color": "#FFFFFF",
+  "isPinned": false,
+  "isArchived": false,
+  "reminderDate": null,
+  "attachments": [],
+  "aiSuggestions": {
+    "tasks": []
+  },
+  "lastOpenedAt": {
+    "$date": "2026-01-02T16:35:16.169Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-02T16:35:16.171Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-02T16:35:16.171Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695920b1646d4e0b7a998a7a"
+  },
+  "user": {
+    "$oid": "695643173161ddc84e5ff839"
+  },
+  "title": "Nho uong thuoc",
+  "content": "Uong thuoc vao buoi sang",
+  "category": {
+    "$oid": "6957e7a3e1d4490dcdbeec23"
+  },
+  "tags": [],
+  "color": "#FFFFFF",
+  "isPinned": false,
+  "isArchived": false,
+  "reminderDate": null,
+  "attachments": [],
+  "aiSuggestions": {
+    "tasks": []
+  },
+  "lastOpenedAt": {
+    "$date": "2026-01-03T13:59:13.733Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-03T13:59:13.733Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-03T13:59:13.733Z"
+  },
+  "__v": 0
+}]
