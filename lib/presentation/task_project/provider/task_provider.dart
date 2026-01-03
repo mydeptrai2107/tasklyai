@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/data/requests/fetch_task_params.dart';
 import 'package:tasklyai/data/requests/task_req.dart';
 import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/repository/task_repository.dart';
 
 class TaskProvider extends ChangeNotifier {
@@ -52,6 +54,7 @@ class TaskProvider extends ChangeNotifier {
       await _taskRepository.createTask(task);
       if (context.mounted) {
         DialogService.success(context, message: 'Tạo task thành công');
+        context.read<ProjectProvider>().fetchProject();
       }
     } on FormatException catch (e) {
       if (context.mounted) {
@@ -70,6 +73,7 @@ class TaskProvider extends ChangeNotifier {
       await _taskRepository.updateTask(params, taskId);
       if (context.mounted) {
         fetchAllTask(context);
+        context.read<ProjectProvider>().fetchProject();
         if (isShowDialog) {
           DialogService.success(context, message: 'Cập nhật task thành công');
         }

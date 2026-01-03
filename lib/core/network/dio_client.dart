@@ -7,7 +7,7 @@ class DioClient {
   DioClient()
     : _dio = Dio(
         BaseOptions(
-          baseUrl: 'http://192.168.1.17:3000/api',
+          baseUrl: 'http://192.168.1.150:3000/api',
           connectTimeout: const Duration(seconds: 30),
           receiveTimeout: const Duration(seconds: 30),
           headers: {'Content-Type': 'application/json'},
@@ -40,6 +40,7 @@ class DioClient {
 
   Future<Response> post(String endpoint, {dynamic data}) async {
     try {
+      print(data);
       return await _dio.post(
         endpoint,
         data: data,

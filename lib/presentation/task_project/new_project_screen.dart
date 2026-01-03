@@ -5,6 +5,9 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
+import 'package:tasklyai/presentation/notes/widgets/task_ai_suggest_bottom_sheet.dart';
+import 'package:tasklyai/presentation/notes/widgets/voice_to_task_bottom_sheet.dart';
+import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 
 class NewProjectScreen extends StatefulWidget {
@@ -75,22 +78,38 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
       appBar: AppBar(
         title: Text('New Project', style: textTheme.titleMedium),
         actions: [
-          TextButton(
-            onPressed: canSave
-                ? () {
-                    context.read<ProjectProvider>().createProject(
-                      context,
-                      ProjectReq(
-                        name: nameController.text,
-                        description: descController.text,
-                        color: selectedColor.toHex(),
-                        startDate: startDate!,
-                        endDate: deadline!,
-                      ),
-                    );
-                  }
-                : null,
-            child: const Text('Save'),
+          Consumer<AiProvider>(
+            builder: (context, value, child) {
+              return TextButton(
+                onPressed: canSave
+                    ? () {
+                        value.analyzeNotes.isEmpty
+                            ? context.read<ProjectProvider>().createProject(
+                                context,
+                                ProjectReq(
+                                  name: nameController.text,
+                                  description: descController.text,
+                                  color: selectedColor.toHex(),
+                                  startDate: startDate!,
+                                  endDate: deadline!,
+                                ),
+                              )
+                            : context.read<AiProvider>().createTaskFromAI(
+                                context,
+                                ProjectReq(
+                                  name: nameController.text,
+                                  description: descController.text,
+                                  color: selectedColor.toHex(),
+                                  startDate: startDate!,
+                                  endDate: deadline!,
+                                ),
+                                value.analyzeNotes,
+                              );
+                      }
+                    : null,
+                child: const Text('Save'),
+              );
+            },
           ),
         ],
       ),
@@ -127,7 +146,17 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                       ],
                     ),
                   ),
-                  ElevatedButton(onPressed: () {}, child: const Text('Use AI')),
+                  ElevatedButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder: (_) => const VoiceToTaskBottomSheet(),
+                      );
+                    },
+                    child: const Text('Use AI'),
+                  ),
                 ],
               ),
             ),
@@ -176,13 +205,48 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             /// Description
             Text('Description', style: textTheme.titleSmall),
             const SizedBox(height: 8),
-            AppTextField(
-              controller: descController,
-              maxLines: 4,
-              hint: 'Describe your project...',
+            Selector<AiProvider, String>(
+              builder: (context, value, child) {
+                descController.text = value;
+                return AppTextField(
+                  controller: descController,
+                  maxLines: 6,
+                  hint: 'Describe your project...',
+                );
+              },
+              selector: (_, p) => p.recording,
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
+
+            Consumer<AiProvider>(
+              builder: (context, value, child) {
+                return value.taskActive == 0
+                    ? SizedBox.shrink()
+                    : TextButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            builder: (context) {
+                              return DraggableScrollableSheet(
+                                initialChildSize: 0.8,
+                                maxChildSize: 0.9,
+                                minChildSize: 0.6,
+                                builder: (context, scrollController) =>
+                                    TaskAiSuggestBottomSheet(
+                                      text: '',
+                                      controller: scrollController,
+                                    ),
+                              );
+                            },
+                          );
+                        },
+                        child: Text('${value.taskActive} Task From AI'),
+                      );
+              },
+            ),
 
             /// Dates
             Row(
@@ -216,6 +280,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                     ],
                   ),
                 ),
+
                 Expanded(
                   child: Column(
                     children: [

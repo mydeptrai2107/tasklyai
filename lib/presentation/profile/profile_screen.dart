@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/constant.dart';
 import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/core/configs/local_storage.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
+import 'package:tasklyai/presentation/auth/auth_screen.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/presentation/profile/widgets/task_note_infor.dart';
@@ -48,6 +51,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
+              ),
+
+              OutlinedButton.icon(
+                onPressed: () {
+                  LocalStorage.remove(kToken);
+                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const AuthScreen()),
+                    (route) => false,
+                  );
+                },
+                label: Text('Đăng xuất'),
+                icon: Icon(Icons.logout),
               ),
             ],
           );

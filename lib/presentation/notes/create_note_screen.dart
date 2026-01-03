@@ -31,143 +31,126 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         title: Text('New Note', style: textTheme.titleSmall),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// AI HEADER
+            Container(
               padding: const EdgeInsets.all(16),
-              child: Column(
+              decoration: BoxDecoration(
+                color: Colors.deepPurple.withAlpha(22),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.deepPurple.withAlpha(77)),
+              ),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// AI HEADER
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple.withAlpha(22),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.deepPurple.withAlpha(77),
-                      ),
-                    ),
-                    child: Row(
+                  const Icon(Icons.auto_awesome, color: Colors.deepPurple),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
-                          Icons.auto_awesome,
-                          color: Colors.deepPurple,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'New Note',
-                                style: textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Start writing your thoughts, or use AI to help organize your ideas.',
-                                style: textTheme.bodySmall,
-                              ),
-                            ],
+                        Text(
+                          'New Note',
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
                           ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Start writing your thoughts, or use AI to help organize your ideas.',
+                          style: textTheme.bodySmall,
                         ),
                       ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// TITLE
-                  AppTextField(controller: titleCtrl, hint: 'Note title'),
-
-                  const SizedBox(height: 8),
-
-                  /// TAGS
-                  Wrap(
-                    spacing: 8,
-                    children: [
-                      ...(selectedTags == null
-                              ? <CategoryModel>[]
-                              : [selectedTags!])
-                          .map((tag) {
-                            final color = tag.color.toColor();
-                            return Chip(
-                              label: Text(
-                                tag.name,
-                                style: TextStyle(color: color),
-                              ),
-                              backgroundColor: color.withAlpha(100),
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: color),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              deleteIcon: Icon(
-                                Icons.cancel_outlined,
-                                color: color,
-                              ),
-                              onDeleted: () {
-                                setState(() {
-                                  selectedTags == null;
-                                });
-                              },
-                            );
-                          }),
-                      ActionChip(
-                        label: const Text('+ Add tag'),
-                        onPressed: () {
-                          _openTagSheet(context);
-                        },
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  /// CONTENT
-                  AppTextField(
-                    controller: contentCtrl,
-                    maxLines: 10,
-                    hint: 'Start writing...',
-                  ),
-
-                  GestureDetector(
-                    onTap: () {
-                      context.read<NoteProvider>().createNote(
-                        context,
-                        CreateNoteReq(
-                          title: titleCtrl.text,
-                          content: contentCtrl.text,
-                          category: selectedTags!.id,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Tạo Note',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+
+            const SizedBox(height: 20),
+
+            /// TITLE
+            AppTextField(controller: titleCtrl, hint: 'Note title'),
+
+            const SizedBox(height: 8),
+
+            /// TAGS
+            Wrap(
+              spacing: 8,
+              children: [
+                ...(selectedTags == null ? <CategoryModel>[] : [selectedTags!])
+                    .map((tag) {
+                      final color = tag.color.toColor();
+                      return Chip(
+                        label: Text(tag.name, style: TextStyle(color: color)),
+                        backgroundColor: color.withAlpha(100),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(width: 1, color: color),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        deleteIcon: Icon(Icons.cancel_outlined, color: color),
+                        onDeleted: () {
+                          setState(() {
+                            selectedTags == null;
+                          });
+                        },
+                      );
+                    }),
+                ActionChip(
+                  label: const Text('+ Add tag'),
+                  onPressed: () {
+                    _openTagSheet(context);
+                  },
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            /// CONTENT
+            AppTextField(
+              controller: contentCtrl,
+              maxLines: 10,
+              hint: 'Start writing...',
+            ),
+
+            Spacer(),
+
+            GestureDetector(
+              onTap: () {
+                context.read<NoteProvider>().createNote(
+                  context,
+                  CreateNoteReq(
+                    title: titleCtrl.text,
+                    content: contentCtrl.text,
+                    category: selectedTags!.id,
+                  ),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    'Tạo Note',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -19,4 +19,15 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<void> register(String name, String email, String password) async {
+    try {
+      await _dioClient.post(
+        ApiEndpoint.register,
+        data: {'name': name, 'email': email, 'password': password},
+      );
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

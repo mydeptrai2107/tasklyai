@@ -46,11 +46,13 @@ class ProjectModel {
     color: json["color"],
     icon: json["icon"],
     status: json["status"],
-    startDate: DateTime.parse(json["startDate"]),
-    endDate: DateTime.parse(json["endDate"]),
+    startDate: DateTime.parse(json["startDate"] ?? DateTime.now().toString()),
+    endDate: DateTime.parse(json["endDate"] ?? DateTime.now().toString()),
     progress: json["progress"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    taskStats: TaskStats.fromJson(json["taskStats"]),
+    createdAt: DateTime.parse(json["createdAt"] ?? DateTime.now().toString()),
+    taskStats: TaskStats.fromJson(
+      json["taskStats"] ?? DateTime.now().toString(),
+    ),
   );
 
   Map<String, dynamic> toJson() => {

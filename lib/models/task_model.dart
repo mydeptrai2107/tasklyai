@@ -64,7 +64,7 @@ class TaskModel {
     priority: Priority.fromString(json["priority"]),
     status: TaskStatus.fromString(json["status"]),
     startDate: json["startDate"],
-    dueDate: DateTime.parse(json["dueDate"]),
+    dueDate: DateTime.parse(json["dueDate"] ?? DateTime.now().toString()),
     completedAt: json["completedAt"],
     estimatedMinutes: json["estimatedMinutes"],
     reminderDate: json["reminderDate"],

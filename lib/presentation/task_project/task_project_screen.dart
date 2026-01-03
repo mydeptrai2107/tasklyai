@@ -5,6 +5,7 @@ import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/dashed_outline_button.dart';
 import 'package:tasklyai/presentation/task_project/new_project_screen.dart';
 import 'package:tasklyai/presentation/task_project/new_task_screen.dart';
+import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
 import 'package:tasklyai/presentation/task_project/widgets/list_project.dart';
@@ -49,6 +50,7 @@ class _TaskProjectScreenState extends State<TaskProjectScreen> {
               Expanded(child: isTask ? ListTask() : ListProject()),
               DashedOutlineButton(
                 onPressed: () {
+                  context.read<AiProvider>().reset();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

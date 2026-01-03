@@ -11,4 +11,8 @@ class ApiEndpoint {
   static String category = '/categories';
 
   static String findMe = '/auth/me';
+
+  static String analyzeNote = '/ai/analyze-note';
+
+  static String aiCreateTasks = '/ai/create-tasks';
 }

@@ -29,4 +29,30 @@ class AuthProvider extends ChangeNotifier {
       }
     }
   }
+
+  Future<void> register(
+    BuildContext context,
+    String name,
+    String email,
+    String password,
+    VoidCallback? voiCallBack,
+  ) async {
+    try {
+      await repository.register(name, email, password);
+
+      if (context.mounted) {
+        DialogService.success(
+          context,
+          message: 'Đăng ký thành công',
+          onOk: () {
+            voiCallBack?.call();
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: 'Đăng ký thất bại');
+      }
+    }
+  }
 }
