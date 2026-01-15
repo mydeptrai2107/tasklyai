@@ -1,15 +1,16 @@
 import 'package:tasklyai/core/network/api_endpoint.dart';
 import 'package:tasklyai/core/network/dio_client.dart';
-import 'package:tasklyai/data/requests/create_note_req.dart';
 import 'package:tasklyai/models/note_model.dart';
 
 class NoteRepository {
   final _dioClient = DioClient();
 
-  Future<List<NoteModel>> fetchNote() async {
+  Future<List<NoteModel>> fetchNote(String folderId) async {
     try {
-      final res = await _dioClient.get(ApiEndpoint.notes);
-      return (res.data['data'] as List<dynamic>)
+      final res = await _dioClient.get(
+        '${ApiEndpoint.folders}/$folderId/cards',
+      );
+      return (res.data['cards'] as List<dynamic>)
           .map((e) => NoteModel.fromJson(e))
           .toList();
     } on FormatException catch (_) {
@@ -17,9 +18,9 @@ class NoteRepository {
     }
   }
 
-  Future<void> createNote(CreateNoteReq req) async {
+  Future<void> createNote(Map<String, dynamic> req) async {
     try {
-      await _dioClient.post(ApiEndpoint.notes, data: req.toJson());
+      await _dioClient.post(ApiEndpoint.notes, data: req);
     } on FormatException catch (_) {
       rethrow;
     }

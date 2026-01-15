@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/local_storage.dart';
+import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 import 'package:tasklyai/presentation/auth/auth_screen.dart';
 import 'package:tasklyai/presentation/auth/provider/auth_provider.dart';
 import 'package:tasklyai/presentation/category/provider/category_provider.dart';
+import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
@@ -23,6 +25,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
         ChangeNotifierProvider(create: (context) => AiProvider()),
+        ChangeNotifierProvider(create: (context) => AreaProvider()),
+        ChangeNotifierProvider(create: (context) => FolderProvider()),
       ],
       child: const MainApp(),
     ),

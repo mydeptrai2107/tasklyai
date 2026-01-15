@@ -11,7 +11,7 @@ class AuthRepository {
         ApiEndpoint.login,
         data: {'email': email, 'password': password},
       );
-      final token = res.data['data']?['token'];
+      final token = res.data['accessToken'];
       if (token != null) {
         await LocalStorage.setString(kToken, token);
       }

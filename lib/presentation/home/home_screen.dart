@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/presentation/area/area_detail_screen.dart';
+import 'package:tasklyai/presentation/area/provider/area_provider.dart';
+import 'package:tasklyai/presentation/area/quick_area_screen.dart';
+import 'package:tasklyai/presentation/area/widgets/area_card.dart';
 import 'package:tasklyai/presentation/home/widgets/header_widget.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -15,7 +21,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             _statsSection(),
             const SizedBox(height: 20),
-            _todayTasks(),
+            _todayTasks(context),
           ],
         ),
       ),
@@ -126,7 +132,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   // ================= TASK LIST =================
-  Widget _todayTasks() {
+  Widget _todayTasks(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Column(
@@ -134,31 +140,57 @@ class HomeScreen extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
-                "Today's Tasks",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                "Your Workspaces",
+                style: context.theme.textTheme.titleMedium,
               ),
-              Text("View All", style: TextStyle(color: Color(0xFF5B5CEB))),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => QuickAreaScreen()),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.lightBlueAccent.withAlpha(50),
+                  ),
+                  child: Text(
+                    "+ New",
+                    style: TextStyle(color: Colors.lightBlueAccent),
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
-          _taskItem(
-            title: 'Finish project proposal',
-            date: 'Dec 27',
-            tag: 'Product Development',
-            color: Colors.red,
-          ),
-          _taskItem(
-            title: 'Review design mockups',
-            date: 'Dec 26',
-            tag: 'Product Development',
-            color: Colors.orange,
-          ),
-          _taskItem(
-            title: 'Buy birthday gift',
-            date: 'Dec 28',
-            color: Colors.orange,
+          Consumer<AreaProvider>(
+            builder: (context, value, child) {
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: value.areas.length,
+                itemBuilder: (context, index) {
+                  final item = value.areas[index];
+                  return AreaCard(
+                    area: item,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return AreaDetailScreen(item);
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
           ),
         ],
       ),

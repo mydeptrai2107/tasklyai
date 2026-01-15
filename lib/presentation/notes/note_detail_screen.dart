@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/models/block.dart';
-import 'package:tasklyai/models/folder_model.dart';
-import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
+import 'package:tasklyai/models/note_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_checklist_widget.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_image_widget.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_link_widget.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_text_widget.dart';
 
-class CreateNoteScreen extends StatefulWidget {
-  const CreateNoteScreen(this.folderModel, {super.key});
+class NoteDetailScreen extends StatefulWidget {
+  const NoteDetailScreen(this.item, {super.key});
 
-  final FolderModel folderModel;
+  final NoteModel item;
 
   @override
-  State<CreateNoteScreen> createState() => _CreateNoteScreenState();
+  State<NoteDetailScreen> createState() => _NoteDetailScreenState();
 }
 
-class _CreateNoteScreenState extends State<CreateNoteScreen> {
+class _NoteDetailScreenState extends State<NoteDetailScreen> {
   String? _image;
   String? _link;
   String _content = '';
   List<CheckListItem> _checkList = [];
 
-  final _titleController = TextEditingController();
+  late final TextEditingController _titleController;
 
   bool get isValid =>
       _titleController.text.trim().isNotEmpty && _content.trim().isNotEmpty;
+
+  @override
+  void initState() {
+    _titleController = TextEditingController();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _titleController.text = widget.item.title;
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -37,10 +45,11 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Tạo Note',
+          'Chi tiết note',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
@@ -62,6 +71,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             ),
 
             AddTextWidget(
+              initValue: widget.item.content,
               onChange: (value) {
                 _content = value;
                 setState(() {});
@@ -97,8 +107,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                 onPressed: isValid
                     ? () {
                         final Map<String, dynamic> data = {
-                          "areaId": widget.folderModel.areaId,
-                          "folderId": widget.folderModel.id,
+                          "areaId": widget.item.areaId,
+                          "folderId": widget.item.folderId,
                           'title': _titleController.text.trim(),
                           'content': _content,
                           'blocks': _buildBlocks()
@@ -107,12 +117,6 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                         };
 
                         debugPrint(data.toString());
-
-                        context.read<NoteProvider>().createNote(
-                          context,
-                          widget.folderModel.id,
-                          data,
-                        );
                       }
                     : null,
                 child: Text('Save'),
