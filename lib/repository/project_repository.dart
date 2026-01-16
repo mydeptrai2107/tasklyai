@@ -14,10 +14,13 @@ class ProjectRepository {
     }
   }
 
-  Future<List<ProjectModel>> fetchProject() async {
+  Future<List<ProjectModel>> fetchProjectByArea(String areaId) async {
     try {
-      final res = await _dioClient.get(ApiEndpoint.projects);
-      final data = (res.data["data"] as List<dynamic>?);
+      final res = await _dioClient.get(
+        ApiEndpoint.projects,
+        params: {"areaId": areaId},
+      );
+      final data = (res.data["projects"] as List<dynamic>?);
       if (data == null) {
         throw FormatException('Lỗi hệ thống');
       }

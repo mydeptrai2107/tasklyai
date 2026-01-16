@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
+import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_detail_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_content.dart';
@@ -9,8 +10,13 @@ import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 
 class FolderDetailScreen extends StatefulWidget {
   final FolderModel folder;
+  final AreaModel areaModel;
 
-  const FolderDetailScreen({super.key, required this.folder});
+  const FolderDetailScreen({
+    super.key,
+    required this.folder,
+    required this.areaModel,
+  });
 
   @override
   State<FolderDetailScreen> createState() => _FolderDetailScreenState();
@@ -38,7 +44,6 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
               child: Column(
                 children: [
                   _SearchBox(),
-                  const SizedBox(height: 12),
                   Expanded(
                     child: ChangeNotifierProvider(
                       create: (_) => FolderDetailProvider(),
@@ -46,7 +51,10 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                         children: [
                           FolderFilterTabs(folder: widget.folder),
                           SizedBox(height: 16),
-                          FolderContent(),
+                          FolderContent(
+                            areaModel: widget.areaModel,
+                            folder: widget.folder,
+                          ),
                         ],
                       ),
                     ),
@@ -142,40 +150,10 @@ class _FolderInfo extends StatelessWidget {
                 folder.description,
                 style: const TextStyle(fontSize: 13, color: Colors.white70),
               ),
-              const SizedBox(height: 6),
-              // _AreaTag(folder),
             ],
           ),
         ),
       ],
-    );
-  }
-}
-
-class _AreaTag extends StatelessWidget {
-  final FolderModel folder;
-
-  const _AreaTag(this.folder);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(65),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconInt(icon: folder.icon, size: 14, color: Colors.white.toARGB32()),
-          SizedBox(width: 6),
-          Text(
-            folder.name,
-            style: TextStyle(fontSize: 12, color: Colors.white),
-          ),
-        ],
-      ),
     );
   }
 }

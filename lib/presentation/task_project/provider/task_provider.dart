@@ -54,7 +54,7 @@ class TaskProvider extends ChangeNotifier {
       await _taskRepository.createTask(task);
       if (context.mounted) {
         DialogService.success(context, message: 'Tạo task thành công');
-        context.read<ProjectProvider>().fetchProject();
+        // context.read<ProjectProvider>().fetchProject();
       }
     } on FormatException catch (e) {
       if (context.mounted) {
@@ -73,7 +73,7 @@ class TaskProvider extends ChangeNotifier {
       await _taskRepository.updateTask(params, taskId);
       if (context.mounted) {
         fetchAllTask(context);
-        context.read<ProjectProvider>().fetchProject();
+        // context.read<ProjectProvider>().fetchProject();
         if (isShowDialog) {
           DialogService.success(context, message: 'Cập nhật task thành công');
         }

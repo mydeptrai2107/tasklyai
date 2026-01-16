@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
+import 'package:tasklyai/models/checklist_item.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_checklist_widget.dart';
@@ -21,7 +22,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
   String? _image;
   String? _link;
   String _content = '';
-  List<CheckListItem> _checkList = [];
+  List<ChecklistItem> _checkList = [];
 
   final _titleController = TextEditingController();
 
@@ -102,7 +103,9 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                           'content': _content,
                           'link': _link,
                           'imageUrl': _image,
-                          'checklist': _checkList,
+                          'checklist': _checkList
+                              .map((e) => e.toJson())
+                              .toList(),
                         };
 
                         debugPrint(data.toString());

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
-import 'package:tasklyai/presentation/folder/folder_screen.dart';
 import 'package:tasklyai/presentation/home/home_screen.dart';
 import 'package:tasklyai/presentation/profile/profile_screen.dart';
 import 'package:tasklyai/presentation/task_project/task_project_screen.dart';
@@ -62,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return const HomeScreen();
       case 1:
-        return const FolderScreen();
+        return const SizedBox();
       case 2:
         return const TaskProjectScreen();
       case 3:

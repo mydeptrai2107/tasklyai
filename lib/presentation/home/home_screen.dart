@@ -7,8 +7,21 @@ import 'package:tasklyai/presentation/area/quick_area_screen.dart';
 import 'package:tasklyai/presentation/area/widgets/area_card.dart';
 import 'package:tasklyai/presentation/home/widgets/header_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<AreaProvider>().fetchArea();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

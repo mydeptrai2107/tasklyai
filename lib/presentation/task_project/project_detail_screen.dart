@@ -45,27 +45,13 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                   width: 10,
                   height: 10,
                   decoration: BoxDecoration(
-                    color: project.color.toColor(),
+                    color: Color(project.color),
                     shape: BoxShape.circle,
                   ),
                 ),
                 Text(project.name, style: textTheme.titleMedium),
               ],
             ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '${project.taskStats.completed} / ${project.taskStats.total} tasks completed',
-              ),
-            ),
-            LinearProgressIndicator(
-              value: project.taskStats.process(),
-              backgroundColor: project.color.toColor().withAlpha(51),
-              color: project.color.toColor(),
-              minHeight: 6,
-            ),
-            SizedBox(height: 10),
 
             Consumer<TaskProvider>(
               builder: (context, value, child) {

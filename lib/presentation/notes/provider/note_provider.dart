@@ -43,4 +43,23 @@ class NoteProvider extends ChangeNotifier {
       }
     }
   }
+
+  Future<void> updateNote({
+    required BuildContext context,
+    required String folderId,
+    required String noteId,
+    required Map<String, dynamic> req,
+  }) async {
+    try {
+      await noteRepository.updateNote(noteId, req);
+      if (context.mounted) {
+        DialogService.success(context, message: 'Update note thành công');
+        fetchNote(folderId);
+      }
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+    }
+  }
 }

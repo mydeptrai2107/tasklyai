@@ -7,13 +7,16 @@ import 'package:tasklyai/repository/project_repository.dart';
 class ProjectProvider extends ChangeNotifier {
   final ProjectRepository repository = ProjectRepository();
 
-  List<ProjectModel> _projects = [];
-  List<ProjectModel> get project => _projects;
+  List<ProjectModel> _projectsArea = [];
+  List<ProjectModel> get projectsArea => _projectsArea;
 
-  bool get hasProjects => _projects.isNotEmpty;
+  bool get hasProjects => _projectsArea.isNotEmpty;
 
-
-  Future<void> createProject(BuildContext context, ProjectReq project) async {
+  Future<void> createProject(
+    BuildContext context,
+    String areaId,
+    ProjectReq project,
+  ) async {
     try {
       await repository.createProject(project);
       if (context.mounted) {
@@ -26,10 +29,10 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchProject() async {
+  Future<void> fetchProjectByArea(String areaId) async {
     try {
-      _projects = await repository.fetchProject();
-      notifyListeners();
+      _projectsArea = await repository.fetchProjectByArea(areaId);
+        notifyListeners();
     } on FormatException catch (_) {}
   }
 }

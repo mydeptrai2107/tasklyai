@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/models/block.dart';
 import 'package:tasklyai/models/card_model.dart';
+import 'package:tasklyai/models/checklist_item.dart';
+import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_checklist_widget.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_image_widget.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_link_widget.dart';
@@ -20,7 +22,7 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
   String? _image;
   String? _link;
   String _content = '';
-  List<CheckListItem> _checkList = [];
+  List<ChecklistItem> _checkList = [];
 
   late final TextEditingController _titleController;
 
@@ -30,12 +32,12 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
   @override
   void initState() {
     _titleController = TextEditingController();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _titleController.text = widget.item.title;
-      _link = widget.item.link;
-      _image = widget.item.imageUrl;
-    });
+    _content = widget.item.content;
+    _titleController.text = widget.item.title;
+    _link = widget.item.link;
+    _image = widget.item.imageUrl;
+    _checkList = widget.item.checklist;
+    setState(() {});
     super.initState();
   }
 
@@ -79,16 +81,19 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
               },
             ),
             AddLinkWidget(
+              initValue: _link,
               onChange: (value) {
                 _link = value;
               },
             ),
             AddCheckListWidget(
+              initValue: _checkList,
               onChanged: (list) {
                 _checkList = list;
               },
             ),
             AddImageWidget(
+              initUrl: _image,
               onImageUploaded: (value) {
                 _image = value;
               },
@@ -107,17 +112,24 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                 ),
                 onPressed: isValid
                     ? () {
-                        // final Map<String, dynamic> data = {
-                        //   "areaId": widget.item.areaId,
-                        //   "folderId": widget.item.folderId,
-                        //   'title': _titleController.text.trim(),
-                        //   'content': _content,
-                        //   'blocks': _buildBlocks()
-                        //       .map((e) => e.toJson())
-                        //       .toList(),
-                        // };
+                        final Map<String, dynamic> data = {
+                          'title': _titleController.text.trim(),
+                          'content': _content,
+                          'link': _link,
+                          'imageUrl': _image,
+                          'checklist': _checkList
+                              .map((e) => e.toJson())
+                              .toList(),
+                        };
 
-                        // debugPr int(data.toString());
+                        debugPrint(data.toString());
+
+                        context.read<NoteProvider>().updateNote(
+                          context: context,
+                          folderId: widget.item.folder!.id,
+                          noteId: widget.item.id,
+                          req: data,
+                        );
                       }
                     : null,
                 child: Text('Save'),

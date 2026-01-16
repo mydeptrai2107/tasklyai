@@ -11,97 +11,88 @@ String projectModelToJson(ProjectModel data) => json.encode(data.toJson());
 
 class ProjectModel {
   String id;
-  String user;
+  String userId;
+  String areaId;
   String name;
   String description;
-  String color;
-  String icon;
-  String status;
+  int color;
+  int icon;
   DateTime startDate;
   DateTime endDate;
-  int progress;
+  bool hideCompleted;
+  String energyLevel;
+  bool calendarSync;
   DateTime createdAt;
-  TaskStats taskStats;
+  DateTime updatedAt;
+  int totalTasks;
+  int completedTasks;
+  int completionRate;
+  bool isOverdue;
+  int duration;
 
   ProjectModel({
     required this.id,
-    required this.user,
+    required this.userId,
+    required this.areaId,
     required this.name,
     required this.description,
     required this.color,
     required this.icon,
-    required this.status,
     required this.startDate,
     required this.endDate,
-    required this.progress,
+    required this.hideCompleted,
+    required this.energyLevel,
+    required this.calendarSync,
     required this.createdAt,
-    required this.taskStats,
+    required this.updatedAt,
+    required this.totalTasks,
+    required this.completedTasks,
+    required this.completionRate,
+    required this.isOverdue,
+    required this.duration,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) => ProjectModel(
     id: json["_id"],
-    user: json["user"],
+    userId: json["userId"],
+    areaId: json["areaId"],
     name: json["name"],
     description: json["description"],
     color: json["color"],
     icon: json["icon"],
-    status: json["status"],
-    startDate: DateTime.parse(json["startDate"] ?? DateTime.now().toString()),
-    endDate: DateTime.parse(json["endDate"] ?? DateTime.now().toString()),
-    progress: json["progress"],
-    createdAt: DateTime.parse(json["createdAt"] ?? DateTime.now().toString()),
-    taskStats: TaskStats.fromJson(
-      json["taskStats"] ?? DateTime.now().toString(),
-    ),
+    startDate: DateTime.parse(json["startDate"]),
+    endDate: DateTime.parse(json["endDate"]),
+    hideCompleted: json["hideCompleted"],
+    energyLevel: json["energyLevel"],
+    calendarSync: json["calendarSync"],
+    createdAt: DateTime.parse(json["createdAt"]),
+    updatedAt: DateTime.parse(json["updatedAt"]),
+    totalTasks: json["totalTasks"],
+    completedTasks: json["completedTasks"],
+    completionRate: json["completionRate"],
+    isOverdue: json["isOverdue"],
+    duration: json["duration"],
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
-    "user": user,
+    "userId": userId,
+    "areaId": areaId,
     "name": name,
     "description": description,
     "color": color,
     "icon": icon,
-    "status": status,
     "startDate": startDate.toIso8601String(),
     "endDate": endDate.toIso8601String(),
-    "progress": progress,
+    "hideCompleted": hideCompleted,
+    "energyLevel": energyLevel,
+    "calendarSync": calendarSync,
     "createdAt": createdAt.toIso8601String(),
-    "taskStats": taskStats.toJson(),
-  };
-}
-
-class TaskStats {
-  int total;
-  int completed;
-  int inProgress;
-  int notStarted;
-
-  TaskStats({
-    required this.total,
-    required this.completed,
-    required this.inProgress,
-    required this.notStarted,
-  });
-
-  factory TaskStats.fromJson(Map<String, dynamic> json) => TaskStats(
-    total: json["total"] ?? 0,
-    completed: json["completed"] ?? 0,
-    inProgress: json["inProgress"] ?? 0,
-    notStarted: json["notStarted"] ?? 0,
-  );
-
-  double process() {
-    if (total == 0) {
-      return 0;
-    }
-    return completed / total;
-  }
-
-  Map<String, dynamic> toJson() => {
-    "total": total,
-    "completed": completed,
-    "inProgress": inProgress,
-    "notStarted": notStarted,
+    "updatedAt": updatedAt.toIso8601String(),
+    "totalTasks": totalTasks,
+    "completedTasks": completedTasks,
+    "completionRate": completionRate,
+    "isOverdue": isOverdue,
+    "duration": duration,
   };
 }

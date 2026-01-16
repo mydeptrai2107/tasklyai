@@ -4,6 +4,8 @@ import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_list.dart';
+import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/task_project/widgets/project_area_list.dart';
 
 class AreaDetailScreen extends StatefulWidget {
   const AreaDetailScreen(this.item, {super.key});
@@ -19,31 +21,67 @@ class _AreaDetailScreenState extends State<AreaDetailScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<FolderProvider>().fetchFolder(widget.item.id);
+      context.read<ProjectProvider>().fetchProjectByArea(widget.item.id);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
-      body: Column(
-        children: [
-          _Header(widget.item),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF5F6FA),
+        body: Column(
+          children: [
+            _Header(widget.item),
+            _Tabs(),
+            Expanded(
+              child: TabBarView(
                 children: [
-                  _SearchBox(),
-                  const SizedBox(height: 16),
-                  _CreateFolderButton(),
-                  const SizedBox(height: 16),
-                  Expanded(child: FolderList()),
+                  /// TAB FOLDERS
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: FolderList(widget.item),
+                  ),
+
+                  /// TAB PROJECTS (fake)
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: ProjectAreaList(),
+                  ),
                 ],
               ),
             ),
-          ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Tabs extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: const TabBar(
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BoxDecoration(
+          color: Color(0xFF4C7EFF),
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+        ),
+        labelColor: Colors.white,
+        splashBorderRadius: BorderRadius.all(Radius.circular(14)),
+        unselectedLabelColor: Colors.black54,
+        dividerHeight: 0,
+        tabs: [
+          Tab(text: 'Folders'),
+          Tab(text: 'Projects'),
         ],
       ),
     );
@@ -188,46 +226,6 @@ class _StatBox extends StatelessWidget {
             style: const TextStyle(fontSize: 12, color: Colors.white70),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SearchBox extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Search folders...',
-        prefixIcon: const Icon(Icons.search),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-}
-
-class _CreateFolderButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: Colors.grey.shade300,
-          style: BorderStyle.solid,
-        ),
-      ),
-      child: const Center(
-        child: Text(
-          '+ Create New Folder',
-          style: TextStyle(fontWeight: FontWeight.w500),
-        ),
       ),
     );
   }

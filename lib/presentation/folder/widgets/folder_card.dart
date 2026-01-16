@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
+import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/folder_detail_screen.dart';
 
 class FolderCard extends StatelessWidget {
-  const FolderCard(this.item, {super.key});
+  const FolderCard({super.key, required this.item, required this.areaModel});
 
   final FolderModel item;
+  final AreaModel areaModel;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class FolderCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return FolderDetailScreen(folder: item);
+              return FolderDetailScreen(folder: item, areaModel: areaModel);
             },
           ),
         );

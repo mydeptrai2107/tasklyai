@@ -1,4 +1,4 @@
-import 'package:tasklyai/presentation/notes/widgets/add_checklist_widget.dart';
+import 'package:tasklyai/models/checklist_item.dart';
 
 enum BlockType {
   text,
@@ -26,7 +26,7 @@ class NoteBlock {
   final BlockType type;
   final int order;
   final String? textContent;
-  final List<CheckListItem>? checklistItems;
+  final List<ChecklistItem>? checklistItems;
 
   NoteBlock({
     required this.type,
@@ -51,7 +51,7 @@ class NoteBlock {
       if (textContent != null) 'textContent': textContent,
       if (checklistItems != null)
         'checklistItems': checklistItems!
-            .map((e) => {'text': e.text, 'checked': e.isDone})
+            .map((e) => {'text': e.text, 'checked': e.checked})
             .toList(),
     };
   }

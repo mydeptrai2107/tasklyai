@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_card.dart';
 
 class FolderList extends StatelessWidget {
-  const FolderList({super.key});
+  const FolderList(this.areaModel, {super.key});
+
+  final AreaModel areaModel;
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +20,10 @@ class FolderList extends StatelessWidget {
         }
 
         return ListView.builder(
+          padding: EdgeInsets.zero,
           itemCount: value.length,
           itemBuilder: (context, index) {
-            return FolderCard(value[index]);
+            return FolderCard(item: value[index], areaModel: areaModel);
           },
         );
       },
@@ -32,8 +36,8 @@ class _EmptyFolderState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 32),
         Container(
           width: 80,
           height: 80,

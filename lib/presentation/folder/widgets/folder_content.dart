@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/card_model.dart';
+import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_detail_provider.dart';
+import 'package:tasklyai/presentation/notes/create_note_screen.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/widgets/note_card.dart';
+import 'package:tasklyai/presentation/task_project/new_project_screen.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 
 class FolderContent extends StatelessWidget {
-  const FolderContent({super.key});
+  const FolderContent({
+    super.key,
+    required this.folder,
+    required this.areaModel,
+  });
+
+  final FolderModel folder;
+  final AreaModel areaModel;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +29,13 @@ class FolderContent extends StatelessWidget {
 
     switch (detailProvider.filter) {
       case FolderFilterType.all:
-        return _AllContent(detailProvider, noteProvider, projectProvider);
+        return _AllContent(
+          detailProvider,
+          noteProvider,
+          projectProvider,
+          folder,
+          areaModel,
+        );
       case FolderFilterType.notes:
         return _NotesOnly(noteProvider);
       case FolderFilterType.projects:
@@ -32,16 +49,26 @@ class _AllContent extends StatelessWidget {
   final ProjectProvider projectProvider;
   final NoteProvider noteProvider;
 
+  final FolderModel folder;
+  final AreaModel areaModel;
+
   const _AllContent(
     this.detailProvider,
     this.noteProvider,
     this.projectProvider,
+    this.folder,
+    this.areaModel,
   );
 
   @override
   Widget build(BuildContext context) {
     if (!noteProvider.hasNotes && !projectProvider.hasProjects) {
-      return const _EmptyState(text: 'No notes or projects yet');
+      return Column(
+        children: [
+          const _EmptyState(text: 'No notes or projects yet'),
+          _CreateNoteButton(folder),
+        ],
+      );
     }
 
     return Expanded(
@@ -49,14 +76,32 @@ class _AllContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (noteProvider.hasNotes) ...[
-              const _SectionHeader(title: 'Notes'),
-              _NotesGrid(noteProvider.notes),
-            ],
-            if (projectProvider.hasProjects) ...[
-              const _SectionHeader(title: 'Projects'),
-              _ProjectsList(projectProvider.project),
-            ],
+            _SectionHeader(
+              title: 'Notes',
+              onAdd: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return CreateNoteScreen(folder);
+                    },
+                  ),
+                );
+              },
+            ),
+            _NotesGrid(noteProvider.notes),
+            _SectionHeader(
+              title: 'Projects',
+              onAdd: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewProjectScreen(areaModel),
+                  ),
+                );
+              },
+            ),
+            _ProjectsList(projectProvider.projectsArea),
           ],
         ),
       ),
@@ -90,7 +135,7 @@ class _ProjectsOnly extends StatelessWidget {
       return const _EmptyState(text: 'No projects in this folder');
     }
 
-    return _ProjectsList(provider.project);
+    return _ProjectsList(provider.projectsArea);
   }
 }
 
@@ -195,9 +240,9 @@ class _EmptyState extends StatelessWidget {
 
 class _SectionHeader extends StatelessWidget {
   final String title;
-  final VoidCallback? onAdd;
+  final VoidCallback onAdd;
 
-  const _SectionHeader({required this.title, this.onAdd});
+  const _SectionHeader({required this.title, required this.onAdd});
 
   @override
   Widget build(BuildContext context) {
@@ -210,12 +255,11 @@ class _SectionHeader extends StatelessWidget {
             title,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
-          if (onAdd != null)
-            IconButton(
-              onPressed: onAdd,
-              icon: const Icon(Icons.add),
-              splashRadius: 20,
-            ),
+          IconButton(
+            onPressed: onAdd,
+            icon: const Icon(Icons.add),
+            splashRadius: 20,
+          ),
         ],
       ),
     );
@@ -223,11 +267,22 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _CreateNoteButton extends StatelessWidget {
+  final FolderModel folder;
+
+  const _CreateNoteButton(this.folder);
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
-        // context.read<FolderProvider>().createFolder();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return CreateNoteScreen(folder);
+            },
+          ),
+        );
       },
       icon: const Icon(Icons.add),
       label: const Text('Create note'),

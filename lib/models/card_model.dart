@@ -1,5 +1,6 @@
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/core/enum/task_status.dart';
+import 'package:tasklyai/models/checklist_item.dart';
 
 class CardModel {
   final String id;
@@ -152,34 +153,6 @@ class ChecklistProgress {
     required this.total,
     required this.percentage,
   });
-}
-
-class ChecklistItem {
-  final String id;
-  final String text;
-  final bool checked;
-
-  ChecklistItem({required this.id, required this.text, required this.checked});
-
-  factory ChecklistItem.fromJson(Map<String, dynamic> json) {
-    return ChecklistItem(
-      id: json['_id'] ?? '',
-      text: json['text'] ?? '',
-      checked: json['checked'] ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'_id': id, 'text': text, 'checked': checked};
-  }
-
-  ChecklistItem copyWith({String? id, String? text, bool? checked}) {
-    return ChecklistItem(
-      id: id ?? this.id,
-      text: text ?? this.text,
-      checked: checked ?? this.checked,
-    );
-  }
 }
 
 class CardAttachment {

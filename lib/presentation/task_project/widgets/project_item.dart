@@ -40,7 +40,7 @@ class ProjectItem extends StatelessWidget {
                   width: 10,
                   height: 10,
                   decoration: BoxDecoration(
-                    color: project.color.toColor(),
+                    color: Color(project.color),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -48,22 +48,16 @@ class ProjectItem extends StatelessWidget {
                 Expanded(
                   child: Text(project.name, style: textTheme.titleSmall),
                 ),
-                Icon(
-                  Icons.check_circle,
-                  color: project.color.toColor(),
-                  size: 18,
-                ),
+                Icon(Icons.check_circle, color: Color(project.color), size: 18),
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              '${project.taskStats.completed} / ${project.taskStats.total} tasks',
-            ),
+            Text('${project.completedTasks} / ${project.totalTasks} tasks'),
             const SizedBox(height: 8),
             LinearProgressIndicator(
-              value: project.taskStats.process(),
-              backgroundColor: project.color.toColor().withAlpha(51),
-              color: project.color.toColor(),
+              value: project.completedTasks.toDouble(),
+              backgroundColor: Color(project.color).withAlpha(51),
+              color: Color(project.color),
               minHeight: 6,
             ),
             const SizedBox(height: 6),

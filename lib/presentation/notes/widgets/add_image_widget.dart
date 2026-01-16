@@ -6,8 +6,9 @@ import 'package:tasklyai/core/configs/extention.dart';
 
 class AddImageWidget extends StatefulWidget {
   final ValueChanged<String?>? onImageUploaded;
+  final String? initUrl;
 
-  const AddImageWidget({super.key, this.onImageUploaded});
+  const AddImageWidget({super.key, this.onImageUploaded, this.initUrl});
 
   @override
   State<AddImageWidget> createState() => _AddImageWidgetState();
@@ -134,6 +135,13 @@ class _AddImageWidgetState extends State<AddImageWidget> {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.network(_imageUrl!, fit: BoxFit.cover),
+      );
+    }
+
+    if (widget.initUrl != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.network(widget.initUrl!, fit: BoxFit.cover),
       );
     }
 

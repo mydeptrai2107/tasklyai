@@ -8,7 +8,7 @@ import 'package:tasklyai/presentation/task_project/new_task_screen.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/list_project.dart';
+import 'package:tasklyai/presentation/task_project/widgets/project_area_list.dart';
 import 'package:tasklyai/presentation/task_project/widgets/list_task.dart';
 
 class TaskProjectScreen extends StatefulWidget {
@@ -24,7 +24,7 @@ class _TaskProjectScreenState extends State<TaskProjectScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ProjectProvider>().fetchProject();
+      // context.read<ProjectProvider>().fetchProjectByArea();
       context.read<TaskProvider>().fetchAllTask(context);
     });
     super.initState();
@@ -47,16 +47,13 @@ class _TaskProjectScreenState extends State<TaskProjectScreen> {
 
               _tab(),
 
-              Expanded(child: isTask ? ListTask() : ListProject()),
+              Expanded(child: isTask ? ListTask() : ProjectAreaList()),
               DashedOutlineButton(
                 onPressed: () {
                   context.read<AiProvider>().reset();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          isTask ? NewTaskScreen() : NewProjectScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => NewTaskScreen()),
                   );
                 },
                 color: Colors.grey[350],

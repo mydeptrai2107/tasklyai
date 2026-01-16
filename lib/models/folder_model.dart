@@ -37,7 +37,7 @@ class FolderModel {
     color: json["color"],
     icon: json["icon"],
     noteCount: json["noteCount"],
-    projectCount: json["projectCount"],
+    projectCount: json["projectCount"] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {

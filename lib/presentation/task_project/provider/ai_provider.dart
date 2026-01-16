@@ -68,7 +68,7 @@ class AiProvider extends ChangeNotifier {
       );
       if (context.mounted) {
         DialogService.success(context, message: 'Tạo project thành công');
-        context.read<ProjectProvider>().fetchProject();
+        context.read<ProjectProvider>().fetchProjectByArea('');
       }
     } on FormatException catch (e) {
       if (context.mounted) {

@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/extention.dart';
-
-class CheckListItem {
-  bool isDone;
-  String text;
-
-  CheckListItem({this.isDone = false, required this.text});
-}
+import 'package:tasklyai/models/checklist_item.dart';
 
 class AddCheckListWidget extends StatefulWidget {
-  const AddCheckListWidget({super.key, this.onChanged});
+  const AddCheckListWidget({super.key, this.onChanged, this.initValue});
 
-  final ValueChanged<List<CheckListItem>>? onChanged;
+  final ValueChanged<List<ChecklistItem>>? onChanged;
+  final List<ChecklistItem>? initValue;
 
   @override
   State<AddCheckListWidget> createState() => _AddCheckListWidgetState();
 }
 
 class _AddCheckListWidgetState extends State<AddCheckListWidget> {
-  final List<CheckListItem> checkLists = [];
+  List<ChecklistItem> checkLists = [];
 
   void _notify() {
     widget.onChanged?.call(List.unmodifiable(checkLists));
   }
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      print(widget.initValue);
+      checkLists = widget.initValue ?? [];
+      print(widget.initValue);
+      setState(() {});
+    });
+    super.initState();
+  }
+
   void _addItem() {
     setState(() {
-      checkLists.add(CheckListItem(text: ''));
+      checkLists.add(ChecklistItem(text: '', checked: false));
     });
     _notify();
   }
@@ -84,7 +90,7 @@ class _AddCheckListWidgetState extends State<AddCheckListWidget> {
               item: checkLists[i],
               onChanged: (value) {
                 setState(() {
-                  checkLists[i].isDone = value;
+                  checkLists[i].checked = value;
                 });
                 _notify();
               },
@@ -108,7 +114,7 @@ class _AddCheckListWidgetState extends State<AddCheckListWidget> {
 }
 
 class _CheckListItemTile extends StatelessWidget {
-  final CheckListItem item;
+  final ChecklistItem item;
   final ValueChanged<bool> onChanged;
   final ValueChanged<String> onTextChanged;
   final VoidCallback onDelete;
@@ -138,7 +144,7 @@ class _CheckListItemTile extends StatelessWidget {
           ),
         ),
         child: Checkbox(
-          value: item.isDone,
+          value: item.checked,
           onChanged: (value) => onChanged(value ?? false),
         ),
       ),
@@ -149,8 +155,8 @@ class _CheckListItemTile extends StatelessWidget {
           border: InputBorder.none,
         ),
         style: textTheme.bodyMedium?.copyWith(
-          decoration: item.isDone ? TextDecoration.lineThrough : null,
-          color: item.isDone ? Colors.grey : null,
+          decoration: item.checked ? TextDecoration.lineThrough : null,
+          color: item.checked ? Colors.grey : null,
         ),
         onChanged: onTextChanged,
       ),

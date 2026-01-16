@@ -4,8 +4,8 @@ import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/task_project/widgets/project_item.dart';
 
-class ListProject extends StatelessWidget {
-  const ListProject({super.key});
+class ProjectAreaList extends StatelessWidget {
+  const ProjectAreaList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ListProject extends StatelessWidget {
           },
         );
       },
-      selector: (_, p) => p.project,
+      selector: (_, p) => p.projectsArea,
     );
   }
 }

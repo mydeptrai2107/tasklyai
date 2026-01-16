@@ -25,4 +25,12 @@ class NoteRepository {
       rethrow;
     }
   }
+
+  Future<void> updateNote(String noteId, Map<String, dynamic> req) async {
+    try {
+      await _dioClient.put('${ApiEndpoint.notes}/$noteId', data: req);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
 }

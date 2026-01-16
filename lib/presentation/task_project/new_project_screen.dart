@@ -4,14 +4,20 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
+import 'package:tasklyai/core/widgets/choose_icon.dart';
+import 'package:tasklyai/core/widgets/folder_dropdown.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
+import 'package:tasklyai/models/area_model.dart';
+import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/task_ai_suggest_bottom_sheet.dart';
 import 'package:tasklyai/presentation/notes/widgets/voice_to_task_bottom_sheet.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 
 class NewProjectScreen extends StatefulWidget {
-  const NewProjectScreen({super.key});
+  const NewProjectScreen(this.areaModel, {super.key});
+
+  final AreaModel areaModel;
 
   @override
   State<NewProjectScreen> createState() => _NewProjectScreenState();
@@ -27,6 +33,13 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
   DateTime? deadline;
 
   Color selectedColor = Colors.deepPurple;
+  IconData selectedIcon = Icons.work;
+  FolderModel? folderSelected;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   final List<Color> colors = [
     Colors.deepPurple,
@@ -86,10 +99,14 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                         value.analyzeNotes.isEmpty
                             ? context.read<ProjectProvider>().createProject(
                                 context,
+                                widget.areaModel.id,
                                 ProjectReq(
                                   name: nameController.text,
+                                  areaId: widget.areaModel.id,
                                   description: descController.text,
-                                  color: selectedColor.toHex(),
+                                  icon: selectedIcon.hashCode,
+                                  folderId: folderSelected?.id,
+                                  color: selectedColor.toARGB32(),
                                   startDate: startDate!,
                                   endDate: deadline!,
                                 ),
@@ -99,7 +116,9 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                                 ProjectReq(
                                   name: nameController.text,
                                   description: descController.text,
-                                  color: selectedColor.toHex(),
+                                  areaId: widget.areaModel.id,
+                                  icon: selectedIcon.hashCode,
+                                  color: selectedColor.toARGB32(),
                                   startDate: startDate!,
                                   endDate: deadline!,
                                 ),
@@ -163,6 +182,17 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
 
             const SizedBox(height: 24),
 
+            Text('Workspace', style: textTheme.titleSmall),
+            const SizedBox(height: 12),
+            FolderDropdown(
+              initValue: folderSelected,
+              onChanged: (value) {
+                folderSelected = value;
+              },
+            ),
+
+            const SizedBox(height: 24),
+
             /// Project Icon & Color
             Text('Project Color', style: textTheme.titleSmall),
             const SizedBox(height: 12),
@@ -192,6 +222,13 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
 
             const SizedBox(height: 24),
 
+            ChooseIcon(
+              selectedColor: selectedColor,
+              onChange: (value) {
+                selectedIcon = value;
+              },
+            ),
+
             /// Project Name
             Text('Project Name', style: textTheme.titleSmall),
             const SizedBox(height: 8),
@@ -207,7 +244,9 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             const SizedBox(height: 8),
             Selector<AiProvider, String>(
               builder: (context, value, child) {
-                descController.text = value;
+                if (value.isNotEmpty) {
+                  descController.text = value;
+                }
                 return AppTextField(
                   controller: descController,
                   maxLines: 6,

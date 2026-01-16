@@ -25,9 +25,9 @@ class ListProjectAddTask extends StatelessWidget {
           child: ListView.builder(
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
-            itemCount: projectValue.project.length,
+            itemCount: projectValue.projectsArea.length,
             itemBuilder: (context, index) {
-              final project = projectValue.project[index];
+              final project = projectValue.projectsArea[index];
               return GestureDetector(
                 onTap: () {
                   onTap.call(project.id);
@@ -54,7 +54,7 @@ class ListProjectAddTask extends StatelessWidget {
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
-                          color: project.color.toColor(),
+                          color: Color(project.color),
                           shape: BoxShape.circle,
                         ),
                       ),
