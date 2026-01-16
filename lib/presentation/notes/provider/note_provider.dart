@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
-import 'package:tasklyai/models/note_model.dart';
+import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/repository/note_repository.dart';
 
 class NoteProvider extends ChangeNotifier {
   final NoteRepository noteRepository = NoteRepository();
 
-  List<NoteModel> _notes = [];
-  List<NoteModel> get notes => _notes;
+  List<CardModel> _notes = [];
+  List<CardModel> get notes => _notes;
+
+  bool get hasNotes => _notes.isNotEmpty;
 
   Future<void> fetchNote(String folderId) async {
     try {

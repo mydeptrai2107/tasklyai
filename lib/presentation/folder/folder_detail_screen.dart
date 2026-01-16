@@ -5,11 +5,25 @@ import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_detail_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_content.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_filter_tabs.dart';
+import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 
-class FolderDetailScreen extends StatelessWidget {
+class FolderDetailScreen extends StatefulWidget {
   final FolderModel folder;
 
   const FolderDetailScreen({super.key, required this.folder});
+
+  @override
+  State<FolderDetailScreen> createState() => _FolderDetailScreenState();
+}
+
+class _FolderDetailScreenState extends State<FolderDetailScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<NoteProvider>().fetchNote(widget.folder.id);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +31,7 @@ class FolderDetailScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF5F6FA),
       body: Column(
         children: [
-          _Header(folder: folder),
+          _Header(folder: widget.folder),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -25,14 +39,16 @@ class FolderDetailScreen extends StatelessWidget {
                 children: [
                   _SearchBox(),
                   const SizedBox(height: 12),
-                  ChangeNotifierProvider(
-                    create: (_) => FolderDetailProvider(),
-                    child: Column(
-                      children: [
-                        FolderFilterTabs(folder: folder),
-                        SizedBox(height: 16),
-                        FolderContent(),
-                      ],
+                  Expanded(
+                    child: ChangeNotifierProvider(
+                      create: (_) => FolderDetailProvider(),
+                      child: Column(
+                        children: [
+                          FolderFilterTabs(folder: widget.folder),
+                          SizedBox(height: 16),
+                          FolderContent(),
+                        ],
+                      ),
                     ),
                   ),
                 ],

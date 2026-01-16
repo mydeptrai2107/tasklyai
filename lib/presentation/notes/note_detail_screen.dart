@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/models/block.dart';
-import 'package:tasklyai/models/note_model.dart';
+import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_checklist_widget.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_image_widget.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_link_widget.dart';
@@ -10,7 +10,7 @@ import 'package:tasklyai/presentation/notes/widgets/add_text_widget.dart';
 class NoteDetailScreen extends StatefulWidget {
   const NoteDetailScreen(this.item, {super.key});
 
-  final NoteModel item;
+  final CardModel item;
 
   @override
   State<NoteDetailScreen> createState() => _NoteDetailScreenState();
@@ -33,6 +33,8 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _titleController.text = widget.item.title;
+      _link = widget.item.link;
+      _image = widget.item.imageUrl;
     });
     super.initState();
   }
@@ -45,7 +47,6 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -106,17 +107,17 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                 ),
                 onPressed: isValid
                     ? () {
-                        final Map<String, dynamic> data = {
-                          "areaId": widget.item.areaId,
-                          "folderId": widget.item.folderId,
-                          'title': _titleController.text.trim(),
-                          'content': _content,
-                          'blocks': _buildBlocks()
-                              .map((e) => e.toJson())
-                              .toList(),
-                        };
+                        // final Map<String, dynamic> data = {
+                        //   "areaId": widget.item.areaId,
+                        //   "folderId": widget.item.folderId,
+                        //   'title': _titleController.text.trim(),
+                        //   'content': _content,
+                        //   'blocks': _buildBlocks()
+                        //       .map((e) => e.toJson())
+                        //       .toList(),
+                        // };
 
-                        debugPrint(data.toString());
+                        // debugPr int(data.toString());
                       }
                     : null,
                 child: Text('Save'),
@@ -126,34 +127,5 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
         ),
       ),
     );
-  }
-
-  List<NoteBlock> _buildBlocks() {
-    final List<NoteBlock> blocks = [];
-    int order = 0;
-
-    if (_link != null) {
-      blocks.add(
-        NoteBlock(type: BlockType.text, order: order++, textContent: _link),
-      );
-    }
-
-    if (_checkList.isNotEmpty) {
-      blocks.add(
-        NoteBlock(
-          type: BlockType.checklist,
-          order: order++,
-          checklistItems: _checkList,
-        ),
-      );
-    }
-
-    if (_image != null) {
-      blocks.add(
-        NoteBlock(type: BlockType.media, order: order++, textContent: _image),
-      );
-    }
-
-    return blocks;
   }
 }

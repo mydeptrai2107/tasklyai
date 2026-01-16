@@ -11,21 +11,4 @@ class FolderDetailProvider extends ChangeNotifier {
     _filter = value;
     notifyListeners();
   }
-
-  // fake data
-  final List<String> notes = [
-    'API Documentation',
-    'Meeting Summary',
-    'Backend Notes',
-    'Backend Notes',
-    'Backend Notes',
-    'Backend Notes',
-    'Backend Notes',
-    'Backend Notes',
-  ];
-
-  final List<String> projects = ['Client Mobile App', 'Admin Dashboard'];
-
-  bool get hasNotes => notes.isNotEmpty;
-  bool get hasProjects => projects.isNotEmpty;
 }

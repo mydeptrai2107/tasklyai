@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/models/block.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/widgets/add_checklist_widget.dart';
@@ -101,9 +100,9 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                           "folderId": widget.folderModel.id,
                           'title': _titleController.text.trim(),
                           'content': _content,
-                          'blocks': _buildBlocks()
-                              .map((e) => e.toJson())
-                              .toList(),
+                          'link': _link,
+                          'imageUrl': _image,
+                          'checklist': _checkList,
                         };
 
                         debugPrint(data.toString());
@@ -122,34 +121,5 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         ),
       ),
     );
-  }
-
-  List<NoteBlock> _buildBlocks() {
-    final List<NoteBlock> blocks = [];
-    int order = 0;
-
-    if (_link != null) {
-      blocks.add(
-        NoteBlock(type: BlockType.text, order: order++, textContent: _link),
-      );
-    }
-
-    if (_checkList.isNotEmpty) {
-      blocks.add(
-        NoteBlock(
-          type: BlockType.checklist,
-          order: order++,
-          checklistItems: _checkList,
-        ),
-      );
-    }
-
-    if (_image != null) {
-      blocks.add(
-        NoteBlock(type: BlockType.media, order: order++, textContent: _image),
-      );
-    }
-
-    return blocks;
   }
 }

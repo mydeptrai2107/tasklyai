@@ -1,57 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/models/card_model.dart';
+import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_detail_provider.dart';
+import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
+import 'package:tasklyai/presentation/notes/widgets/note_card.dart';
+import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 
 class FolderContent extends StatelessWidget {
   const FolderContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<FolderDetailProvider>();
+    final detailProvider = context.watch<FolderDetailProvider>();
+    final noteProvider = context.watch<NoteProvider>();
+    final projectProvider = context.watch<ProjectProvider>();
 
-    switch (provider.filter) {
+    switch (detailProvider.filter) {
       case FolderFilterType.all:
-        return _AllContent(provider);
+        return _AllContent(detailProvider, noteProvider, projectProvider);
       case FolderFilterType.notes:
-        return _NotesOnly(provider);
+        return _NotesOnly(noteProvider);
       case FolderFilterType.projects:
-        return _ProjectsOnly(provider);
+        return _ProjectsOnly(projectProvider);
     }
   }
 }
 
 class _AllContent extends StatelessWidget {
-  final FolderDetailProvider provider;
+  final FolderDetailProvider detailProvider;
+  final ProjectProvider projectProvider;
+  final NoteProvider noteProvider;
 
-  const _AllContent(this.provider);
+  const _AllContent(
+    this.detailProvider,
+    this.noteProvider,
+    this.projectProvider,
+  );
 
   @override
   Widget build(BuildContext context) {
-    if (!provider.hasNotes && !provider.hasProjects) {
+    if (!noteProvider.hasNotes && !projectProvider.hasProjects) {
       return const _EmptyState(text: 'No notes or projects yet');
     }
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (provider.hasNotes) ...[
-            const _SectionHeader(title: 'Notes'),
-            _NotesGrid(provider.notes),
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (noteProvider.hasNotes) ...[
+              const _SectionHeader(title: 'Notes'),
+              _NotesGrid(noteProvider.notes),
+            ],
+            if (projectProvider.hasProjects) ...[
+              const _SectionHeader(title: 'Projects'),
+              _ProjectsList(projectProvider.project),
+            ],
           ],
-          // if (provider.hasProjects) ...[
-          //   const _SectionHeader(title: 'Projects'),
-          //   _ProjectsList(provider.projects),
-          // ],
-        ],
+        ),
       ),
     );
   }
 }
 
 class _NotesOnly extends StatelessWidget {
-  final FolderDetailProvider provider;
+  final NoteProvider provider;
 
   const _NotesOnly(this.provider);
 
@@ -66,7 +80,7 @@ class _NotesOnly extends StatelessWidget {
 }
 
 class _ProjectsOnly extends StatelessWidget {
-  final FolderDetailProvider provider;
+  final ProjectProvider provider;
 
   const _ProjectsOnly(this.provider);
 
@@ -76,12 +90,12 @@ class _ProjectsOnly extends StatelessWidget {
       return const _EmptyState(text: 'No projects in this folder');
     }
 
-    return _ProjectsList(provider.projects);
+    return _ProjectsList(provider.project);
   }
 }
 
 class _NotesGrid extends StatelessWidget {
-  final List<String> notes;
+  final List<CardModel> notes;
 
   const _NotesGrid(this.notes);
 
@@ -99,14 +113,14 @@ class _NotesGrid extends StatelessWidget {
       ),
       itemCount: notes.length,
       itemBuilder: (_, index) {
-        return _NoteCard(title: notes[index]);
+        return NoteCard(notes[index]);
       },
     );
   }
 }
 
 class _ProjectsList extends StatelessWidget {
-  final List<String> projects;
+  final List<ProjectModel> projects;
 
   const _ProjectsList(this.projects);
 
@@ -118,7 +132,7 @@ class _ProjectsList extends StatelessWidget {
           .map(
             (e) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _ProjectCard(title: e),
+              child: _ProjectCard(project: e),
             ),
           )
           .toList(),
@@ -126,35 +140,10 @@ class _ProjectsList extends StatelessWidget {
   }
 }
 
-class _NoteCard extends StatelessWidget {
-  final String title;
-
-  const _NoteCard({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.description, color: Colors.orange),
-          Text(title, style: context.theme.textTheme.titleSmall),
-        ],
-      ),
-    );
-  }
-}
-
 class _ProjectCard extends StatelessWidget {
-  final String title;
+  final ProjectModel project;
 
-  const _ProjectCard({required this.title});
+  const _ProjectCard({required this.project});
 
   @override
   Widget build(BuildContext context) {
@@ -170,13 +159,16 @@ class _ProjectCard extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.15),
+              color: Colors.blue.withAlpha(40),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.apps, color: Colors.blue),
           ),
           const SizedBox(width: 12),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(
+            project.name,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );
@@ -225,6 +217,24 @@ class _SectionHeader extends StatelessWidget {
               splashRadius: 20,
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _CreateNoteButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        // context.read<FolderProvider>().createFolder();
+      },
+      icon: const Icon(Icons.add),
+      label: const Text('Create note'),
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     );
   }

@@ -9,7 +9,7 @@ class AreaRepository {
   Future<List<AreaModel>> fetchArea() async {
     try {
       final res = await _dioClient.get(ApiEndpoint.area);
-      return (res.data['areas'] as List<dynamic>)
+      return (res.data['data'] as List<dynamic>)
           .map((e) => AreaModel.fromJson(e))
           .toList();
     } on FormatException catch (_) {

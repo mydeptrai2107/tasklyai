@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/widgets/dashed_outline_button.dart';
+import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
-import 'package:tasklyai/models/note_model.dart';
 import 'package:tasklyai/presentation/notes/create_note_screen.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/widgets/note_card.dart';
@@ -80,7 +80,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Widget _noteList() {
-    return Selector<NoteProvider, List<NoteModel>>(
+    return Selector<NoteProvider, List<CardModel>>(
       builder: (context, value, child) {
         return ListView.builder(
           itemCount: value.length,

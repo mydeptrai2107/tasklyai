@@ -10,6 +10,9 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel> _projects = [];
   List<ProjectModel> get project => _projects;
 
+  bool get hasProjects => _projects.isNotEmpty;
+
+
   Future<void> createProject(BuildContext context, ProjectReq project) async {
     try {
       await repository.createProject(project);
