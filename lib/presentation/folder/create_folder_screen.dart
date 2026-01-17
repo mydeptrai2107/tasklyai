@@ -97,6 +97,7 @@ class _CreateFolderScreenState extends State<CreateFolderScreen> {
                   final isSelected = icon == selectedIcon;
                   return GestureDetector(
                     onTap: () {
+                      print(icon.codePoint);
                       setState(() => selectedIcon = icon);
                     },
                     child: Container(

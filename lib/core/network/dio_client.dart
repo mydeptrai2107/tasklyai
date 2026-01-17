@@ -2,12 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:tasklyai/core/configs/constant.dart';
 import 'package:tasklyai/core/configs/local_storage.dart';
 
+String baseUrl = 'http://192.168.2.10:4000';
+
 class DioClient {
   final Dio _dio;
   DioClient()
     : _dio = Dio(
         BaseOptions(
-          baseUrl: 'http://192.168.2.10:4000/api',
+          baseUrl: '$baseUrl/api',
           connectTimeout: const Duration(seconds: 30),
           receiveTimeout: const Duration(seconds: 30),
           headers: {'Content-Type': 'application/json'},
@@ -57,9 +59,19 @@ class DioClient {
     }
   }
 
-  Future<Response> put(String endpoint, {Map<String, dynamic>? data}) async {
+  Future<Response> put(String endpoint, {dynamic data}) async {
     try {
-      return await _dio.put(endpoint, data: data);
+      return await _dio.put(
+        endpoint,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": data is FormData
+                ? "multipart/form-data"
+                : "application/json",
+          },
+        ),
+      );
     } on DioException catch (e) {
       return _handleError(e);
     }

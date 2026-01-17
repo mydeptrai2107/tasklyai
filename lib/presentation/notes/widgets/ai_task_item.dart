@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/models/ai_task_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 
 class AiTaskItem extends StatefulWidget {
   const AiTaskItem(this.item, {super.key});
@@ -27,10 +25,9 @@ class _AiTaskItemState extends State<AiTaskItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Checkbox(
-            value: widget.item.isSlected,
+            value: widget.item.isSelected,
             onChanged: (value) {
-              widget.item.isSlected = value!;
-              // context.read<AiProvider>().changeTaskAvtive();
+              widget.item.isSelected = value!;
               setState(() {});
             },
           ),
@@ -43,8 +40,8 @@ class _AiTaskItemState extends State<AiTaskItem> {
                   spacing: 8,
                   children: [
                     _tag(
-                      widget.item.priority.label,
-                      widget.item.priority.color,
+                      widget.item.energyLevel.label,
+                      widget.item.energyLevel.color,
                     ),
                     _time(
                       widget.item.estimatedTimeMinutes.toString(),

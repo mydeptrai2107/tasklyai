@@ -50,7 +50,19 @@ class _NotesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _SectionHeader(title: 'Notes', onAdd: () {}),
+        _SectionHeader(
+          title: 'Notes',
+          onAdd: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return CreateNoteScreen(folder);
+                },
+              ),
+            );
+          },
+        ),
         Expanded(
           child: GridView.builder(
             padding: EdgeInsets.zero,

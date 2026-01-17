@@ -4,7 +4,8 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 
 class AddAreaWidget extends StatefulWidget {
-  const AddAreaWidget({super.key});
+  const AddAreaWidget( {super.key});
+
 
   @override
   State<AddAreaWidget> createState() => _AddAreaWidgetState();

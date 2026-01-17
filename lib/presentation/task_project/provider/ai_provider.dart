@@ -1,89 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
-import 'package:tasklyai/data/requests/project_req.dart';
-import 'package:tasklyai/models/ai_project_model.dart';
+import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/models/ai_task_model.dart';
-import 'package:tasklyai/presentation/notes/widgets/task_ai_suggest_bottom_sheet.dart';
+import 'package:tasklyai/models/area_model.dart';
+import 'package:tasklyai/models/suggestion_model.dart';
+import 'package:tasklyai/presentation/task_project/ai_task_suggestion_screen.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/repository/ai_repository.dart';
+import 'package:provider/provider.dart';
 
 class AiProvider extends ChangeNotifier {
+  final _aiRepository = AiRepository();
+
   bool _aiIsLoading = false;
   bool get aiIsLoading => _aiIsLoading;
 
-  AiProjectModel? _aiProject;
-  AiProjectModel? get aiProject => _aiProject;
+  SuggestionsModel? _aiProject;
+  SuggestionsModel? get aiProject => _aiProject;
 
-  String _recording = '';
-  String get recording => _recording;
+  /* =======================
+   * TASK HELPERS
+   * ======================= */
 
-  final _aiRepository = AiRepository();
+  List<AiTaskModel> get tasks => _aiProject?.aiTasks ?? [];
 
-  Future<void> analyzeNote(BuildContext context, String text) async {
+  int get selectedCount => tasks.where((e) => e.isSelected).length;
+
+  int get highPriorityCount =>
+      tasks.where((e) => e.isSelected && e.energyLevel == Priority.high).length;
+
+  int get mediumPriorityCount => tasks
+      .where((e) => e.isSelected && e.energyLevel == Priority.medium)
+      .length;
+
+  int get totalMinutes => tasks
+      .where((e) => e.isSelected)
+      .fold(0, (sum, e) => sum + e.estimatedTimeMinutes);
+
+  /* =======================
+   * STATE ACTIONS
+   * ======================= */
+
+  void toggleTask(AiTaskModel task) {
+    task.isSelected = !task.isSelected;
+    notifyListeners();
+  }
+
+  void selectAllTasks() {
+    for (var t in tasks) {
+      t.isSelected = true;
+    }
+    notifyListeners();
+  }
+
+  void clearAllTasks() {
+    for (var t in tasks) {
+      t.isSelected = false;
+    }
+    notifyListeners();
+  }
+
+  /* =======================
+   * API
+   * ======================= */
+
+  Future<void> analyzeNote(
+    BuildContext context,
+    AreaModel areaModel,
+    String text,
+  ) async {
     try {
       _aiIsLoading = true;
       notifyListeners();
+
       _aiProject = await _aiRepository.analyzeNote(text);
+
+      _aiIsLoading = false;
+      notifyListeners();
+
+      if (context.mounted) {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => AiTaskSuggestionScreen(areaModel)),
+        );
+      }
+    } catch (e) {
       _aiIsLoading = false;
       notifyListeners();
       if (context.mounted) {
-        showModalBottomSheet(
-          context: context,
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-          builder: (context) {
-            return DraggableScrollableSheet(
-              initialChildSize: 0.8,
-              maxChildSize: 0.9,
-              minChildSize: 0.6,
-              builder: (context, scrollController) => TaskAiSuggestBottomSheet(
-                text: text,
-                controller: scrollController,
-              ),
-            );
+        DialogService.error(context, message: 'Sử dụng AI không thành công');
+      }
+    }
+  }
+
+  Future<void> createTaskFromAI(BuildContext context, AreaModel req) async {
+    try {
+      if (_aiProject == null) {
+        return;
+      }
+      _aiProject!.areaId = req.id;
+      await _aiRepository.createTaskFromAi(aiProject!);
+
+      if (context.mounted) {
+        context.read<ProjectProvider>().fetchProjectByArea(req.id);
+        DialogService.success(
+          context,
+          message: 'Tạo project thành công',
+          onOk: () {
+            Navigator.pop(context);
           },
         );
       }
     } on FormatException catch (e) {
-      _aiIsLoading = false;
-      notifyListeners();
       if (context.mounted) {
         DialogService.error(context, message: e.message);
       }
     }
-  }
-
-  Future<void> createTaskFromAI(
-    BuildContext context,
-    ProjectReq req,
-    List<AiTaskModel> tasks,
-  ) async {
-    try {
-      await _aiRepository.createTaskFromAi(
-        tasks.where((e) => e.isSlected).toList(),
-        req,
-      );
-      if (context.mounted) {
-        DialogService.success(context, message: 'Tạo project thành công');
-        context.read<ProjectProvider>().fetchProjectByArea('');
-      }
-    } on FormatException catch (e) {
-      if (context.mounted) {
-        DialogService.error(context, message: e.message);
-      }
-    }
-  }
-
-  void setRecoring(String value) {
-    _recording = value;
-    notifyListeners();
-  }
-
-  void reset() {
-    _recording = '';
-    _aiIsLoading = false;
-    _aiProject = null;
-    notifyListeners();
   }
 }

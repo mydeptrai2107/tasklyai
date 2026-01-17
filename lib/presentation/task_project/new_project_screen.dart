@@ -7,7 +7,6 @@ import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/core/widgets/choose_icon.dart';
 import 'package:tasklyai/core/widgets/workspace_dropdown.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
-import 'package:tasklyai/models/ai_project_model.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/voice_to_task_bottom_sheet.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
@@ -96,33 +95,19 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
               return TextButton(
                 onPressed: canSave
                     ? () {
-                        value.aiProject == null
-                            ? context.read<ProjectProvider>().createProject(
-                                context,
-                                widget.areaModel.id,
-                                ProjectReq(
-                                  name: nameController.text,
-                                  areaId: areaSelected.id,
-                                  description: descController.text,
-                                  icon: selectedIcon.hashCode,
-                                  color: selectedColor.toARGB32(),
-                                  startDate: startDate!,
-                                  endDate: deadline!,
-                                ),
-                              )
-                            : context.read<AiProvider>().createTaskFromAI(
-                                context,
-                                ProjectReq(
-                                  name: nameController.text,
-                                  description: descController.text,
-                                  areaId: widget.areaModel.id,
-                                  icon: selectedIcon.hashCode,
-                                  color: selectedColor.toARGB32(),
-                                  startDate: startDate!,
-                                  endDate: deadline!,
-                                ),
-                                value.aiProject!.aiTasks,
-                              );
+                        context.read<ProjectProvider>().createProject(
+                          context,
+                          widget.areaModel.id,
+                          ProjectReq(
+                            name: nameController.text,
+                            areaId: areaSelected.id,
+                            description: descController.text,
+                            icon: selectedIcon.codePoint,
+                            color: selectedColor.toARGB32(),
+                            startDate: startDate!,
+                            endDate: deadline!,
+                          ),
+                        );
                       }
                     : null,
                 child: const Text('Save'),
@@ -170,7 +155,8 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                         context: context,
                         backgroundColor: Colors.transparent,
                         isScrollControlled: true,
-                        builder: (_) => const VoiceToTaskBottomSheet(),
+                        builder: (_) =>
+                            VoiceToTaskBottomSheet(widget.areaModel),
                       );
                     },
                     child: const Text('Use AI'),
@@ -231,17 +217,9 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             /// Project Name
             Text('Project Name', style: textTheme.titleSmall),
             const SizedBox(height: 8),
-            Selector<AiProvider, AiProjectModel?>(
-              builder: (context, value, child) {
-                if (value != null) {
-                  nameController.text = value.name;
-                }
-                return AppTextField(
-                  controller: nameController,
-                  hint: 'Enter project name',
-                );
-              },
-              selector: (_, p) => p.aiProject,
+            AppTextField(
+              controller: nameController,
+              hint: 'Enter project name',
             ),
 
             const SizedBox(height: 24),
@@ -249,52 +227,14 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             /// Description
             Text('Description', style: textTheme.titleSmall),
             const SizedBox(height: 8),
-            Selector<AiProvider, AiProjectModel?>(
-              builder: (context, value, child) {
-                if (value != null) {
-                  descController.text = value.content;
-                }
-                return AppTextField(
-                  controller: descController,
-                  maxLines: 6,
-                  hint: 'Describe your project...',
-                );
-              },
-              selector: (_, p) => p.aiProject,
+            AppTextField(
+              controller: descController,
+              maxLines: 6,
+              hint: 'Describe your project...',
             ),
 
             const SizedBox(height: 8),
 
-            // Consumer<AiProvider>(
-            //   builder: (context, value, child) {
-            //     return value.taskActive == 0
-            //         ? SizedBox.shrink()
-            //         : TextButton(
-            //             onPressed: () {
-            //               showModalBottomSheet(
-            //                 context: context,
-            //                 backgroundColor: Colors.transparent,
-            //                 isScrollControlled: true,
-            //                 builder: (context) {
-            //                   return DraggableScrollableSheet(
-            //                     initialChildSize: 0.8,
-            //                     maxChildSize: 0.9,
-            //                     minChildSize: 0.6,
-            //                     builder: (context, scrollController) =>
-            //                         TaskAiSuggestBottomSheet(
-            //                           text: '',
-            //                           controller: scrollController,
-            //                         ),
-            //                   );
-            //                 },
-            //               );
-            //             },
-            //             child: Text('${value.taskActive} Task From AI'),
-            //           );
-            //   },
-            // ),
-
-            /// Dates
             Row(
               spacing: 8,
               children: [

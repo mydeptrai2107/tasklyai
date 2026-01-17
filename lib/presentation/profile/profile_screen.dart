@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:tasklyai/presentation/calendar/calendar_task_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/constant.dart';
+import 'package:tasklyai/core/configs/local_storage.dart';
+import 'package:tasklyai/presentation/auth/auth_screen.dart';
+import 'package:tasklyai/presentation/profile/change_password_screen.dart';
+import 'package:tasklyai/presentation/profile/edit_profile_bottom_sheet.dart';
+import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
+import 'package:tasklyai/presentation/profile/widgets/logout_button.dart';
+import 'package:tasklyai/presentation/profile/widgets/profile_header.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<ProfileProvider>().findMe();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final profile = context.watch<ProfileProvider>().profile;
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FB),
       appBar: AppBar(
@@ -14,150 +36,46 @@ class ProfileScreen extends StatelessWidget {
         leading: const BackButton(color: Colors.white),
         title: const Text('Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        actions: const [
+        actions: [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.edit_outlined, color: Colors.white),
+            child: InkWell(
+              onTap: () {
+                if (profile != null) {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => EditProfileBottomSheet(profile),
+                  );
+                }
+              },
+              child: Icon(Icons.edit_outlined, color: Colors.white),
+            ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _ProfileHeader(),
+            ProfileHeader(),
             const SizedBox(height: 16),
             _ProgressCard(),
             const SizedBox(height: 24),
             _AccountSection(),
+            Spacer(),
+            LogoutButton(
+              onLogout: () {
+                LocalStorage.remove(kToken);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => AuthScreen()),
+                );
+              },
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ProfileHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF6FA1FF),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.white24,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(
-                      Icons.person_outline,
-                      size: 36,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: -2,
-                    right: -2,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt_outlined,
-                        size: 16,
-                        color: Color(0xFF6FA1FF),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'Nguyễn Văn A',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'nguyenvana@email.com',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Joined Jan 2024',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              _StatItem(title: 'Areas', value: '5'),
-              _StatItem(title: 'Projects', value: '9'),
-              _StatItem(title: 'Notes', value: '5'),
-              _StatItem(title: 'Done', value: '9%'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatItem extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const _StatItem({required this.title, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 70,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white24,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: const TextStyle(color: Colors.white70, fontSize: 12),
-          ),
-        ],
       ),
     );
   }
@@ -258,32 +176,19 @@ class _AccountSection extends StatelessWidget {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        _AccountItem(icon: Icons.settings_outlined, title: 'Account Settings'),
-        const SizedBox(height: 8),
         _AccountItem(
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return CalendarTaskScreen();
+                  return ChangePasswordScreen();
                 },
               ),
             );
           },
-          icon: Icons.workspace_premium_outlined,
-          title: 'Calender',
-          trailing: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Text(
-              'Premium',
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ),
+          icon: Icons.lock_outline,
+          title: 'Change Password',
         ),
       ],
     );

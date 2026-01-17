@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
+import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 
 class VoiceRecordBottomSheet extends StatefulWidget {
-  const VoiceRecordBottomSheet({super.key});
+  const VoiceRecordBottomSheet(this.areaModel, {super.key});
+
+  final AreaModel areaModel;
 
   @override
   State<VoiceRecordBottomSheet> createState() => _VoiceRecordBottomSheetState();
@@ -14,7 +17,7 @@ class VoiceRecordBottomSheet extends StatefulWidget {
 class _VoiceRecordBottomSheetState extends State<VoiceRecordBottomSheet> {
   final SpeechToText _speech = SpeechToText();
   bool _isRecording = false;
-  String _text = 'Dự án tìm hiểu về loài kiến';
+  String _text = 'Xây dưng ứng dụng quản lý công việc';
 
   @override
   void initState() {
@@ -130,9 +133,9 @@ class _VoiceRecordBottomSheetState extends State<VoiceRecordBottomSheet> {
                         : () {
                             context.read<AiProvider>().analyzeNote(
                               context,
+                              widget.areaModel,
                               _text,
                             );
-                            context.read<AiProvider>().setRecoring(_text);
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,

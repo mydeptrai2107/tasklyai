@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/presentation/profile/profile_screen.dart';
+import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.watch<ProfileProvider>().profile;
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 16),
@@ -20,9 +23,9 @@ class HeaderWidget extends StatelessWidget {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'Good evening, Alex',
+                'Good evening, ${profile?.name ?? 'Alex'}',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tasklyai/core/enum/task_status.dart';
+import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/card_model.dart';
+import 'package:tasklyai/presentation/area/area_detail_screen.dart';
+import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 
 class CardCalenderWidget extends StatelessWidget {
   const CardCalenderWidget(this.task, {super.key});
@@ -9,9 +13,30 @@ class CardCalenderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final areas = context.watch<AreaProvider>().areas;
+
+    AreaModel? result;
+    for (final e in areas) {
+      if (e.id == task.area?.id) {
+        result = e;
+        break;
+      }
+    }
+
     return InkWell(
       borderRadius: BorderRadius.circular(16),
-      onTap: () {},
+      onTap: () {
+        if (result != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return AreaDetailScreen(result!);
+              },
+            ),
+          );
+        }
+      },
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(

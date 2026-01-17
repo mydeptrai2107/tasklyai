@@ -10,11 +10,12 @@ class ApiEndpoint {
 
   static String category = '/categories';
 
-  static String findMe = '/auth/me';
+  static String userProfile = '/user/profile';
+  static String changePw = '/user/password';
+  static String userAvatar = '/user/avatar';
 
-  static String analyzeNote = '/ai/analyze-card';
-
-  static String aiCreateTasks = '/ai/create-tasks';
+  static String analyzeNote = '/ai/suggest-project';
+  static String aiCreateTasks = '/ai/create-project';
 
   static String area = '/areas';
 
