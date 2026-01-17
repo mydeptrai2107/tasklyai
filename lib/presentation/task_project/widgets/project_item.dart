@@ -55,7 +55,7 @@ class ProjectItem extends StatelessWidget {
             Text('${project.completedTasks} / ${project.totalTasks} tasks'),
             const SizedBox(height: 8),
             LinearProgressIndicator(
-              value: project.completedTasks.toDouble(),
+              value: project.completedTasks / project.totalTasks,
               backgroundColor: Color(project.color).withAlpha(51),
               color: Color(project.color),
               minHeight: 6,

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
-import 'package:tasklyai/models/analyze_note_model.dart';
+import 'package:tasklyai/models/ai_project_model.dart';
+import 'package:tasklyai/models/ai_task_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/task_ai_suggest_bottom_sheet.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/repository/ai_repository.dart';
@@ -11,14 +12,11 @@ class AiProvider extends ChangeNotifier {
   bool _aiIsLoading = false;
   bool get aiIsLoading => _aiIsLoading;
 
-  List<AnalyzeNoteModel> _analyzeNotes = [];
-  List<AnalyzeNoteModel> get analyzeNotes => _analyzeNotes;
+  AiProjectModel? _aiProject;
+  AiProjectModel? get aiProject => _aiProject;
 
   String _recording = '';
   String get recording => _recording;
-
-  int _taskActive = 0;
-  int get taskActive => _taskActive;
 
   final _aiRepository = AiRepository();
 
@@ -26,7 +24,7 @@ class AiProvider extends ChangeNotifier {
     try {
       _aiIsLoading = true;
       notifyListeners();
-      _analyzeNotes = await _aiRepository.analyzeNote(text);
+      _aiProject = await _aiRepository.analyzeNote(text);
       _aiIsLoading = false;
       notifyListeners();
       if (context.mounted) {
@@ -59,12 +57,12 @@ class AiProvider extends ChangeNotifier {
   Future<void> createTaskFromAI(
     BuildContext context,
     ProjectReq req,
-    List<AnalyzeNoteModel> tasks,
+    List<AiTaskModel> tasks,
   ) async {
     try {
       await _aiRepository.createTaskFromAi(
         tasks.where((e) => e.isSlected).toList(),
-        req, 
+        req,
       );
       if (context.mounted) {
         DialogService.success(context, message: 'Tạo project thành công');
@@ -85,12 +83,7 @@ class AiProvider extends ChangeNotifier {
   void reset() {
     _recording = '';
     _aiIsLoading = false;
-    _analyzeNotes = [];
-    notifyListeners();
-  }
-
-  void changeTaskAvtive() {
-    _taskActive = _analyzeNotes.where((element) => element.isSlected).length;
+    _aiProject = null;
     notifyListeners();
   }
 }

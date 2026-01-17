@@ -14,7 +14,7 @@ class VoiceRecordBottomSheet extends StatefulWidget {
 class _VoiceRecordBottomSheetState extends State<VoiceRecordBottomSheet> {
   final SpeechToText _speech = SpeechToText();
   bool _isRecording = false;
-  String _text = '';
+  String _text = 'Dự án tìm hiểu về loài kiến';
 
   @override
   void initState() {

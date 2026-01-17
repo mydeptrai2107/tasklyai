@@ -5,11 +5,10 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/core/widgets/choose_icon.dart';
-import 'package:tasklyai/core/widgets/folder_dropdown.dart';
+import 'package:tasklyai/core/widgets/workspace_dropdown.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
+import 'package:tasklyai/models/ai_project_model.dart';
 import 'package:tasklyai/models/area_model.dart';
-import 'package:tasklyai/models/folder_model.dart';
-import 'package:tasklyai/presentation/notes/widgets/task_ai_suggest_bottom_sheet.dart';
 import 'package:tasklyai/presentation/notes/widgets/voice_to_task_bottom_sheet.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
@@ -34,10 +33,11 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
 
   Color selectedColor = Colors.deepPurple;
   IconData selectedIcon = Icons.work;
-  FolderModel? folderSelected;
+  late AreaModel areaSelected;
 
   @override
   void initState() {
+    areaSelected = widget.areaModel;
     super.initState();
   }
 
@@ -96,16 +96,15 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
               return TextButton(
                 onPressed: canSave
                     ? () {
-                        value.analyzeNotes.isEmpty
+                        value.aiProject == null
                             ? context.read<ProjectProvider>().createProject(
                                 context,
                                 widget.areaModel.id,
                                 ProjectReq(
                                   name: nameController.text,
-                                  areaId: widget.areaModel.id,
+                                  areaId: areaSelected.id,
                                   description: descController.text,
                                   icon: selectedIcon.hashCode,
-                                  folderId: folderSelected?.id,
                                   color: selectedColor.toARGB32(),
                                   startDate: startDate!,
                                   endDate: deadline!,
@@ -122,7 +121,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                                   startDate: startDate!,
                                   endDate: deadline!,
                                 ),
-                                value.analyzeNotes,
+                                value.aiProject!.aiTasks,
                               );
                       }
                     : null,
@@ -184,10 +183,10 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
 
             Text('Workspace', style: textTheme.titleSmall),
             const SizedBox(height: 12),
-            FolderDropdown(
-              initValue: folderSelected,
+            WorkspaceDropdown(
+              initValue: areaSelected,
               onChanged: (value) {
-                folderSelected = value;
+                areaSelected = value;
               },
             ),
 
@@ -232,9 +231,17 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             /// Project Name
             Text('Project Name', style: textTheme.titleSmall),
             const SizedBox(height: 8),
-            AppTextField(
-              controller: nameController,
-              hint: 'Enter project name',
+            Selector<AiProvider, AiProjectModel?>(
+              builder: (context, value, child) {
+                if (value != null) {
+                  nameController.text = value.name;
+                }
+                return AppTextField(
+                  controller: nameController,
+                  hint: 'Enter project name',
+                );
+              },
+              selector: (_, p) => p.aiProject,
             ),
 
             const SizedBox(height: 24),
@@ -242,10 +249,10 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             /// Description
             Text('Description', style: textTheme.titleSmall),
             const SizedBox(height: 8),
-            Selector<AiProvider, String>(
+            Selector<AiProvider, AiProjectModel?>(
               builder: (context, value, child) {
-                if (value.isNotEmpty) {
-                  descController.text = value;
+                if (value != null) {
+                  descController.text = value.content;
                 }
                 return AppTextField(
                   controller: descController,
@@ -253,39 +260,39 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                   hint: 'Describe your project...',
                 );
               },
-              selector: (_, p) => p.recording,
+              selector: (_, p) => p.aiProject,
             ),
 
             const SizedBox(height: 8),
 
-            Consumer<AiProvider>(
-              builder: (context, value, child) {
-                return value.taskActive == 0
-                    ? SizedBox.shrink()
-                    : TextButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.transparent,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return DraggableScrollableSheet(
-                                initialChildSize: 0.8,
-                                maxChildSize: 0.9,
-                                minChildSize: 0.6,
-                                builder: (context, scrollController) =>
-                                    TaskAiSuggestBottomSheet(
-                                      text: '',
-                                      controller: scrollController,
-                                    ),
-                              );
-                            },
-                          );
-                        },
-                        child: Text('${value.taskActive} Task From AI'),
-                      );
-              },
-            ),
+            // Consumer<AiProvider>(
+            //   builder: (context, value, child) {
+            //     return value.taskActive == 0
+            //         ? SizedBox.shrink()
+            //         : TextButton(
+            //             onPressed: () {
+            //               showModalBottomSheet(
+            //                 context: context,
+            //                 backgroundColor: Colors.transparent,
+            //                 isScrollControlled: true,
+            //                 builder: (context) {
+            //                   return DraggableScrollableSheet(
+            //                     initialChildSize: 0.8,
+            //                     maxChildSize: 0.9,
+            //                     minChildSize: 0.6,
+            //                     builder: (context, scrollController) =>
+            //                         TaskAiSuggestBottomSheet(
+            //                           text: '',
+            //                           controller: scrollController,
+            //                         ),
+            //                   );
+            //                 },
+            //               );
+            //             },
+            //             child: Text('${value.taskActive} Task From AI'),
+            //           );
+            //   },
+            // ),
 
             /// Dates
             Row(

@@ -4,7 +4,6 @@ import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 import 'package:tasklyai/presentation/home/home_screen.dart';
 import 'package:tasklyai/presentation/profile/profile_screen.dart';
-import 'package:tasklyai/presentation/task_project/task_project_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -63,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const SizedBox();
       case 2:
-        return const TaskProjectScreen();
+        return const SizedBox();
       case 3:
         return const ProfileScreen();
       default:

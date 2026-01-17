@@ -1,29 +1,36 @@
 import 'package:tasklyai/core/network/api_endpoint.dart';
 import 'package:tasklyai/core/network/dio_client.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
-import 'package:tasklyai/models/analyze_note_model.dart';
+import 'package:tasklyai/models/ai_project_model.dart';
+import 'package:tasklyai/models/ai_task_model.dart';
 
 class AiRepository {
   final _dioClient = DioClient();
 
-  Future<List<AnalyzeNoteModel>> analyzeNote(String text) async {
+  Future<AiProjectModel?> analyzeNote(String text) async {
     try {
       final res = await _dioClient.post(
         ApiEndpoint.analyzeNote,
-        data: {'text': text},
+        data: {'content': text, "attachments": []},
       );
-      final data = res.data['data']['tasks'] as List<dynamic>?;
-      if (data == null) {
-        return [];
+      final data = res.data['analysis'];
+      final aiTasks = data['aiTasks'] as List<dynamic>?;
+      if (data == null || aiTasks == null || aiTasks.isEmpty) {
+        return null;
       }
-      return data.map((e) => AnalyzeNoteModel.fromJson(e)).toList();
+      final tasks = aiTasks.map((e) => AiTaskModel.fromJson(e)).toList();
+      return AiProjectModel(
+        aiTasks: tasks,
+        content: text,
+        name: data['suggestedProject'] ?? '',
+      );
     } on FormatException catch (_) {
       rethrow;
     }
   }
 
   Future<void> createTaskFromAi(
-    List<AnalyzeNoteModel> tasks,
+    List<AiTaskModel> tasks,
     ProjectReq projectReq,
   ) async {
     try {

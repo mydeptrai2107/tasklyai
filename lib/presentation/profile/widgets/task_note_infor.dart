@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/enum/task_status.dart';
 import 'package:tasklyai/models/card_model.dart';
-import 'package:tasklyai/models/task_model.dart';
 
 class TaskNoteInfor extends StatelessWidget {
   const TaskNoteInfor({super.key, required this.notes, required this.tasks});
 
   final List<CardModel> notes;
-  final List<TaskModel> tasks;
+  final List<CardModel> tasks;
 
   @override
   Widget build(BuildContext context) {

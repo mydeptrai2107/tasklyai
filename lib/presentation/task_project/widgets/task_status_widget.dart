@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/enum/task_status.dart';
-import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
 
 class TaskStatusWidget extends StatefulWidget {
   const TaskStatusWidget(this.task, {super.key});
 
-  final TaskModel task;
+  final CardModel task;
 
   @override
   State<TaskStatusWidget> createState() => _TaskStatusWidgetState();
@@ -29,7 +29,9 @@ class _TaskStatusWidgetState extends State<TaskStatusWidget> {
               context.read<TaskProvider>().updateTask(
                 context: context,
                 taskId: widget.task.id,
-                params: {'status': e.label},
+                areaId: widget.task.area?.id,
+                projectId: widget.task.project?.id,
+                params: {'status': e.eng},
               );
               widget.task.status = e;
               setState(() {});

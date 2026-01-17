@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/data/requests/create_folder_req.dart';
+import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 
 class CreateFolderScreen extends StatefulWidget {
-  const CreateFolderScreen({super.key});
+  const CreateFolderScreen({super.key, required this.areaModel});
+
+  final AreaModel areaModel;
 
   @override
   State<CreateFolderScreen> createState() => _CreateFolderScreenState();
@@ -200,6 +203,7 @@ class _CreateFolderScreenState extends State<CreateFolderScreen> {
       description: descController.text,
       icon: selectedIcon.codePoint,
       color: selectedColor.toARGB32(),
+      areaId: widget.areaModel.id,
     );
 
     context.read<FolderProvider>().createFolder(context, folder);

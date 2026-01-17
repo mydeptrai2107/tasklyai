@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
-import 'package:tasklyai/data/requests/task_req.dart';
+import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
 import 'package:tasklyai/presentation/task_project/widgets/add_subtask.dart';
 import 'package:tasklyai/presentation/task_project/widgets/list_project_add_task.dart';
 import 'package:tasklyai/presentation/task_project/widgets/priority_widget.dart';
 
 class NewTaskScreen extends StatefulWidget {
-  const NewTaskScreen({super.key});
+  const NewTaskScreen(this.projectModel, {super.key});
+
+  final ProjectModel projectModel;
 
   @override
   State<NewTaskScreen> createState() => _NewTaskScreenState();
@@ -22,13 +25,28 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   final _descController = TextEditingController();
   final _deadlineController = TextEditingController();
 
+  late ProjectModel projectSelected;
+  Priority prioritySelected = Priority.low;
+  List<String> subTask = [];
+
+  @override
+  void initState() {
+    projectSelected = widget.projectModel;
+    super.initState();
+  }
+
   @override
   void dispose() {
     _deadlineController.dispose();
     _titleController.dispose();
     _descController.dispose();
+
     super.dispose();
   }
+
+  bool get isDisable =>
+      _titleController.text.trim().isEmpty ||
+      _descController.text.trim().isEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -74,16 +92,11 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               ],
             ),
             SizedBox(height: 6),
-            Selector<TaskProvider, String>(
-              builder: (context, value, child) {
-                return ListProjectAddTask(
-                  projectSelected: value,
-                  onTap: (projectId) {
-                    context.read<TaskProvider>().selectProject(projectId);
-                  },
-                );
+            ListProjectAddTask(
+              initProject: projectSelected.id,
+              onTap: (project) {
+                projectSelected = project;
               },
-              selector: (_, p) => p.projectSelected,
             ),
             SizedBox(height: 16),
 
@@ -97,14 +110,11 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               ],
             ),
             SizedBox(height: 6),
-            Consumer<TaskProvider>(
-              builder: (context, value, child) {
-                return PriorityWidget(
-                  selected: value.priority,
-                  ontap: (priority) {
-                    context.read<TaskProvider>().selectPriority(priority);
-                  },
-                );
+            PriorityWidget(
+              selected: prioritySelected,
+              ontap: (priority) {
+                prioritySelected = priority;
+                setState(() {});
               },
             ),
             SizedBox(height: 16),
@@ -130,7 +140,12 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             SizedBox(height: 16),
 
             // sub task
-            AddSubtask(),
+            AddSubtask(
+              onChange: (value) {
+                subTask = value;
+                setState(() {});
+              },
+            ),
           ],
         ),
       ),
@@ -159,49 +174,48 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   String formatDate(DateTime? date) {
     if (date == null) return 'mm/dd/yyyy';
-    return DateFormat('MM/dd/yyyy').format(date);
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 
   Widget _buildSave(BuildContext context) {
     final textTheme = context.theme.textTheme;
-    return Consumer<TaskProvider>(
-      builder: (context, value, child) {
-        final isDisable =
-            value.priority == null ||
-            value.projectSelected.isEmpty ||
-            deadline == null ||
-            _titleController.text.isEmpty ||
-            _descController.text.isEmpty;
-        return GestureDetector(
-          onTap: isDisable
-              ? null
-              : () {
-                  context.read<TaskProvider>().createTask(
-                    context,
-                    TaskReq(
-                      title: _titleController.text,
-                      description: _descController.text,
-                      priority: value.priority!.label,
-                      dueDate: deadline!,
-                      project: value.projectSelected,
-                      subtasks: value.subTabs,
-                    ),
-                  );
-                },
-          child: Container(
-            margin: EdgeInsets.only(right: 16),
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: isDisable ? Colors.grey : primaryColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              'Save',
-              style: textTheme.bodySmall?.copyWith(color: Colors.white),
-            ),
-          ),
-        );
-      },
+    return GestureDetector(
+      onTap: isDisable
+          ? null
+          : () {
+              final Map<String, dynamic> data = {
+                'areaId': projectSelected.areaId,
+                'projectId': projectSelected.id,
+                'title': _titleController.text.trim(),
+                'content': _descController.text.trim(),
+                'energyLevel': prioritySelected.eng.toLowerCase(),
+                'status': 'todo',
+                'dueDate': '${_deadlineController.text}T10:00:00Z',
+                'checklist': subTask
+                    .map((e) => {'text': e, 'checked': false})
+                    .toList(),
+              };
+
+              debugPrint(data.toString());
+
+              context.read<TaskProvider>().createTask(
+                context,
+                projectSelected,
+                data,
+              );
+            },
+      child: Container(
+        margin: EdgeInsets.only(right: 16),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        decoration: BoxDecoration(
+          color: isDisable ? Colors.grey : primaryColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          'Save',
+          style: textTheme.bodySmall?.copyWith(color: Colors.white),
+        ),
+      ),
     );
   }
 }

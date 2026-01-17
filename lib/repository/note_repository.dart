@@ -5,6 +5,17 @@ import 'package:tasklyai/models/card_model.dart';
 class NoteRepository {
   final _dioClient = DioClient();
 
+  Future<List<CardModel>> fetchAllCard() async {
+    try {
+      final res = await _dioClient.get(ApiEndpoint.notes);
+      return (res.data['cards'] as List<dynamic>)
+          .map((e) => CardModel.fromJson(e))
+          .toList();
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
   Future<List<CardModel>> fetchNote(String folderId) async {
     try {
       final res = await _dioClient.get(

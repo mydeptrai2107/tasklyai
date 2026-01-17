@@ -5,7 +5,7 @@ import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_list.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/project_area_list.dart';
+import 'package:tasklyai/presentation/task_project/widgets/project_list.dart';
 
 class AreaDetailScreen extends StatefulWidget {
   const AreaDetailScreen(this.item, {super.key});
@@ -46,9 +46,9 @@ class _AreaDetailScreenState extends State<AreaDetailScreen> {
                   ),
 
                   /// TAB PROJECTS (fake)
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(16),
-                    child: ProjectAreaList(),
+                    child: ProjectList(widget.item),
                   ),
                 ],
               ),
@@ -64,7 +64,7 @@ class _Tabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -97,7 +97,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 12,
+        top: MediaQuery.of(context).padding.top,
         left: 16,
         right: 16,
         bottom: 20,
@@ -107,14 +107,9 @@ class _Header extends StatelessWidget {
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
       child: Column(
+        spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _HeaderAppBar(),
-          const SizedBox(height: 20),
-          _AreaInfo(item),
-          const SizedBox(height: 20),
-          _StatsRow(item),
-        ],
+        children: [_HeaderAppBar(), _AreaInfo(item), _StatsRow(item)],
       ),
     );
   }

@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
-import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/models/card_model.dart';
+import 'package:tasklyai/models/checklist_item.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
 
 class EditSubtask extends StatefulWidget {
-  const EditSubtask(this.subtasks, this.taskId, {super.key});
+  const EditSubtask(this.subtasks, this.task, {super.key});
 
-  final List<Subtask> subtasks;
-  final String taskId;
+  final List<ChecklistItem> subtasks;
+  final CardModel task;
 
   @override
   State<EditSubtask> createState() => _EditSubtaskState();
@@ -52,12 +53,12 @@ class _EditSubtaskState extends State<EditSubtask> {
               child: Row(
                 children: [
                   Checkbox(
-                    value: subtask.isCompleted,
+                    value: subtask.checked,
                     onChanged: (value) {
                       setState(() {
-                        subtask.isCompleted = value ?? false;
-                        update(context, widget.taskId, {
-                          'subtasks': widget.subtasks
+                        subtask.checked = value ?? false;
+                        update(context, {
+                          'checklist': widget.subtasks
                               .map((e) => e.toJson())
                               .toList(),
                         });
@@ -67,14 +68,14 @@ class _EditSubtaskState extends State<EditSubtask> {
                   ),
                   Expanded(
                     child: Text(
-                      subtask.title,
+                      subtask.text,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: textTheme.bodySmall?.copyWith(
-                        decoration: subtask.isCompleted
+                        decoration: subtask.checked
                             ? TextDecoration.lineThrough
                             : null,
-                        color: subtask.isCompleted
+                        color: subtask.checked
                             ? Colors.grey
                             : textTheme.bodySmall?.color,
                       ),
@@ -84,7 +85,7 @@ class _EditSubtaskState extends State<EditSubtask> {
                     onPressed: () {
                       setState(() {
                         widget.subtasks.removeAt(index);
-                        update(context, widget.taskId, {
+                        update(context, {
                           'subtasks': widget.subtasks
                               .map((e) => e.toJson())
                               .toList(),
@@ -124,9 +125,9 @@ class _EditSubtaskState extends State<EditSubtask> {
               onTap: () {
                 if (_formKey.currentState!.validate()) {
                   widget.subtasks.add(
-                    Subtask(title: _subTask.text, isCompleted: false),
+                    ChecklistItem(text: _subTask.text, checked: false),
                   );
-                  update(context, widget.taskId, {
+                  update(context, {
                     'subtasks': widget.subtasks.map((e) => e.toJson()).toList(),
                   });
                   _subTask.clear();
@@ -153,14 +154,12 @@ class _EditSubtaskState extends State<EditSubtask> {
     );
   }
 
-  void update(
-    BuildContext context,
-    String taskId,
-    Map<String, dynamic> params,
-  ) {
+  void update(BuildContext context, Map<String, dynamic> params) {
     context.read<TaskProvider>().updateTask(
       context: context,
-      taskId: taskId,
+      taskId: widget.task.id,
+      areaId: widget.task.area?.id,
+      projectId: widget.task.project?.id,
       params: params,
       isShowDialog: false,
     );

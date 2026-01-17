@@ -1,30 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
-import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/data/requests/fetch_task_params.dart';
-import 'package:tasklyai/data/requests/task_req.dart';
-import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/models/card_model.dart';
+import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/repository/task_repository.dart';
 
 class TaskProvider extends ChangeNotifier {
   final _taskRepository = TaskRepository();
 
-  String _projectSelected = '';
-  String get projectSelected => _projectSelected;
+  List<CardModel> _allTask = [];
+  List<CardModel> get allTask => _allTask;
 
-  Priority? _priority;
-  Priority? get priority => _priority;
-
-  List<String> _subTabs = [];
-  List<String> get subTabs => _subTabs;
-
-  List<TaskModel> _allTask = [];
-  List<TaskModel> get allTask => _allTask;
-
-  List<TaskModel> _taskByProject = [];
-  List<TaskModel> get taskByProject => _taskByProject;
+  List<CardModel> _taskByProject = [];
+  List<CardModel> get taskByProject => _taskByProject;
 
   Future<void> fetchAllTask(BuildContext context) async {
     try {
@@ -49,12 +39,22 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createTask(BuildContext context, TaskReq task) async {
+  Future<void> createTask(
+    BuildContext context,
+    ProjectModel project,
+    Map<String, dynamic> data,
+  ) async {
     try {
-      await _taskRepository.createTask(task);
+      await _taskRepository.createTask(data);
       if (context.mounted) {
-        DialogService.success(context, message: 'Tạo task thành công');
-        // context.read<ProjectProvider>().fetchProject();
+        DialogService.success(
+          context,
+          message: 'Tạo task thành công',
+          onOk: () {
+            Navigator.pop(context);
+          },
+        );
+        fetchTaskByProject(project.id);
       }
     } on FormatException catch (e) {
       if (context.mounted) {
@@ -65,15 +65,19 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> updateTask({
     required BuildContext context,
+    String? projectId,
+    String? areaId,
     required String taskId,
     required Map<String, dynamic> params,
     bool isShowDialog = true,
   }) async {
     try {
       await _taskRepository.updateTask(params, taskId);
+      if (projectId != null) fetchTaskByProject(projectId);
       if (context.mounted) {
-        fetchAllTask(context);
-        // context.read<ProjectProvider>().fetchProject();
+        if (areaId != null) {
+          context.read<ProjectProvider>().fetchProjectByArea(areaId);
+        }
         if (isShowDialog) {
           DialogService.success(context, message: 'Cập nhật task thành công');
         }
@@ -83,29 +87,5 @@ class TaskProvider extends ChangeNotifier {
         DialogService.error(context, message: e.message);
       }
     }
-  }
-
-  void selectProject(String project) {
-    _projectSelected = project;
-    notifyListeners();
-  }
-
-  void selectPriority(Priority? priority) {
-    _priority = priority;
-    notifyListeners();
-  }
-
-  void addSubTab(String subTask) {
-    List<String> clone = List.from(_subTabs);
-    clone.add(subTask);
-    _subTabs = clone;
-    notifyListeners();
-  }
-
-  void removeSubTab(String subTask) {
-    List<String> clone = List.from(_subTabs);
-    clone.remove(subTask);
-    _subTabs = clone;
-    notifyListeners();
   }
 }

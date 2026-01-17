@@ -6,13 +6,13 @@ class ApiEndpoint {
 
   static String projects = '/projects';
 
-  static String tasks = '/tasks';
+  static String tasks = '/cards';
 
   static String category = '/categories';
 
   static String findMe = '/auth/me';
 
-  static String analyzeNote = '/ai/analyze-note';
+  static String analyzeNote = '/ai/analyze-card';
 
   static String aiCreateTasks = '/ai/create-tasks';
 

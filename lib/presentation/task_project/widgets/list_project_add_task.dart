@@ -2,17 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
+import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 
-class ListProjectAddTask extends StatelessWidget {
+class ListProjectAddTask extends StatefulWidget {
   const ListProjectAddTask({
     super.key,
-    required this.projectSelected,
+    required this.initProject,
     required this.onTap,
   });
 
-  final String projectSelected;
-  final Function(String id) onTap;
+  final String initProject;
+  final Function(ProjectModel project) onTap;
+
+  @override
+  State<ListProjectAddTask> createState() => _ListProjectAddTaskState();
+}
+
+class _ListProjectAddTaskState extends State<ListProjectAddTask> {
+  late String projectSelected;
+
+  @override
+  void initState() {
+    projectSelected = widget.initProject;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +45,9 @@ class ListProjectAddTask extends StatelessWidget {
               final project = projectValue.projectsArea[index];
               return GestureDetector(
                 onTap: () {
-                  onTap.call(project.id);
+                  widget.onTap.call(project);
+                  projectSelected = project.id;
+                  setState(() {});
                 },
                 child: Container(
                   margin: EdgeInsets.only(bottom: 8),

@@ -10,7 +10,7 @@ class CreateFolderReq {
     required this.description,
     required this.icon,
     required this.color,
-    this.areaId = '69651b0819c4b0e77870bb69',
+    required this.areaId,
   });
 
   Map<String, dynamic> toJson() => {

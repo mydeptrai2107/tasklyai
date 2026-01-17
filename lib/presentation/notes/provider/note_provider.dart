@@ -9,7 +9,19 @@ class NoteProvider extends ChangeNotifier {
   List<CardModel> _notes = [];
   List<CardModel> get notes => _notes;
 
+  List<CardModel> _allCard = [];
+  List<CardModel> get allCard => _allCard;
+
   bool get hasNotes => _notes.isNotEmpty;
+
+  Future<void> fetchAllCard() async {
+    try {
+      _allCard = await noteRepository.fetchAllCard();
+    } on FormatException catch (_) {
+    } finally {
+      notifyListeners();
+    }
+  }
 
   Future<void> fetchNote(String folderId) async {
     try {

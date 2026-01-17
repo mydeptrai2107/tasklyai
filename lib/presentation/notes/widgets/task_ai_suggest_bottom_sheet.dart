@@ -59,14 +59,17 @@ class _TaskAiSuggestBottomSheetState extends State<TaskAiSuggestBottomSheet> {
             SizedBox(height: 16),
             Consumer<AiProvider>(
               builder: (context, value, child) {
-                return ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: value.analyzeNotes.length,
-                  itemBuilder: (context, index) {
-                    return AiTaskItem(value.analyzeNotes[index]);
-                  },
-                );
+                if (value.aiProject != null) {
+                  return ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: value.aiProject!.aiTasks.length,
+                    itemBuilder: (context, index) {
+                      return AiTaskItem(value.aiProject!.aiTasks[index]);
+                    },
+                  );
+                }
+                return SizedBox();
               },
             ),
             SizedBox(height: 10),

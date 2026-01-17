@@ -11,10 +11,15 @@ class FetchTaskParams {
     this.status,
   });
 
-  Map<String, dynamic> toJson() => {
-    "category": category,
-    "priority": priority,
-    "project": project,
-    "status": status,
-  };
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{
+      "category": category,
+      "priority": priority,
+      "projectId": project,
+      "status": status,
+    };
+
+    data.removeWhere((key, value) => value == null);
+    return data;
+  }
 }

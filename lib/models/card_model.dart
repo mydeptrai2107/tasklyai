@@ -5,7 +5,7 @@ import 'package:tasklyai/models/checklist_item.dart';
 class CardModel {
   final String id;
   final String userId;
-  final String? projectId;
+  final ProjectRef? project;
 
   final AreaRef? area;
   final FolderRef? folder;
@@ -17,8 +17,8 @@ class CardModel {
 
   final List<CardAttachment> attachments;
 
-  final TaskStatus status; // todo | doing | done
-  final Priority energyLevel; // low | medium | high
+  TaskStatus status; // todo | doing | done
+  Priority energyLevel; // low | medium | high
 
   final DateTime? dueDate;
   final DateTime? reminder;
@@ -38,7 +38,7 @@ class CardModel {
     required this.id,
     required this.userId,
     required this.area,
-    this.projectId,
+    this.project,
     this.folder,
     required this.title,
     required this.content,
@@ -63,6 +63,7 @@ class CardModel {
   factory CardModel.fromJson(Map<String, dynamic> json) {
     final areaRaw = json['areaId'];
     final folderRaw = json['folderId'];
+    final projectRaw = json['projectId'];
 
     return CardModel(
       id: json['_id'],
@@ -72,7 +73,9 @@ class CardModel {
       folder: folderRaw is Map<String, dynamic>
           ? FolderRef.fromJson(folderRaw)
           : null,
-      projectId: json['projectId'],
+      project: projectRaw is Map<String, dynamic>
+          ? ProjectRef.fromJson(projectRaw)
+          : null,
       title: json['title'] ?? '',
       content: json['content'] ?? '',
       tags: List<String>.from(json['tags'] ?? []),
@@ -104,7 +107,7 @@ class CardModel {
       '_id': id,
       'userId': userId,
       'areaId': area?.id,
-      'projectId': projectId,
+      'projectId': project,
       'folderId': folder?.id,
       'title': title,
       'content': content,
@@ -190,6 +193,33 @@ class AreaRef {
 
   factory AreaRef.fromJson(Map<String, dynamic> json) {
     return AreaRef(
+      id: json['_id'],
+      name: json['name'] ?? '',
+      color: json['color'] ?? 0,
+      icon: json['icon'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'_id': id, 'name': name, 'color': color, 'icon': icon};
+  }
+}
+
+class ProjectRef {
+  final String id;
+  final String name;
+  final int color;
+  final int icon;
+
+  ProjectRef({
+    required this.id,
+    required this.name,
+    required this.color,
+    required this.icon,
+  });
+
+  factory ProjectRef.fromJson(Map<String, dynamic> json) {
+    return ProjectRef(
       id: json['_id'],
       name: json['name'] ?? '',
       color: json['color'] ?? 0,

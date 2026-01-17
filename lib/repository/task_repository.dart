@@ -1,31 +1,30 @@
 import 'package:tasklyai/core/network/api_endpoint.dart';
 import 'package:tasklyai/core/network/dio_client.dart';
 import 'package:tasklyai/data/requests/fetch_task_params.dart';
-import 'package:tasklyai/data/requests/task_req.dart';
-import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/models/card_model.dart';
 
 class TaskRepository {
   final _dioClient = DioClient();
 
-  Future<void> createTask(TaskReq task) async {
+  Future<void> createTask(Map<String, dynamic> data) async {
     try {
-      await _dioClient.post(ApiEndpoint.tasks, data: task.toJson());
+      await _dioClient.post(ApiEndpoint.tasks, data: data);
     } on FormatException catch (_) {
       rethrow;
     }
   }
 
-  Future<List<TaskModel>> fetchTask({FetchTaskParams? params}) async {
+  Future<List<CardModel>> fetchTask({FetchTaskParams? params}) async {
     try {
       final res = await _dioClient.get(
         ApiEndpoint.tasks,
         params: params?.toJson(),
       );
-      final data = res.data['data'] as List<dynamic>?;
+      final data = res.data['cards'] as List<dynamic>?;
       if (data == null) {
         throw FormatException('Không có dữ liệu');
       }
-      return data.map((e) => TaskModel.fromJson(e)).toList();
+      return data.map((e) => CardModel.fromJson(e)).toList();
     } on FormatException catch (_) {
       rethrow;
     }

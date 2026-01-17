@@ -5,7 +5,8 @@ import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
-import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/models/card_model.dart';
+import 'package:tasklyai/models/checklist_item.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
 import 'package:tasklyai/presentation/task_project/widgets/edit_subtask.dart';
 import 'package:tasklyai/presentation/task_project/widgets/list_project_add_task.dart';
@@ -15,7 +16,7 @@ import 'package:tasklyai/presentation/task_project/widgets/task_status_widget.da
 class TaskDetailScreen extends StatefulWidget {
   const TaskDetailScreen(this.task, {super.key});
 
-  final TaskModel task;
+  final CardModel task;
 
   @override
   State<TaskDetailScreen> createState() => _TaskDetailScreenState();
@@ -27,18 +28,18 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   late TextEditingController _deadlineController;
   late Priority prioritySelected;
   late String projectSelected;
-  late List<Subtask> subtasks;
+  late List<ChecklistItem> subtasks;
 
   @override
   void initState() {
     _titleController = TextEditingController(text: widget.task.title);
-    _descController = TextEditingController(text: widget.task.description);
+    _descController = TextEditingController(text: widget.task.content);
     _deadlineController = TextEditingController(
-      text: Formatter.dateJson(widget.task.dueDate),
+      text: Formatter.dateJson(widget.task.dueDate ?? DateTime.now()),
     );
-    prioritySelected = widget.task.priority;
-    projectSelected = widget.task.project.id;
-    subtasks = widget.task.subtasks;
+    prioritySelected = widget.task.energyLevel;
+    projectSelected = widget.task.project!.id;
+    subtasks = widget.task.checklist;
 
     super.initState();
   }
@@ -104,11 +105,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             ),
             SizedBox(height: 6),
             ListProjectAddTask(
-              projectSelected: projectSelected,
+              initProject: projectSelected,
               onTap: (value) {
                 setState(() {
-                  projectSelected = value;
-                  update(context, task.id, {'project': value});
+                  update(context, task.id, {'projectId': value});
                 });
               },
             ),
@@ -128,7 +128,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               selected: prioritySelected,
               ontap: (priority) {
                 prioritySelected = priority;
-                update(context, task.id, {"priority": priority.label});
+                update(context, task.id, {
+                  "energyLevel": priority.eng.toLowerCase(),
+                });
                 setState(() {});
               },
             ),
@@ -157,7 +159,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             SizedBox(height: 16),
 
             // sub task
-            EditSubtask(subtasks, task.id),
+            EditSubtask(subtasks, task),
           ],
         ),
       ),
@@ -172,6 +174,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     context.read<TaskProvider>().updateTask(
       context: context,
       taskId: taskId,
+      areaId: widget.task.area?.id,
+      projectId: widget.task.project?.id,
       params: params,
     );
   }
@@ -180,7 +184,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
   Future<void> pickDate({
     required BuildContext context,
-    required TaskModel task,
+    required CardModel task,
     required bool isStart,
   }) async {
     final DateTime? picked = await showDatePicker(
@@ -199,19 +203,19 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     }
   }
 
-  Widget _buildSave(BuildContext context, TaskModel task) {
+  Widget _buildSave(BuildContext context, CardModel task) {
     final textTheme = context.theme.textTheme;
     return Consumer<TaskProvider>(
       builder: (context, value, child) {
         final isDisable =
             _titleController.text.trim() == task.title &&
-            _descController.text.trim() == task.description;
+            _descController.text.trim() == task.content;
         return GestureDetector(
           onTap: () {
             if (!isDisable) {
               update(context, task.id, {
                 "title": _titleController.text.trim(),
-                "description": _descController.text.trim(),
+                "content": _descController.text.trim(),
               });
             }
           },

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/models/analyze_note_model.dart';
+import 'package:tasklyai/models/ai_task_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 
 class AiTaskItem extends StatefulWidget {
   const AiTaskItem(this.item, {super.key});
 
-  final AnalyzeNoteModel item;
+  final AiTaskModel item;
 
   @override
   State<AiTaskItem> createState() => _AiTaskItemState();
@@ -30,7 +30,7 @@ class _AiTaskItemState extends State<AiTaskItem> {
             value: widget.item.isSlected,
             onChanged: (value) {
               widget.item.isSlected = value!;
-              context.read<AiProvider>().changeTaskAvtive();
+              // context.read<AiProvider>().changeTaskAvtive();
               setState(() {});
             },
           ),

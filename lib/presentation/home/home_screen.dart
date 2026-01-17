@@ -147,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // ================= TASK LIST =================
   Widget _todayTasks(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -183,6 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Consumer<AreaProvider>(
             builder: (context, value, child) {
               return ListView.builder(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: value.areas.length,

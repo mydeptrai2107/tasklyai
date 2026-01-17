@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
+import 'package:tasklyai/presentation/profile/profile_screen.dart';
 
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget({super.key});
@@ -14,21 +15,40 @@ class HeaderWidget extends StatelessWidget {
         color: primaryColor,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
-            'Good evening, Alex',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Good evening, Alex',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 6),
+              Text(
+                "Let's make today productive",
+                style: TextStyle(color: Colors.white70),
+              ),
+            ],
           ),
-          SizedBox(height: 6),
-          Text(
-            "Let's make today productive",
-            style: TextStyle(color: Colors.white70),
+          Spacer(),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ProfileScreen();
+                  },
+                ),
+              );
+            },
+            child: Icon(Icons.person_outline, color: Colors.white, size: 30),
           ),
         ],
       ),

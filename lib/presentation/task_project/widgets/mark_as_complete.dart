@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/enum/task_status.dart';
-import 'package:tasklyai/models/task_model.dart';
+import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
 
 class MarkAsComplete extends StatefulWidget {
   const MarkAsComplete(this.task, {super.key});
 
-  final TaskModel task;
+  final CardModel task;
 
   @override
   State<MarkAsComplete> createState() => _MarkAsCompleteState();

@@ -32,7 +32,7 @@ class ProjectProvider extends ChangeNotifier {
   Future<void> fetchProjectByArea(String areaId) async {
     try {
       _projectsArea = await repository.fetchProjectByArea(areaId);
-        notifyListeners();
+      notifyListeners();
     } on FormatException catch (_) {}
   }
 }
