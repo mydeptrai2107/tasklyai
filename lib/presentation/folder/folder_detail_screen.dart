@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
+import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_content.dart';
+import 'package:tasklyai/presentation/folder/widgets/set_folder_password_sheet.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 
 class FolderDetailScreen extends StatefulWidget {
@@ -35,7 +37,14 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       backgroundColor: const Color(0xFFF5F6FA),
       body: Column(
         children: [
-          _Header(folder: widget.folder),
+          _Header(
+            folder: widget.folder,
+            area: widget.areaModel,
+            onChange: (value) {
+              widget.folder.passwordHash = value;
+              setState(() {});
+            },
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -60,8 +69,15 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
 
 class _Header extends StatelessWidget {
   final FolderModel folder;
+  final AreaModel area;
 
-  const _Header({required this.folder});
+  final Function(String? pw) onChange;
+
+  const _Header({
+    required this.folder,
+    required this.area,
+    required this.onChange,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +95,7 @@ class _Header extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _HeaderAppBar(),
+          HeaderAppBar(folder: folder, area: area, onChange: onChange),
           const SizedBox(height: 16),
           _FolderInfo(folder: folder),
           const SizedBox(height: 16),
@@ -90,15 +106,70 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _HeaderAppBar extends StatelessWidget {
+class HeaderAppBar extends StatelessWidget {
+  final FolderModel folder;
+  final AreaModel area;
+
+  final Function(String? pw) onChange;
+
+  const HeaderAppBar({
+    super.key,
+    required this.folder,
+    required this.area,
+    required this.onChange,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final hasPassword = folder.passwordHash != null;
+
     return Row(
-      children: const [
-        BackButton(color: Colors.white),
-        Spacer(),
-        Icon(Icons.more_vert, color: Colors.white),
+      children: [
+        const BackButton(color: Colors.white),
+        const Spacer(),
+        InkWell(
+          borderRadius: BorderRadius.circular(30),
+          onTap: () {
+            if (!hasPassword) {
+              _showSetPasswordSheet(context);
+            } else {
+              context.read<FolderProvider>().unlockFolder(
+                context,
+                area.id,
+                folder.id,
+              );
+              onChange.call(null);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Folder unlocked 🔓')),
+              );
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(40),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              hasPassword ? Icons.lock_outline : Icons.lock_open,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  void _showSetPasswordSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SetFolderPasswordSheet(
+        folder: folder,
+        area: area,
+        onChange: onChange,
+      ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/folder_detail_screen.dart';
+import 'package:tasklyai/presentation/folder/widgets/unlock_folder_sheet.dart';
 
 class FolderCard extends StatelessWidget {
   const FolderCard({super.key, required this.item, required this.areaModel});
@@ -14,17 +15,15 @@ class FolderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.theme.textTheme;
+    final hasPassword = item.passwordHash != null;
 
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return FolderDetailScreen(folder: item, areaModel: areaModel);
-            },
-          ),
-        );
+        if (hasPassword) {
+          _showUnlockFolderSheet(context);
+        } else {
+          _openFolder(context);
+        }
       },
       child: Container(
         padding: EdgeInsets.all(16),
@@ -73,6 +72,28 @@ class FolderCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _openFolder(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FolderDetailScreen(folder: item, areaModel: areaModel),
+      ),
+    );
+  }
+
+  void _showUnlockFolderSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => UnlockFolderSheet(
+        folder: item,
+        areaModel: areaModel,
+        onSuccess: () => _openFolder(context),
       ),
     );
   }

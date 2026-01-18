@@ -18,17 +18,22 @@ class NoteCard extends StatelessWidget {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Icon(Icons.description, color: Colors.orange),
-            Text(note.title, style: context.theme.textTheme.titleSmall),
+            Text(
+              note.title,
+              overflow: TextOverflow.ellipsis,
+              style: context.theme.textTheme.bodyMedium,
+              maxLines: 2,
+            ),
           ],
         ),
       ),

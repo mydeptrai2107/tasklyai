@@ -8,6 +8,7 @@ import 'package:tasklyai/presentation/area/quick_area_screen.dart';
 import 'package:tasklyai/presentation/area/widgets/area_card.dart';
 import 'package:tasklyai/presentation/calendar/calendar_task_screen.dart';
 import 'package:tasklyai/presentation/home/widgets/header_widget.dart';
+import 'package:tasklyai/presentation/notes/create_note_ai_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,7 +51,14 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GestureDetector(
         onTap: () {
-          // TODO: Navigate to AI Note Screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return CreateNoteAIScreen();
+              },
+            ),
+          );
         },
         child: Container(
           padding: const EdgeInsets.all(16),

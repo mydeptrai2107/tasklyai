@@ -72,7 +72,7 @@ class _NotesGrid extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 2,
+              childAspectRatio: 1.5,
             ),
             itemCount: notes.length,
             itemBuilder: (_, index) {

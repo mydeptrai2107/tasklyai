@@ -20,16 +20,54 @@ class FolderProvider extends ChangeNotifier {
   Future<void> createFolder(BuildContext context, CreateFolderReq req) async {
     try {
       await _folderRepository.createFolder(req);
-      DialogService.success(
-        context,
-        message: 'Tạo folder thành công',
-        onOk: () {
-          fetchFolder(req.areaId);
-          Navigator.pop(context);
-        },
-      );
+      if (context.mounted) {
+        DialogService.success(
+          context,
+          message: 'Tạo folder thành công',
+          onOk: () {
+            fetchFolder(req.areaId);
+            Navigator.pop(context);
+          },
+        );
+      }
     } on FormatException catch (e) {
-      DialogService.error(context, message: e.message);
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+    }
+  }
+
+  Future<void> protectFolder(
+    String areaId,
+    String folderId,
+    String password,
+  ) async {
+    try {
+      await _folderRepository.updateFolder(folderId, {
+        "passwordHash": password,
+      });
+      fetchFolder(areaId);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<void> unlockFolder(
+    BuildContext context,
+    String areaId,
+    String folderId,
+  ) async {
+    try {
+      await _folderRepository.updateFolder(folderId, {"passwordHash": null});
+      fetchFolder(areaId);
+    } on FormatException catch (_) {}
+  }
+
+  Future<bool> verifyFolder(String idFolder, String password) async {
+    try {
+      return await _folderRepository.verifyFolder(idFolder, password);
+    } on FormatException catch (_) {
+      return false;
     }
   }
 }

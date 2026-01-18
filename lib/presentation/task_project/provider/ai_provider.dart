@@ -3,7 +3,9 @@ import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/models/ai_task_model.dart';
 import 'package:tasklyai/models/area_model.dart';
+import 'package:tasklyai/models/quick_note_model.dart';
 import 'package:tasklyai/models/suggestion_model.dart';
+import 'package:tasklyai/presentation/notes/note_ai_suggestion_screen.dart';
 import 'package:tasklyai/presentation/task_project/ai_task_suggestion_screen.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/repository/ai_repository.dart';
@@ -17,6 +19,9 @@ class AiProvider extends ChangeNotifier {
 
   SuggestionsModel? _aiProject;
   SuggestionsModel? get aiProject => _aiProject;
+
+  QuickNoteModel? _quickNoteModel;
+  QuickNoteModel? get quickNoteModel => _quickNoteModel;
 
   /* =======================
    * TASK HELPERS
@@ -116,6 +121,40 @@ class AiProvider extends ChangeNotifier {
       if (context.mounted) {
         DialogService.error(context, message: e.message);
       }
+    } finally {
+      _aiProject = null;
+      notifyListeners();
+    }
+  }
+
+  Future<void> quickNoteFromAI(BuildContext context, String text) async {
+    try {
+      _aiIsLoading = true;
+      notifyListeners();
+
+      _quickNoteModel = await _aiRepository.quickNoteAI(text);
+
+      _aiIsLoading = false;
+      notifyListeners();
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return QuickNoteAIResultScreen();
+            },
+          ),
+        );
+      }
+    } on FormatException catch (e) {
+      _aiIsLoading = false;
+      notifyListeners();
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+    } finally {
+      _aiProject = null;
+      notifyListeners();
     }
   }
 }

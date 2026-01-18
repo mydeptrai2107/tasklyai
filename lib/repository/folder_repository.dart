@@ -27,4 +27,25 @@ class FolderRepository {
       rethrow;
     }
   }
+
+  Future<void> updateFolder(String idFolder, Map<String, dynamic> req) async {
+    try {
+      await _dioClient.put('${ApiEndpoint.folders}/$idFolder', data: req);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<bool> verifyFolder(String idFolder, String password) async {
+    try {
+      final res = await _dioClient.post(
+        '${ApiEndpoint.folders}/$idFolder/access',
+        data: {"password": password},
+      );
+      final data = res.data['hasAccess'];
+      return data ?? false;
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
 }

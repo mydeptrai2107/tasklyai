@@ -13,6 +13,7 @@ class FolderModel {
   String description;
   int color;
   int icon;
+  String? passwordHash;
   int noteCount;
   int projectCount;
 
@@ -25,6 +26,7 @@ class FolderModel {
     required this.color,
     required this.icon,
     required this.noteCount,
+    required this.passwordHash,
     required this.projectCount,
   });
 
@@ -37,6 +39,7 @@ class FolderModel {
     color: json["color"],
     icon: json["icon"],
     noteCount: json["noteCount"],
+    passwordHash: json["passwordHash"],
     projectCount: json["projectCount"] ?? 0,
   );
 
