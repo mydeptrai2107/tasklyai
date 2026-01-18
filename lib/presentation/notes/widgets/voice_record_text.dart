@@ -16,7 +16,7 @@ class VoiceRecordText extends StatefulWidget {
 class _VoiceRecordTextState extends State<VoiceRecordText> {
   final SpeechToText _speech = SpeechToText();
   bool _isRecording = false;
-  String _text = 'Chiều hôm nay đi chơi bóng đá ở ngoài sân';
+  String _text = '';
 
   @override
   void initState() {

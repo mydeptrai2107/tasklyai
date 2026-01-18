@@ -87,8 +87,7 @@ class _CalendarButton extends StatelessWidget {
         final range = await showDateRangePicker(
           context: context,
           firstDate: DateTime(2020),
-          lastDate: DateTime.now(),
-          initialDateRange: provider.currentRange,
+          lastDate: DateTime(2050),
         );
 
         if (range != null) {
