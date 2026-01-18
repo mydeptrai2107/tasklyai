@@ -8,6 +8,7 @@ import 'package:tasklyai/presentation/category/provider/category_provider.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
+import 'package:tasklyai/presentation/stats/provider/stats_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => AiProvider()),
         ChangeNotifierProvider(create: (context) => AreaProvider()),
         ChangeNotifierProvider(create: (context) => FolderProvider()),
+        ChangeNotifierProvider(create: (context) => StatisticsProvider()),
       ],
       child: const MainApp(),
     ),

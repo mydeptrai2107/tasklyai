@@ -9,6 +9,7 @@ import 'package:tasklyai/presentation/area/widgets/area_card.dart';
 import 'package:tasklyai/presentation/calendar/calendar_task_screen.dart';
 import 'package:tasklyai/presentation/home/widgets/header_widget.dart';
 import 'package:tasklyai/presentation/notes/create_note_ai_screen.dart';
+import 'package:tasklyai/presentation/stats/statistics_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const HeaderWidget(),
             _aiNoteSection(context),
             _calendarSection(context),
+            _staticsSection(context),
             const SizedBox(height: 24),
             _workspaceSection(context),
           ],
@@ -154,6 +156,53 @@ class _HomeScreenState extends State<HomeScreen> {
               const Expanded(
                 child: Text(
                   'Calendar & Schedule',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                ),
+              ),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ================= Statistics =================
+  Widget _staticsSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return StatisticsRangeScreen();
+              },
+            ),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.blue.withAlpha(30),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(Icons.bar_chart, color: Colors.blue),
+              ),
+              const SizedBox(width: 14),
+              const Expanded(
+                child: Text(
+                  'Progress Overview',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                 ),
               ),

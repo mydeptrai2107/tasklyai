@@ -21,4 +21,8 @@ class ApiEndpoint {
   static String area = '/areas';
 
   static String folders = '/folders';
+
+  static const String statsMonthly = '/stats/monthly';
+  static const String statsWeekly = '/stats/weekly';
+  static const String statsYearly = '/stats/yearly';
 }

@@ -210,6 +210,8 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             ChooseIcon(
               selectedColor: selectedColor,
               onChange: (value) {
+                print(value.codePoint);
+                print(Colors.yellowAccent.toARGB32());
                 selectedIcon = value;
               },
             ),
