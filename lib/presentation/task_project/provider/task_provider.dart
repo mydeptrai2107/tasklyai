@@ -88,4 +88,22 @@ class TaskProvider extends ChangeNotifier {
       }
     }
   }
+
+  Future<void> deleteTask(BuildContext context, CardModel card) async {
+    try {
+      await _taskRepository.deleteTask(card.id);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Xóa task thành công')));
+        if (card.project != null) {
+          fetchTaskByProject(card.project!.id);
+        }
+      }
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+    }
+  }
 }

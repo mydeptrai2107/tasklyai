@@ -14,6 +14,14 @@ class TaskRepository {
     }
   }
 
+  Future<void> deleteTask(String id) async {
+    try {
+      await _dioClient.delete('${ApiEndpoint.tasks}/$id');
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
   Future<List<CardModel>> fetchTask({FetchTaskParams? params}) async {
     try {
       final res = await _dioClient.get(

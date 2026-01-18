@@ -36,6 +36,14 @@ class FolderRepository {
     }
   }
 
+  Future<void> deleteFolder(String idFolder) async {
+    try {
+      await _dioClient.delete('${ApiEndpoint.folders}/$idFolder');
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
   Future<bool> verifyFolder(String idFolder, String password) async {
     try {
       final res = await _dioClient.post(

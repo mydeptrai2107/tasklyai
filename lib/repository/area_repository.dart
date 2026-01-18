@@ -24,4 +24,12 @@ class AreaRepository {
       rethrow;
     }
   }
+
+  Future<void> deleteArea(String id) async {
+    try {
+      await _dioClient.delete(ApiEndpoint.area + '/$id');
+    } on FormatException catch (e) {
+      rethrow;
+    }
+  }
 }

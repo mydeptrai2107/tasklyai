@@ -32,4 +32,19 @@ class AreaProvider extends ChangeNotifier {
       DialogService.error(context, message: e.message);
     }
   }
+
+  Future<void> deleteArea(BuildContext context, String id) async {
+    try {
+      await areaRepository.deleteArea(id);
+      fetchArea();
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Xóa area thành công')));
+        Navigator.pop(context);
+      }
+    } on FormatException catch (e) {
+      DialogService.error(context, message: e.message);
+    }
+  }
 }

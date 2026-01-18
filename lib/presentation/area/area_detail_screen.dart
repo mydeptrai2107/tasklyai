@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/area_model.dart';
+import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_list.dart';
 import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
@@ -109,20 +111,89 @@ class _Header extends StatelessWidget {
       child: Column(
         spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_HeaderAppBar(), _AreaInfo(item), _StatsRow(item)],
+        children: [_HeaderAppBar(item.id), _AreaInfo(item), _StatsRow(item)],
       ),
     );
   }
 }
 
+enum _HeaderAction { edit, delete }
+
 class _HeaderAppBar extends StatelessWidget {
+  final String areaId;
+
+  const _HeaderAppBar(this.areaId);
+
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
+      children: [
         BackButton(color: Colors.white),
         Spacer(),
-        Icon(Icons.more_vert, color: Colors.white),
+        PopupMenuButton<_HeaderAction>(
+          icon: Icon(Icons.more_vert, color: Colors.white),
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onSelected: (value) {
+            switch (value) {
+              case _HeaderAction.edit:
+                break;
+              case _HeaderAction.delete:
+                DialogService.confirm(
+                  context,
+                  message: 'Bạn có chắc chắn muốn xóa?',
+                  onConfirm: () {
+                    context.read<AreaProvider>().deleteArea(context, areaId);
+                  },
+                );
+                break;
+            }
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: _HeaderAction.edit,
+              child: _MenuItem(icon: Icons.edit_outlined, text: 'Edit'),
+            ),
+            PopupMenuItem(
+              value: _HeaderAction.delete,
+              child: _MenuItem(
+                icon: Icons.delete_outline,
+                text: 'Delete',
+                isDanger: true,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MenuItem extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final bool isDanger;
+
+  const _MenuItem({
+    required this.icon,
+    required this.text,
+    this.isDanger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDanger ? Colors.red : Colors.black87;
+
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: color),
+        const SizedBox(width: 12),
+        Text(
+          text,
+          style: TextStyle(color: color, fontWeight: FontWeight.w500),
+        ),
       ],
     );
   }

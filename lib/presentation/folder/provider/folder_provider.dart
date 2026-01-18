@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/data/requests/create_folder_req.dart';
 import 'package:tasklyai/models/folder_model.dart';
+import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 import 'package:tasklyai/repository/folder_repository.dart';
 
 class FolderProvider extends ChangeNotifier {
@@ -47,6 +49,27 @@ class FolderProvider extends ChangeNotifier {
         "passwordHash": password,
       });
       fetchFolder(areaId);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteFolder(
+    BuildContext context,
+    String folderId,
+    String areaId,
+  ) async {
+    try {
+      await _folderRepository.deleteFolder(folderId);
+      fetchFolder(areaId);
+
+      if (context.mounted) {
+        context.read<AreaProvider>().fetchArea();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Xóa folder thành công')));
+        Navigator.pop(context);
+      }
     } on FormatException catch (_) {
       rethrow;
     }
