@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/folder_model.dart';
+import 'package:tasklyai/presentation/folder/create_folder_screen.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 
 class FolderDropdown extends StatefulWidget {
@@ -109,10 +110,31 @@ class _FolderDropdownState extends State<FolderDropdown> {
       builder: (_) {
         return ListView.separated(
           padding: const EdgeInsets.all(16),
-          itemCount: workspaces.length,
+          itemCount: workspaces.length + 1,
           separatorBuilder: (_, __) => const Divider(height: 1),
           itemBuilder: (_, index) {
-            final ws = workspaces[index];
+            if (index == 0) {
+              return ListTile(
+                leading: const Icon(Icons.add_circle_outline),
+                title: const Text(
+                  'Add new folder',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final created = await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CreateFolderScreen(),
+                    ),
+                  );
+                  if (created == true && context.mounted) {
+                    context.read<FolderProvider>().fetchFolder(null);
+                  }
+                },
+              );
+            }
+            final ws = workspaces[index - 1];
             return ListTile(
               leading: IconInt(icon: ws.icon, color: ws.color),
               title: Text(

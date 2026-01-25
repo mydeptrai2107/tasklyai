@@ -48,7 +48,8 @@ class TaskEmpty extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NewTaskScreen(projectModel),
+                  builder: (context) =>
+                      NewTaskScreen(projectModel: projectModel),
                 ),
               );
             },

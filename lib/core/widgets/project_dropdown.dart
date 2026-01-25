@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/project_model.dart';
+import 'package:tasklyai/presentation/project/new_project_screen.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 
 class ProjectDropdown extends StatefulWidget {
@@ -78,18 +79,13 @@ class _ProjectDropdownState extends State<ProjectDropdown> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) {
-        if (projects.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.all(24),
-            child: Text('No projects available.'),
-          );
-        }
-        final total = projects.length + (widget.includeNone ? 1 : 0);
+        final total = projects.length + 1 + (widget.includeNone ? 1 : 0);
         return ListView.separated(
           padding: const EdgeInsets.all(16),
           itemCount: total,
           separatorBuilder: (_, __) => const Divider(height: 1),
           itemBuilder: (_, index) {
+            var offset = 0;
             if (widget.includeNone && index == 0) {
               return ListTile(
                 leading: const Icon(Icons.block),
@@ -105,7 +101,29 @@ class _ProjectDropdownState extends State<ProjectDropdown> {
                 },
               );
             }
-            final projectIndex = widget.includeNone ? index - 1 : index;
+            if (widget.includeNone) {
+              offset = 1;
+            }
+            if (index == offset) {
+              return ListTile(
+                leading: const Icon(Icons.add_circle_outline),
+                title: const Text(
+                  'Add new project',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => NewProjectScreen()),
+                  );
+                  if (context.mounted) {
+                    context.read<ProjectProvider>().fetchAllProjects();
+                  }
+                },
+              );
+            }
+            final projectIndex = index - offset - 1;
             final project = projects[projectIndex];
             return ListTile(
               leading: IconInt(icon: project.icon, color: project.color),

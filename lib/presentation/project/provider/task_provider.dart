@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/data/requests/fetch_task_params.dart';
 import 'package:tasklyai/models/card_model.dart';
-import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/repository/task_repository.dart';
 
@@ -41,7 +40,7 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> createTask(
     BuildContext context,
-    ProjectModel project,
+    String projectId,
     Map<String, dynamic> data,
   ) async {
     try {
@@ -54,7 +53,7 @@ class TaskProvider extends ChangeNotifier {
             Navigator.pop(context);
           },
         );
-        fetchTaskByProject(project.id);
+        fetchTaskByProject(projectId);
       }
     } on FormatException catch (e) {
       if (context.mounted) {

@@ -36,6 +36,7 @@ class ProjectProvider extends ChangeNotifier {
           onOk: () {
             Navigator.pop(context);
             fetchProjectByArea(areaId);
+            fetchAllProjects();
           },
         );
       }
@@ -62,6 +63,7 @@ class ProjectProvider extends ChangeNotifier {
     try {
       final updated = await repository.updateProject(projectId, req.toJson());
       await fetchProjectByArea(areaId);
+      await fetchAllProjects();
       return updated;
     } on FormatException catch (e) {
       if (context.mounted) {
@@ -79,6 +81,7 @@ class ProjectProvider extends ChangeNotifier {
     try {
       await repository.deleteProject(projectId);
       await fetchProjectByArea(areaId);
+      await fetchAllProjects();
     } on FormatException catch (e) {
       if (context.mounted) {
         DialogService.error(context, message: e.message);

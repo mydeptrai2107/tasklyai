@@ -5,16 +5,16 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
+import 'package:tasklyai/core/widgets/project_dropdown.dart';
 import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/project/provider/task_provider.dart';
 import 'package:tasklyai/presentation/project/widgets/add_subtask.dart';
-import 'package:tasklyai/presentation/project/widgets/list_project_add_task.dart';
 import 'package:tasklyai/presentation/project/widgets/priority_widget.dart';
 
 class NewTaskScreen extends StatefulWidget {
-  const NewTaskScreen(this.projectModel, {super.key});
+  const NewTaskScreen({super.key, this.projectModel});
 
-  final ProjectModel projectModel;
+  final ProjectModel? projectModel;
 
   @override
   State<NewTaskScreen> createState() => _NewTaskScreenState();
@@ -25,13 +25,14 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   final _descController = TextEditingController();
   final _deadlineController = TextEditingController();
 
-  late ProjectModel projectSelected;
+  late ProjectModel? projectSelected;
   Priority prioritySelected = Priority.low;
   List<String> subTask = [];
 
   @override
   void initState() {
     projectSelected = widget.projectModel;
+    setState(() {});
     super.initState();
   }
 
@@ -46,7 +47,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   bool get isDisable =>
       _titleController.text.trim().isEmpty ||
-      _descController.text.trim().isEmpty;
+      _descController.text.trim().isEmpty ||
+      projectSelected == null;
 
   @override
   Widget build(BuildContext context) {
@@ -91,13 +93,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 Text('Project', style: textTheme.bodyMedium),
               ],
             ),
-            SizedBox(height: 6),
-            ListProjectAddTask(
-              initProject: projectSelected.id,
-              onTap: (project) {
-                projectSelected = project;
+            SizedBox(height: 8),
+            ProjectDropdown(
+              initValue: projectSelected,
+              onChanged: (value) {
+                projectSelected = value;
+                setState(() {});
               },
             ),
+
             SizedBox(height: 16),
 
             // Priority
@@ -184,8 +188,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           ? null
           : () {
               final Map<String, dynamic> data = {
-                'areaId': projectSelected.areaId,
-                'projectId': projectSelected.id,
+                'areaId': projectSelected!.areaId,
+                'projectId': projectSelected!.id,
                 'title': _titleController.text.trim(),
                 'content': _descController.text.trim(),
                 'tags': <String>[],
@@ -201,7 +205,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
               context.read<TaskProvider>().createTask(
                 context,
-                projectSelected,
+                projectSelected!.id,
                 data,
               );
             },

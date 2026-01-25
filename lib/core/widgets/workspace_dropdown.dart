@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
+import 'package:tasklyai/presentation/area/create_area_screen.dart';
 
 class WorkspaceDropdown extends StatefulWidget {
   final ValueChanged<AreaModel> onChanged;
@@ -68,10 +69,29 @@ class _WorkspaceDropdownState extends State<WorkspaceDropdown> {
       builder: (_) {
         return ListView.separated(
           padding: const EdgeInsets.all(16),
-          itemCount: workspaces.length,
+          itemCount: workspaces.length + 1,
           separatorBuilder: (_, __) => const Divider(height: 1),
           itemBuilder: (_, index) {
-            final ws = workspaces[index];
+            if (index == 0) {
+              return ListTile(
+                leading: const Icon(Icons.add_circle_outline),
+                title: const Text(
+                  'Add new workspace',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final created = await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute(builder: (_) => CreateAreaScreen()),
+                  );
+                  if (created == true && context.mounted) {
+                    context.read<AreaProvider>().fetchArea();
+                  }
+                },
+              );
+            }
+            final ws = workspaces[index - 1];
             return ListTile(
               leading: IconInt(icon: ws.icon, color: ws.color),
               title: Text(

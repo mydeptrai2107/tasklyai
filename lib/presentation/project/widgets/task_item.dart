@@ -100,7 +100,7 @@ class TaskItem extends StatelessWidget {
   Future<bool> _confirmDelete(BuildContext context, CardModel card) async {
     return await showDialog<bool>(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (dialogContext) => AlertDialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -108,7 +108,7 @@ class TaskItem extends StatelessWidget {
             content: const Text('This action cannot be undone.'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context, false),
+                onPressed: () => Navigator.pop(dialogContext, false),
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
@@ -118,7 +118,7 @@ class TaskItem extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.read<TaskProvider>().deleteTask(context, card);
-                  return Navigator.pop(context, true);
+                  return Navigator.pop(dialogContext, true);
                 },
                 child: const Text('Delete'),
               ),

@@ -219,7 +219,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => NewTaskScreen(_project)),
+            MaterialPageRoute(builder: (_) => NewTaskScreen(projectModel: _project)),
           );
         },
         child: Row(
