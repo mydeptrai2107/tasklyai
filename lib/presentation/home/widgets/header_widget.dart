@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/presentation/profile/profile_screen.dart';
+import 'package:tasklyai/presentation/notification/notification_screen.dart';
+import 'package:tasklyai/presentation/notification/provider/notification_provider.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 
 class HeaderWidget extends StatelessWidget {
@@ -10,6 +11,12 @@ class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<ProfileProvider>().profile;
+    final unread = context.watch<NotificationProvider>().unreadCount;
+    if (unread == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<NotificationProvider>().fetchUnreadCount();
+      });
+    }
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 16),
@@ -46,12 +53,45 @@ class HeaderWidget extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return ProfileScreen();
+                    return const NotificationScreen();
                   },
                 ),
               );
             },
-            child: Icon(Icons.person_outline, color: Colors.white, size: 30),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                const Icon(
+                  Icons.notifications_none_outlined,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                if (unread > 0)
+                  Positioned(
+                    right: -2,
+                    top: -4,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: primaryColor, width: 2),
+                      ),
+                      child: Text(
+                        unread > 99 ? '99+' : unread.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ],
       ),

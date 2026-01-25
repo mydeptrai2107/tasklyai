@@ -7,6 +7,7 @@ import 'package:tasklyai/presentation/auth/provider/auth_provider.dart';
 import 'package:tasklyai/presentation/category/provider/category_provider.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
+import 'package:tasklyai/presentation/notification/provider/notification_provider.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/presentation/stats/provider/stats_provider.dart';
 import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => NoteProvider()),
+        ChangeNotifierProvider(create: (context) => NotificationProvider()),
         ChangeNotifierProvider(create: (context) => ProjectProvider()),
         ChangeNotifierProvider(create: (context) => TaskProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),

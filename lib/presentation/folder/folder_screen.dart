@@ -11,10 +11,13 @@ class FolderScreen extends StatefulWidget {
 }
 
 class _FolderScreenState extends State<FolderScreen> {
+  String _searchQuery = '';
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<FolderProvider>().fetchFolder('69651b0819c4b0e77870bb69');
+      context.read<FolderProvider>().fetchFolder(null);
+      context.read<FolderProvider>().fetchAllFolder();
     });
     super.initState();
   }
@@ -25,12 +28,17 @@ class _FolderScreenState extends State<FolderScreen> {
       backgroundColor: context.theme.colorScheme.surface,
       body: Column(
         children: [
-          _HeaderAppBar(title: 'Folder', onSearchChanged: (value) {}),
+          _HeaderAppBar(
+            title: 'Folder',
+            onSearchChanged: (value) {
+              setState(() => _searchQuery = value.trim());
+            },
+          ),
           const SizedBox(height: 12),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: FolderList(),
+              child: FolderList(searchQuery: _searchQuery),
             ),
           ),
         ],

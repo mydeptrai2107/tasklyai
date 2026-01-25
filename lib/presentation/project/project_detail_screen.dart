@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/widgets/dashed_outline_button.dart';
 import 'package:tasklyai/core/widgets/task_empty.dart';
 import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/project/new_task_screen.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/update_project_screen.dart';
 import 'package:tasklyai/presentation/project/widgets/task_item.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
@@ -18,15 +21,18 @@ class ProjectDetailScreen extends StatefulWidget {
 }
 
 class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
+  late ProjectModel _project;
+
   @override
   void initState() {
     super.initState();
+    _project = widget.project;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TaskProvider>().fetchTaskByProject(widget.project.id);
+      context.read<TaskProvider>().fetchTaskByProject(_project.id);
     });
   }
 
-  Color get _color => Color(widget.project.color);
+  Color get _color => Color(_project.color);
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +44,33 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
-        title: Text(
-          'Project Detail',
-          style: context.theme.textTheme.titleMedium,
-        ),
+        title: Text('Project Detail', style: context.theme.textTheme.titleMedium),
+        actions: [
+          PopupMenuButton<_ProjectAction>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == _ProjectAction.edit) {
+                _editProject();
+              } else if (value == _ProjectAction.delete) {
+                _deleteProject();
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: _ProjectAction.edit,
+                child: _MenuItem(icon: Icons.edit_outlined, text: 'Edit'),
+              ),
+              PopupMenuItem(
+                value: _ProjectAction.delete,
+                child: _MenuItem(
+                  icon: Icons.delete_outline,
+                  text: 'Delete',
+                  isDanger: true,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -56,7 +85,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
   /// HEADER
   Widget _projectHeader(TextTheme textTheme) {
-    final project = widget.project;
+    final project = _project;
 
     final progress = project.totalTasks == 0
         ? 0.0
@@ -165,7 +194,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         child: Consumer<TaskProvider>(
           builder: (context, provider, _) {
             if (provider.taskByProject.isEmpty) {
-              return TaskEmpty(widget.project);
+              return TaskEmpty(_project);
             }
 
             return ListView.separated(
@@ -190,7 +219,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => NewTaskScreen(widget.project)),
+            MaterialPageRoute(builder: (_) => NewTaskScreen(_project)),
           );
         },
         child: Row(
@@ -212,7 +241,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
   /// STATUS BADGE
   Widget _statusBadge() {
-    final project = widget.project;
+    final project = _project;
 
     Color bg;
     Color text;
@@ -247,6 +276,64 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
           color: text,
         ),
       ),
+    );
+  }
+
+  Future<void> _editProject() async {
+    final updated = await Navigator.push<ProjectModel>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => UpdateProjectScreen(project: _project),
+      ),
+    );
+    if (!mounted) return;
+    if (updated != null) {
+      setState(() => _project = updated);
+    }
+  }
+
+  void _deleteProject() {
+    DialogService.confirm(
+      context,
+      message: 'Ban co chac chan muon xoa project?',
+      onConfirm: () async {
+        await context.read<ProjectProvider>().deleteProject(
+              context,
+              _project.areaId,
+              _project.id,
+            );
+        if (!context.mounted) return;
+        Navigator.pop(context, true);
+      },
+    );
+  }
+}
+
+enum _ProjectAction { edit, delete }
+
+class _MenuItem extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final bool isDanger;
+
+  const _MenuItem({
+    required this.icon,
+    required this.text,
+    this.isDanger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDanger ? Colors.red : Colors.black87;
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: color),
+        const SizedBox(width: 12),
+        Text(
+          text,
+          style: TextStyle(color: color, fontWeight: FontWeight.w500),
+        ),
+      ],
     );
   }
 }

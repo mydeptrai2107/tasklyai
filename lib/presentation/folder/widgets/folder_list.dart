@@ -10,16 +10,34 @@ import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_card.dart';
 
 class FolderList extends StatelessWidget {
-  const FolderList({super.key, this.areaModel});
+  const FolderList({super.key, this.areaModel, this.searchQuery = ''});
 
   final AreaModel? areaModel;
+  final String searchQuery;
 
   @override
   Widget build(BuildContext context) {
     return Selector<FolderProvider, List<FolderModel>>(
       builder: (context, value, child) {
-        if (value.isEmpty) {
-          return FolderEmpty(areaModel: areaModel);
+        final query = searchQuery.trim().toLowerCase();
+        final filtered = query.isEmpty
+            ? value
+            : value.where((folder) {
+                final name = folder.name.toLowerCase();
+                final desc = folder.description.toLowerCase();
+                return name.contains(query) || desc.contains(query);
+              }).toList();
+
+        if (filtered.isEmpty) {
+          if (value.isEmpty) {
+            return FolderEmpty(areaModel: areaModel);
+          }
+          return const Center(
+            child: Text(
+              'No folders found.',
+              style: TextStyle(color: Colors.black54),
+            ),
+          );
         }
 
         return Column(
@@ -27,9 +45,9 @@ class FolderList extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
-                itemCount: value.length,
+                itemCount: filtered.length,
                 itemBuilder: (context, index) {
-                  return FolderCard(item: value[index], areaModel: areaModel);
+                  return FolderCard(item: filtered[index], areaModel: areaModel);
                 },
               ),
             ),

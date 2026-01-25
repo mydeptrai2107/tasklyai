@@ -7,8 +7,14 @@ import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 class FolderDropdown extends StatefulWidget {
   final ValueChanged<FolderModel> onChanged;
   final FolderModel? initValue;
+  final String? initFolderId;
 
-  const FolderDropdown({super.key, required this.onChanged, this.initValue});
+  const FolderDropdown({
+    super.key,
+    required this.onChanged,
+    this.initValue,
+    this.initFolderId,
+  });
 
   @override
   State<FolderDropdown> createState() => _FolderDropdownState();
@@ -16,6 +22,7 @@ class FolderDropdown extends StatefulWidget {
 
 class _FolderDropdownState extends State<FolderDropdown> {
   FolderModel? folderSelected;
+  bool _didInit = false;
 
   @override
   void initState() {
@@ -24,8 +31,22 @@ class _FolderDropdownState extends State<FolderDropdown> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didInit) return;
+    if (folderSelected == null && widget.initFolderId != null) {
+      final folders = context.read<FolderProvider>().folders;
+      final match = folders.where((f) => f.id == widget.initFolderId).toList();
+      if (match.isNotEmpty) {
+        folderSelected = match.first;
+      }
+    }
+    _didInit = true;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final folder = context.watch<FolderProvider>().folders;
+    final folder = context.watch<FolderProvider>().allFolders;
 
     return InkWell(
       borderRadius: BorderRadius.circular(14),
@@ -52,7 +73,6 @@ class _FolderDropdownState extends State<FolderDropdown> {
                   ),
                 ),
               ),
-            Spacer(),
             const Icon(Icons.keyboard_arrow_down),
           ],
         ),

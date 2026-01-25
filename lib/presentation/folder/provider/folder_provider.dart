@@ -11,9 +11,19 @@ class FolderProvider extends ChangeNotifier {
   List<FolderModel> _folders = [];
   List<FolderModel> get folders => _folders;
 
+  List<FolderModel> _allFolders = [];
+  List<FolderModel> get allFolders => _allFolders;
+
   final FolderRepository _folderRepository = FolderRepository();
 
-  Future<void> fetchFolder(String areaId) async {
+  Future<void> fetchAllFolder() async {
+    try {
+      _allFolders = await _folderRepository.fetchFolder(null);
+      notifyListeners();
+    } on FormatException catch (_) {}
+  }
+
+  Future<void> fetchFolder(String? areaId) async {
     try {
       _folders = await _folderRepository.fetchFolder(areaId);
       notifyListeners();
@@ -29,6 +39,7 @@ class FolderProvider extends ChangeNotifier {
           message: 'Tạo folder thành công',
           onOk: () {
             fetchFolder(req.areaId);
+            fetchAllFolder();
             Navigator.pop(context);
           },
         );
@@ -82,6 +93,7 @@ class FolderProvider extends ChangeNotifier {
         "passwordHash": password,
       });
       fetchFolder(areaId);
+      fetchAllFolder();
     } on FormatException catch (_) {
       rethrow;
     }
@@ -91,6 +103,7 @@ class FolderProvider extends ChangeNotifier {
     try {
       await _folderRepository.deleteFolder(folder.id);
       fetchFolder(folder.areaId);
+      fetchAllFolder();
 
       if (context.mounted) {
         context.read<AreaProvider>().fetchArea();
@@ -108,6 +121,7 @@ class FolderProvider extends ChangeNotifier {
     try {
       await _folderRepository.updateFolder(folder.id, {"passwordHash": null});
       fetchFolder(folder.areaId);
+      fetchAllFolder();
     } on FormatException catch (_) {}
   }
 

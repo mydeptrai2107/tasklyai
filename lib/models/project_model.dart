@@ -60,18 +60,22 @@ class ProjectModel {
     description: json["description"],
     color: json["color"],
     icon: json["icon"],
-    startDate: DateTime.parse(json["startDate"]),
-    endDate: DateTime.parse(json["endDate"]),
+    startDate: json["startDate"] == null
+        ? DateTime.now()
+        : DateTime.parse(json["startDate"]),
+    endDate: json["endDate"] == null
+        ? DateTime.now()
+        : DateTime.parse(json["endDate"]),
     hideCompleted: json["hideCompleted"],
     energyLevel: json["energyLevel"],
     calendarSync: json["calendarSync"],
     createdAt: DateTime.parse(json["createdAt"]),
     updatedAt: DateTime.parse(json["updatedAt"]),
-    totalTasks: json["totalTasks"],
-    completedTasks: json["completedTasks"],
-    completionRate: json["completionRate"],
-    isOverdue: json["isOverdue"],
-    duration: json["duration"],
+    totalTasks: json["totalTasks"] ?? 0,
+    completedTasks: json["completedTasks"] ?? 0,
+    completionRate: json["completionRate"] ?? 0,
+    isOverdue: json["isOverdue"] ?? false,
+    duration: json["duration"] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {

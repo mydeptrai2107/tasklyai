@@ -24,6 +24,7 @@ class _AreaDetailScreenState extends State<AreaDetailScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<FolderProvider>().fetchFolder(widget.item.id);
+      context.read<FolderProvider>().fetchAllFolder();
       context.read<ProjectProvider>().fetchProjectByArea(widget.item.id);
     });
     super.initState();

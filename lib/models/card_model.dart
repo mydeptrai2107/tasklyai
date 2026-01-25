@@ -28,6 +28,8 @@ class CardModel {
   final String? link;
   final String? imageUrl;
 
+  final List<CardBlock> blocks;
+
   final List<ChecklistItem> checklist;
 
   final DateTime? deletedAt;
@@ -51,6 +53,7 @@ class CardModel {
     required this.isArchived,
     this.link,
     this.imageUrl,
+    required this.blocks,
     required this.checklist,
     this.deletedAt,
     required this.createdAt,
@@ -64,6 +67,7 @@ class CardModel {
     final areaRaw = json['areaId'];
     final folderRaw = json['folderId'];
     final projectRaw = json['projectId'];
+    final blocksRaw = (json['blocks'] as List<dynamic>? ?? []);
 
     return CardModel(
       id: json['_id'],
@@ -91,6 +95,9 @@ class CardModel {
       isArchived: json['isArchived'] ?? false,
       link: json['link'],
       imageUrl: json['imageUrl'],
+      blocks: blocksRaw
+          .map((e) => CardBlock.fromJson(e as Map<String, dynamic>))
+          .toList(),
       checklist: (json['checklist'] as List<dynamic>? ?? [])
           .map((e) => ChecklistItem.fromJson(e))
           .toList(),
@@ -120,6 +127,7 @@ class CardModel {
       'isArchived': isArchived,
       'link': link,
       'imageUrl': imageUrl,
+      'blocks': blocks.map((e) => e.toJson()).toList(),
       'checklist': checklist.map((e) => e.toJson()).toList(),
       'deletedAt': deletedAt?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
@@ -256,5 +264,83 @@ class FolderRef {
 
   Map<String, dynamic> toJson() {
     return {'_id': id, 'name': name, 'color': color, 'icon': icon};
+  }
+}
+
+class CardBlock {
+  final String id;
+  final String type;
+  final int order;
+  final bool isPinned;
+  final DateTime? pinnedAt;
+  final Map<String, dynamic> content;
+  final Map<String, dynamic>? metadata;
+
+  CardBlock({
+    required this.id,
+    required this.type,
+    required this.order,
+    required this.isPinned,
+    required this.pinnedAt,
+    required this.content,
+    required this.metadata,
+  });
+
+  factory CardBlock.fromJson(Map<String, dynamic> json) {
+    return CardBlock(
+      id: json['_id'] ?? '',
+      type: json['type'] ?? 'text',
+      order: json['order'] ?? 0,
+      isPinned: json['isPinned'] ?? false,
+      pinnedAt: json['pinnedAt'] != null
+          ? DateTime.tryParse(json['pinnedAt'])
+          : null,
+      content: (json['content'] as Map<String, dynamic>? ?? {}),
+      metadata: json['metadata'] as Map<String, dynamic>?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'type': type,
+      'order': order,
+      'isPinned': isPinned,
+      'pinnedAt': pinnedAt?.toIso8601String(),
+      'content': content,
+      'metadata': metadata,
+    };
+  }
+
+  String? get text => content['text'] as String?;
+  String? get imageUrl => content['imageUrl'] as String?;
+  String? get imageCaption => content['imageCaption'] as String?;
+  String? get audioUrl => content['audioUrl'] as String?;
+  int? get audioDuration => content['audioDuration'] as int?;
+  String? get checkboxLabel => content['label'] as String?;
+  bool get checkboxChecked => content['checked'] == true;
+
+  List<BlockListItem> get listItems {
+    final items = content['items'];
+    if (items is List) {
+      return items
+          .map((e) => BlockListItem.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    return [];
+  }
+}
+
+class BlockListItem {
+  final String text;
+  final bool checked;
+
+  BlockListItem({required this.text, required this.checked});
+
+  factory BlockListItem.fromJson(Map<String, dynamic> json) {
+    return BlockListItem(
+      text: json['text'] ?? '',
+      checked: json['checked'] ?? false,
+    );
   }
 }

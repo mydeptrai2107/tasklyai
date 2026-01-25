@@ -29,4 +29,40 @@ class ProjectRepository {
       rethrow;
     }
   }
+
+  Future<List<ProjectModel>> fetchAllProjects() async {
+    try {
+      final res = await _dioClient.get(ApiEndpoint.projects);
+      final data = (res.data["projects"] as List<dynamic>?);
+      if (data == null) {
+        throw FormatException('System error');
+      }
+      return data.map((e) => ProjectModel.fromJson(e)).toList();
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<ProjectModel> updateProject(
+    String projectId,
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      final res = await _dioClient.put(
+        '${ApiEndpoint.projects}/$projectId',
+        data: data,
+      );
+      return ProjectModel.fromJson(res.data);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteProject(String projectId) async {
+    try {
+      await _dioClient.delete('${ApiEndpoint.projects}/$projectId');
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
 }

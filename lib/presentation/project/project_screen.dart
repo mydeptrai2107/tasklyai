@@ -12,12 +12,12 @@ class ProjectScreen extends StatefulWidget {
 }
 
 class _ProjectScreenState extends State<ProjectScreen> {
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
-    context.read<ProjectProvider>().fetchProjectByArea(
-      '69651b0819c4b0e77870bb69',
-    );
+    context.read<ProjectProvider>().fetchAllProjects();
   }
 
   @override
@@ -26,12 +26,17 @@ class _ProjectScreenState extends State<ProjectScreen> {
       backgroundColor: context.theme.colorScheme.surface,
       body: Column(
         children: [
-          _HeaderAppBar(title: 'Project', onSearchChanged: (value) {}),
+          _HeaderAppBar(
+            title: 'Project',
+            onSearchChanged: (value) {
+              setState(() => _searchQuery = value.trim());
+            },
+          ),
           const SizedBox(height: 12),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: ProjectList(),
+              child: ProjectList(searchQuery: _searchQuery),
             ),
           ),
         ],

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/dialog_service.dart';
+import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/core/network/dio_client.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/models/card_model.dart';
-import 'package:tasklyai/models/checklist_item.dart';
+import 'package:tasklyai/presentation/notes/note_edit_screen.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
-import 'package:tasklyai/presentation/notes/widgets/add_checklist_widget.dart';
-import 'package:tasklyai/presentation/notes/widgets/add_image_widget.dart';
-import 'package:tasklyai/presentation/notes/widgets/add_link_widget.dart';
-import 'package:tasklyai/presentation/notes/widgets/add_text_widget.dart';
+import 'package:tasklyai/presentation/notes/widgets/conver_note_to_task.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 
 class NoteDetailScreen extends StatefulWidget {
   const NoteDetailScreen(this.item, {super.key});
@@ -19,125 +20,397 @@ class NoteDetailScreen extends StatefulWidget {
 }
 
 class _NoteDetailScreenState extends State<NoteDetailScreen> {
-  String? _image;
-  String? _link;
-  String _content = '';
-  List<ChecklistItem> _checkList = [];
-
-  late final TextEditingController _titleController;
-
-  bool get isValid =>
-      _titleController.text.trim().isNotEmpty && _content.trim().isNotEmpty;
+  late CardModel _item;
+  String? _folderId;
 
   @override
   void initState() {
-    _titleController = TextEditingController();
-    _content = widget.item.content;
-    _titleController.text = widget.item.title;
-    _link = widget.item.link;
-    _image = widget.item.imageUrl;
-    _checkList = widget.item.checklist;
-    setState(() {});
+    _item = widget.item;
+    _folderId = widget.item.folder?.id;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProjectProvider>().fetchAllProjects();
+    });
     super.initState();
   }
 
   @override
-  void dispose() {
-    _titleController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    final blocks = _sortedBlocks(_item.blocks);
+    return Scaffold(
+      backgroundColor: bgColor,
+      body: Column(
+        children: [
+          _topHeader(context),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _headerCard(context),
+                  const SizedBox(height: 16),
+                  Text('Blocks', style: context.theme.textTheme.titleSmall),
+                  const SizedBox(height: 8),
+                  if (blocks.isEmpty)
+                    const Text(
+                      'No blocks yet.',
+                      style: TextStyle(color: Colors.black54),
+                    )
+                  else
+                    ...blocks.map((block) => _BlockView(block)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
+
+  Widget _topHeader(BuildContext context) {
+    final color = _headerColor();
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top,
+        left: 16,
+        right: 12,
+        bottom: 16,
+      ),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
+      ),
+      child: Row(
+        children: [
+          const BackButton(color: Colors.white),
+          const SizedBox(width: 4),
+          const Expanded(
+            child: Text(
+              'Note',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          PopupMenuButton<_DetailHeaderAction>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            onSelected: (value) {
+              if (value == _DetailHeaderAction.edit) {
+                _openEdit(context);
+              } else if (value == _DetailHeaderAction.convert) {
+                showConvertToTaskDialog(context, _folderId, _item);
+              } else if (value == _DetailHeaderAction.delete) {
+                _confirmDelete();
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: _DetailHeaderAction.edit,
+                child: _HeaderMenuItem(icon: Icons.edit_outlined, text: 'Edit'),
+              ),
+              PopupMenuItem(
+                value: _DetailHeaderAction.convert,
+                child: _HeaderMenuItem(
+                  icon: Icons.task_alt_outlined,
+                  text: 'Convert to task',
+                ),
+              ),
+              PopupMenuItem(
+                value: _DetailHeaderAction.delete,
+                child: _HeaderMenuItem(
+                  icon: Icons.delete_outline,
+                  text: 'Delete',
+                  isDanger: true,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _headerColor() {
+    final folderColor = _item.folder?.color;
+    final areaColor = _item.area?.color;
+    if (folderColor != null) return Color(folderColor);
+    if (areaColor != null) return Color(areaColor);
+    return primaryColor;
+  }
+
+  Future<void> _openEdit(BuildContext context) async {
+    final updated = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => NoteEditScreen(_item, folderId: _folderId),
+      ),
+    );
+    if (updated == true && context.mounted) {
+      final refreshed = await context.read<NoteProvider>().fetchNoteById(
+        context,
+        _item.id,
+      );
+      if (refreshed != null) {
+        setState(() => _item = refreshed);
+      }
+      if (_folderId != null && context.mounted) {
+        context.read<NoteProvider>().fetchNote(_folderId!);
+      }
+    }
+  }
+
+  void _confirmDelete() {
+    if (_folderId == null) return;
+    DialogService.confirm(
+      context,
+      message: 'Ban co chac chan muon xoa note?',
+      onConfirm: () {
+        context.read<NoteProvider>().deleteNote(context, _folderId!, _item.id);
+      },
+    );
+  }
+
+  List<CardBlock> _sortedBlocks(List<CardBlock> blocks) {
+    final pinned = blocks.where((b) => b.isPinned).toList()
+      ..sort(
+        (a, b) => b.pinnedAt == null
+            ? 1
+            : a.pinnedAt == null
+            ? -1
+            : b.pinnedAt!.compareTo(a.pinnedAt!),
+      );
+    final others = blocks.where((b) => !b.isPinned).toList()
+      ..sort((a, b) => a.order.compareTo(b.order));
+    return [...pinned, ...others];
+  }
+
+  Widget _headerCard(BuildContext context) {
+    final tags = _item.tags;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 6)],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(_item.title, style: context.theme.textTheme.titleMedium),
+          const SizedBox(height: 6),
+          if (_item.content.isNotEmpty)
+            Text(_item.content, style: context.theme.textTheme.bodyMedium),
+          if (tags.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: tags.map((tag) => _TagChip(tag: tag)).toList(),
+            ),
+          ],
+          if (_item.link != null && _item.link!.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                const Icon(Icons.link, size: 16, color: Colors.blue),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    _item.link!,
+                    style: const TextStyle(color: Colors.blue),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _BlockView extends StatelessWidget {
+  final CardBlock block;
+
+  const _BlockView(this.block);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Chi tiết note',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          spacing: 8,
+    final type = block.type;
+    Widget content;
+
+    switch (type) {
+      case 'heading':
+        content = Text(
+          block.text ?? '',
+          style: context.theme.textTheme.titleMedium,
+        );
+        break;
+      case 'text':
+        content = Text(block.text ?? '');
+        break;
+      case 'checkbox':
+        content = Row(
+          children: [
+            Icon(
+              block.checkboxChecked
+                  ? Icons.check_box
+                  : Icons.check_box_outline_blank,
+              color: block.checkboxChecked ? Colors.green : Colors.grey,
+            ),
+            const SizedBox(width: 8),
+            Expanded(child: Text(block.checkboxLabel ?? '')),
+          ],
+        );
+        break;
+      case 'list':
+        content = Column(
+          children: block.listItems.map((item) {
+            return Row(
+              children: [
+                Icon(
+                  item.checked
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  size: 16,
+                  color: item.checked ? Colors.green : Colors.grey,
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: Text(item.text)),
+              ],
+            );
+          }).toList(),
+        );
+        break;
+      case 'image':
+        content = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextFormField(
-              controller: _titleController,
-              onChanged: (value) {
-                setState(() {});
-              },
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Note title',
-              ),
-            ),
-
-            AddTextWidget(
-              initValue: widget.item.content,
-              onChange: (value) {
-                _content = value;
-                setState(() {});
-              },
-            ),
-            AddLinkWidget(
-              initValue: _link,
-              onChange: (value) {
-                _link = value;
-              },
-            ),
-            AddCheckListWidget(
-              initValue: _checkList,
-              onChanged: (list) {
-                _checkList = list;
-              },
-            ),
-            AddImageWidget(
-              initUrl: _image,
-              onImageUploaded: (value) {
-                _image = value;
-              },
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                '$baseUrl${block.imageUrl ?? ''}',
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox(
+                  height: 140,
+                  child: Center(child: Icon(Icons.broken_image_outlined)),
                 ),
-                onPressed: isValid
-                    ? () {
-                        final Map<String, dynamic> data = {
-                          'title': _titleController.text.trim(),
-                          'content': _content,
-                          'link': _link,
-                          'imageUrl': _image,
-                          'checklist': _checkList
-                              .map((e) => e.toJson())
-                              .toList(),
-                        };
-
-                        debugPrint(data.toString());
-
-                        context.read<NoteProvider>().updateNote(
-                          context: context,
-                          folderId: widget.item.folder!.id,
-                          noteId: widget.item.id,
-                          req: data,
-                        );
-                      }
-                    : null,
-                child: Text('Save'),
               ),
             ),
+            if ((block.imageCaption ?? '').isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                block.imageCaption!,
+                style: context.theme.textTheme.bodySmall,
+              ),
+            ],
           ],
-        ),
+        );
+        break;
+      case 'audio':
+        content = Row(
+          children: [
+            const Icon(Icons.audiotrack_outlined),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                block.audioUrl ?? 'Audio',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (block.audioDuration != null) Text('${block.audioDuration}s'),
+          ],
+        );
+        break;
+      default:
+        content = Text(block.text ?? '');
+        break;
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 6)],
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                type.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black54,
+                ),
+              ),
+              const Spacer(),
+              if (block.isPinned)
+                const Icon(Icons.push_pin, size: 14, color: Colors.orange),
+            ],
+          ),
+          const SizedBox(height: 8),
+          content,
+        ],
+      ),
+    );
+  }
+}
+
+class _TagChip extends StatelessWidget {
+  final String tag;
+
+  const _TagChip({required this.tag});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(tag, style: const TextStyle(fontSize: 12)),
+    );
+  }
+}
+
+enum _DetailHeaderAction { edit, convert, delete }
+
+class _HeaderMenuItem extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final bool isDanger;
+
+  const _HeaderMenuItem({
+    required this.icon,
+    required this.text,
+    this.isDanger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDanger ? Colors.red : Colors.black87;
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: color),
+        const SizedBox(width: 12),
+        Text(
+          text,
+          style: TextStyle(color: color, fontWeight: FontWeight.w500),
+        ),
+      ],
     );
   }
 }

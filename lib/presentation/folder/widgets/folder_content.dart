@@ -14,23 +14,11 @@ class FolderContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final noteProvider = context.watch<NoteProvider>();
-    return _NotesOnly(noteProvider, folder);
-  }
-}
-
-class _NotesOnly extends StatelessWidget {
-  final NoteProvider provider;
-  final FolderModel folder;
-
-  const _NotesOnly(this.provider, this.folder);
-
-  @override
-  Widget build(BuildContext context) {
-    if (!provider.hasNotes) {
+    if (!noteProvider.hasNotes) {
       return _EmptyState(text: 'No notes in this folder', folder: folder);
     }
 
-    return _NotesGrid(provider.notes, folder);
+    return _NotesGrid(noteProvider.notes, folder);
   }
 }
 
@@ -51,23 +39,17 @@ class _NotesGrid extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return CreateNoteScreen(folder);
+                  return CreateNoteScreen(folderModel: folder);
                 },
               ),
             );
           },
         ),
         Expanded(
-          child: GridView.builder(
+          child: ListView.builder(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.5,
-            ),
+
             itemCount: notes.length,
             itemBuilder: (_, index) {
               return NoteCard(notes[index]);
@@ -141,7 +123,7 @@ class _CreateNoteButton extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return CreateNoteScreen(folder);
+              return CreateNoteScreen(folderModel: folder);
             },
           ),
         );

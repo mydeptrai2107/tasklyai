@@ -6,7 +6,7 @@ import 'package:tasklyai/models/folder_model.dart';
 class FolderRepository {
   final _dioClient = DioClient();
 
-  Future<List<FolderModel>> fetchFolder(String areaId) async {
+  Future<List<FolderModel>> fetchFolder(String? areaId) async {
     try {
       final res = await _dioClient.get(
         ApiEndpoint.folders,

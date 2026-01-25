@@ -6,9 +6,17 @@ import 'package:tasklyai/core/configs/extention.dart';
 
 class AddImageWidget extends StatefulWidget {
   final ValueChanged<String?>? onImageUploaded;
+  final ValueChanged<File?>? onImageSelected;
   final String? initUrl;
+  final bool uploadToCloudinary;
 
-  const AddImageWidget({super.key, this.onImageUploaded, this.initUrl});
+  const AddImageWidget({
+    super.key,
+    this.onImageUploaded,
+    this.onImageSelected,
+    this.initUrl,
+    this.uploadToCloudinary = true,
+  });
 
   @override
   State<AddImageWidget> createState() => _AddImageWidgetState();
@@ -27,10 +35,15 @@ class _AddImageWidgetState extends State<AddImageWidget> {
 
     setState(() {
       _image = File(picked.path);
-      _loading = true;
+      _loading = widget.uploadToCloudinary;
     });
 
-    await _uploadToCloudinary();
+    if (widget.uploadToCloudinary) {
+      await _uploadToCloudinary();
+    } else {
+      widget.onImageSelected?.call(_image);
+      setState(() => _loading = false);
+    }
   }
 
   /// ☁️ Upload to Cloudinary
@@ -72,6 +85,7 @@ class _AddImageWidgetState extends State<AddImageWidget> {
     });
 
     widget.onImageUploaded?.call(null);
+    widget.onImageSelected?.call(null);
   }
 
   @override
@@ -135,6 +149,13 @@ class _AddImageWidgetState extends State<AddImageWidget> {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.network(_imageUrl!, fit: BoxFit.cover),
+      );
+    }
+
+    if (_image != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.file(_image!, fit: BoxFit.cover),
       );
     }
 

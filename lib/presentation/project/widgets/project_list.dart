@@ -10,29 +10,48 @@ import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/project/widgets/project_item.dart';
 
 class ProjectList extends StatelessWidget {
-  const ProjectList({super.key, this.item});
+  const ProjectList({super.key, this.item, this.searchQuery = ''});
 
   final AreaModel? item;
+  final String searchQuery;
 
   @override
   Widget build(BuildContext context) {
     return Selector<ProjectProvider, List<ProjectModel>>(
       builder: (context, value, child) {
-        if (value.isEmpty) {
-          return ProjectEmpty(areaModel: item);
+        final query = searchQuery.trim().toLowerCase();
+        final filtered = query.isEmpty
+            ? value
+            : value.where((project) {
+                final name = project.name.toLowerCase();
+                final desc = project.description.toLowerCase();
+                return name.contains(query) || desc.contains(query);
+              }).toList();
+
+        if (filtered.isEmpty) {
+          if (value.isEmpty) {
+            return ProjectEmpty(areaModel: item);
+          }
+          return const Center(
+            child: Text(
+              'No projects found.',
+              style: TextStyle(color: Colors.black54),
+            ),
+          );
         }
+
         return Column(
           children: [
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
-                itemCount: value.length,
+                itemCount: filtered.length,
                 itemBuilder: (context, index) {
-                  return ProjectItem(value[index]);
+                  return ProjectItem(filtered[index]);
                 },
               ),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             DashedOutlineButton(
               onPressed: () {
                 Navigator.push(
@@ -50,7 +69,7 @@ class ProjectList extends StatelessWidget {
           ],
         );
       },
-      selector: (_, p) => p.projectsArea,
+      selector: (_, p) => p.allProjects,
     );
   }
 }

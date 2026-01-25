@@ -188,9 +188,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 'projectId': projectSelected.id,
                 'title': _titleController.text.trim(),
                 'content': _descController.text.trim(),
+                'tags': <String>[],
                 'energyLevel': prioritySelected.eng.toLowerCase(),
                 'status': 'todo',
-                'dueDate': '${_deadlineController.text}T10:00:00Z',
+                'dueDate': deadline?.toIso8601String(),
                 'checklist': subTask
                     .map((e) => {'text': e, 'checked': false})
                     .toList(),

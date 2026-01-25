@@ -17,7 +17,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int index = 0;
 
-  final keys = List.generate(5, (_) => GlobalKey<NavigatorState>());
+  final keys = List.generate(4, (_) => GlobalKey<NavigatorState>());
+  final tabVersions = List.filled(4, 0);
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +27,15 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: IndexedStack(
         index: index,
-        children: List.generate(5, (i) {
-          return Navigator(
-            key: keys[i],
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(builder: (_) => _rootScreen(i));
-            },
+        children: List.generate(4, (i) {
+          return KeyedSubtree(
+            key: ValueKey('tab-$i-${tabVersions[i]}'),
+            child: Navigator(
+              key: keys[i],
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(builder: (_) => _rootScreen(i));
+              },
+            ),
           );
         }),
       ),
@@ -41,11 +45,11 @@ class _MainScreenState extends State<MainScreen> {
         selectedItemColor: primaryColor,
         unselectedItemColor: Colors.black54,
         onTap: (i) {
-          if (i == index) {
-            keys[i].currentState?.popUntil((r) => r.isFirst);
-          } else {
-            setState(() => index = i);
-          }
+          setState(() {
+            index = i;
+            tabVersions[i] += 1;
+            keys[i] = GlobalKey<NavigatorState>();
+          });
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),

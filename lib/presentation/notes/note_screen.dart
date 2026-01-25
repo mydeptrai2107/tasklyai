@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tasklyai/core/widgets/dashed_outline_button.dart';
 import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/notes/create_note_screen.dart';
@@ -34,30 +33,54 @@ class _NotesScreenState extends State<NotesScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CreateNoteScreen(folderModel: widget.folderModel),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _header(),
               _search(),
               Expanded(child: _noteList()),
-              DashedOutlineButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CreateNoteScreen(widget.folderModel),
-                    ),
-                  );
-                },
-                color: Colors.grey[350],
-                child: Text('Add new note'),
-              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _header() {
+    return Selector<NoteProvider, int>(
+      selector: (_, p) => p.notes.length,
+      builder: (context, count, child) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Row(
+            children: [
+              Text(
+                '$count notes',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const Spacer(),
+              Text(
+                widget.folderModel.name,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -82,11 +105,10 @@ class _NotesScreenState extends State<NotesScreen> {
   Widget _noteList() {
     return Selector<NoteProvider, List<CardModel>>(
       builder: (context, value, child) {
-        return ListView.builder(
+        return ListView.separated(
           itemCount: value.length,
-          itemBuilder: (context, index) {
-            return NoteCard(value[index]);
-          },
+          itemBuilder: (context, index) => NoteCard(value[index]),
+          separatorBuilder: (context, index) => const SizedBox(height: 6),
         );
       },
       selector: (context, p) => p.notes,
