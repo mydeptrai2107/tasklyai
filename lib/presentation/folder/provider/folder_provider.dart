@@ -89,9 +89,7 @@ class FolderProvider extends ChangeNotifier {
     String password,
   ) async {
     try {
-      await _folderRepository.updateFolder(folderId, {
-        "passwordHash": password,
-      });
+      await _folderRepository.updateFolder(folderId, {"password": password});
       fetchFolder(areaId);
       fetchAllFolder();
     } on FormatException catch (_) {
@@ -119,7 +117,7 @@ class FolderProvider extends ChangeNotifier {
 
   Future<void> unlockFolder(BuildContext context, FolderModel folder) async {
     try {
-      await _folderRepository.updateFolder(folder.id, {"passwordHash": null});
+      await _folderRepository.updateFolder(folder.id, {"password": null});
       fetchFolder(folder.areaId);
       fetchAllFolder();
     } on FormatException catch (_) {}

@@ -1,5 +1,6 @@
 import 'package:tasklyai/core/network/api_endpoint.dart';
 import 'package:tasklyai/core/network/dio_client.dart';
+import 'package:tasklyai/models/ai_folder_suggestion.dart';
 import 'package:tasklyai/models/quick_note_model.dart';
 import 'package:tasklyai/models/suggestion_model.dart';
 
@@ -37,6 +38,18 @@ class AiRepository {
         throw FormatException('AI không thành công');
       }
       return QuickNoteModel.fromJson(res.data);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<AiFolderSuggestion> suggestFolder(String text) async {
+    try {
+      final res = await _dioClient.post(
+        ApiEndpoint.aiSuggestFolder,
+        data: {'text': text},
+      );
+      return AiFolderSuggestion.fromJson(res.data);
     } on FormatException catch (_) {
       rethrow;
     }

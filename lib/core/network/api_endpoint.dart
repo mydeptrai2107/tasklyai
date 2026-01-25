@@ -17,6 +17,7 @@ class ApiEndpoint {
   static String analyzeNote = '/ai/suggest-project';
   static String aiCreateTasks = '/ai/create-project';
   static String aiQuickNote = '/ai/quick-note';
+  static String aiSuggestFolder = '/ai/suggest-folder';
 
   static String area = '/areas';
 

@@ -5,9 +5,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/folder_dropdown.dart';
+import 'package:tasklyai/models/ai_folder_suggestion.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/widgets/draft_block.dart';
+import 'package:tasklyai/presentation/notes/widgets/voice_to_text_bottom_sheet.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 
 class CreateNoteScreen extends StatefulWidget {
   const CreateNoteScreen({super.key, this.folderModel});
@@ -29,6 +33,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
   final List<_ImageBlock> _imageBlocks = [];
 
   late FolderModel? folderSelected;
+  AiFolderSuggestion? _folderSuggestion;
+  bool _isSuggesting = false;
 
   String? _cardId;
   bool _isSaving = false;
@@ -83,31 +89,72 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
           children: [
             _inputCard(
               title: 'Folder *',
-              child: FolderDropdown(
-                onChanged: (value) {},
-                initValue: folderSelected,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FolderDropdown(
+                    onChanged: (value) {
+                      folderSelected = value;
+                      setState(() {});
+                    },
+                    initValue: folderSelected,
+                  ),
+                  const SizedBox(height: 10),
+                  _aiSuggestRow(),
+                  if (_folderSuggestion != null) ...[
+                    const SizedBox(height: 10),
+                    _suggestionCard(),
+                  ],
+                ],
               ),
             ),
             _inputCard(
               title: 'Title *',
-              child: TextFormField(
-                controller: _titleController,
-                onChanged: (_) => setState(() {}),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Note title',
-                ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _titleController,
+                      onChanged: (_) => setState(() {}),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Note title',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.mic_none_outlined),
+                    onPressed: () => _openVoiceInput(
+                      controller: _titleController,
+                      append: false,
+                    ),
+                  ),
+                ],
               ),
             ),
             _inputCard(
               title: 'Content',
-              child: TextFormField(
-                controller: _contentController,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Write details...',
-                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _contentController,
+                      maxLines: 4,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Write details...',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.mic_none_outlined),
+                    onPressed: () => _openVoiceInput(
+                      controller: _contentController,
+                      append: true,
+                    ),
+                  ),
+                ],
               ),
             ),
             _inputCard(
@@ -125,6 +172,129 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             ..._buildBlocks(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _aiSuggestRow() {
+    final canSuggest = _titleController.text.trim().isNotEmpty;
+    return Row(
+      children: [
+        const Icon(Icons.auto_awesome, size: 18, color: primaryColor),
+        const SizedBox(width: 6),
+        const Expanded(
+          child: Text(
+            'AI suggest folder',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        TextButton(
+          onPressed: canSuggest && !_isSuggesting ? _suggestFolder : null,
+          child: _isSuggesting
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: primaryColor,
+                  ),
+                )
+              : const Text('Suggest'),
+        ),
+      ],
+    );
+  }
+
+  Widget _suggestionCard() {
+    final suggestion = _folderSuggestion;
+    if (suggestion == null) return const SizedBox.shrink();
+    if (!suggestion.found || suggestion.suggestedFolder == null) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF2F3F7),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Text('No folder suggestion found.'),
+      );
+    }
+
+    final folder = suggestion.suggestedFolder!;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F6FF),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: primaryColor.withAlpha(50)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: Color(folder.color).withAlpha(30),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  IconData(folder.icon, fontFamily: 'MaterialIcons'),
+                  color: Color(folder.color),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  folder.name,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: primaryColor.withAlpha(20),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${(suggestion.confidence * 100).round()}%',
+                  style: const TextStyle(
+                    color: primaryColor,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (suggestion.reasoning.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              suggestion.reasoning,
+              style: const TextStyle(color: Colors.black54, fontSize: 12),
+            ),
+          ],
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerRight,
+            child: ElevatedButton(
+              onPressed: () => _applySuggestedFolder(folder),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: const Text('Use this folder'),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -401,6 +571,64 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _openVoiceInput({
+    required TextEditingController controller,
+    required bool append,
+  }) async {
+    final result = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const VoiceToTextBottomSheet(),
+    );
+    if (result == null || result.trim().isEmpty) return;
+    if (!mounted) return;
+    final text = result.trim();
+    controller.text = append && controller.text.trim().isNotEmpty
+        ? '${controller.text.trim()} $text'
+        : text;
+    setState(() {});
+  }
+
+  Future<void> _suggestFolder() async {
+    final text = _contentController.text.trim().isNotEmpty
+        ? '${_titleController.text.trim()}\n${_contentController.text.trim()}'
+        : _titleController.text.trim();
+    if (text.isEmpty) return;
+    setState(() => _isSuggesting = true);
+    final result = await context.read<AiProvider>().suggestFolder(
+          context,
+          text,
+        );
+    if (!mounted) return;
+    setState(() {
+      _folderSuggestion = result;
+      _isSuggesting = false;
+    });
+  }
+
+  void _applySuggestedFolder(SuggestedFolder folder) {
+    final folders = context.read<FolderProvider>().folders;
+    final match = folders.where((f) => f.id == folder.id).toList();
+    if (match.isNotEmpty) {
+      folderSelected = match.first;
+    } else {
+      folderSelected = FolderModel(
+        id: folder.id,
+        userId: '',
+        areaId: folder.areaId,
+        name: folder.name,
+        description: '',
+        color: folder.color,
+        icon: folder.icon,
+        noteCount: 0,
+        passwordHash: null,
+        projectCount: 0,
+      );
+    }
+    setState(() {});
   }
 }
 

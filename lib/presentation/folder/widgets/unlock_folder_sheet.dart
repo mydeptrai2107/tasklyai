@@ -117,7 +117,7 @@ class _UnlockFolderSheetState extends State<UnlockFolderSheet> {
         widget.folder.id,
         input,
       );
-      if (res) {
+      if (!res) {
         setState(() => _error = 'Incorrect password');
         return;
       }

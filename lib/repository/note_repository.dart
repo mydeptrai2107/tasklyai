@@ -45,7 +45,7 @@ class NoteRepository {
     try {
       final res = await _dioClient.post(ApiEndpoint.notes, data: req);
       return _extractCardId(res.data);
-    } on FormatException catch (e) {
+    } on FormatException catch (_) {
       rethrow;
     }
   }
@@ -69,7 +69,8 @@ class NoteRepository {
         data: formData,
       );
       final data = res.data;
-      if (data is Map<String, dynamic> && data['card'] is Map<String, dynamic>) {
+      if (data is Map<String, dynamic> &&
+          data['card'] is Map<String, dynamic>) {
         return CardModel.fromJson(data['card']);
       }
       return CardModel.fromJson(data);

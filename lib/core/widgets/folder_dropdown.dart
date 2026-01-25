@@ -31,6 +31,26 @@ class _FolderDropdownState extends State<FolderDropdown> {
   }
 
   @override
+  void didUpdateWidget(covariant FolderDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initValue != null &&
+        widget.initValue?.id != oldWidget.initValue?.id) {
+      folderSelected = widget.initValue;
+      setState(() {});
+      return;
+    }
+    if (widget.initFolderId != null &&
+        widget.initFolderId != oldWidget.initFolderId) {
+      final folders = context.read<FolderProvider>().folders;
+      final match = folders.where((f) => f.id == widget.initFolderId).toList();
+      if (match.isNotEmpty) {
+        folderSelected = match.first;
+        setState(() {});
+      }
+    }
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_didInit) return;

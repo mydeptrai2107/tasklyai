@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
+import 'package:tasklyai/models/ai_folder_suggestion.dart';
 import 'package:tasklyai/models/ai_task_model.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/quick_note_model.dart';
@@ -22,6 +23,9 @@ class AiProvider extends ChangeNotifier {
 
   QuickNoteModel? _quickNoteModel;
   QuickNoteModel? get quickNoteModel => _quickNoteModel;
+
+  AiFolderSuggestion? _folderSuggestion;
+  AiFolderSuggestion? get folderSuggestion => _folderSuggestion;
 
   /* =======================
    * TASK HELPERS
@@ -155,6 +159,27 @@ class AiProvider extends ChangeNotifier {
     } finally {
       _aiProject = null;
       notifyListeners();
+    }
+  }
+
+  Future<AiFolderSuggestion?> suggestFolder(
+    BuildContext context,
+    String text,
+  ) async {
+    try {
+      _aiIsLoading = true;
+      notifyListeners();
+      _folderSuggestion = await _aiRepository.suggestFolder(text);
+      _aiIsLoading = false;
+      notifyListeners();
+      return _folderSuggestion;
+    } on FormatException catch (e) {
+      _aiIsLoading = false;
+      notifyListeners();
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+      return null;
     }
   }
 }
