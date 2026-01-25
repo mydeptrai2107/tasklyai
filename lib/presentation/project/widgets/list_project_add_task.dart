@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/models/project_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 
 class ListProjectAddTask extends StatefulWidget {
   const ListProjectAddTask({

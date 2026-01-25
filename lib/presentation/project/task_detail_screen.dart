@@ -7,11 +7,11 @@ import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/models/checklist_item.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/edit_subtask.dart';
-import 'package:tasklyai/presentation/task_project/widgets/list_project_add_task.dart';
-import 'package:tasklyai/presentation/task_project/widgets/priority_widget.dart';
-import 'package:tasklyai/presentation/task_project/widgets/task_status_widget.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/widgets/edit_subtask.dart';
+import 'package:tasklyai/presentation/project/widgets/list_project_add_task.dart';
+import 'package:tasklyai/presentation/project/widgets/priority_widget.dart';
+import 'package:tasklyai/presentation/project/widgets/task_status_widget.dart';
 
 class TaskDetailScreen extends StatefulWidget {
   const TaskDetailScreen(this.task, {super.key});

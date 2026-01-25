@@ -9,9 +9,9 @@ import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/presentation/stats/provider/stats_provider.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
-import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

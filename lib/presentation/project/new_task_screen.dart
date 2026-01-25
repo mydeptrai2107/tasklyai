@@ -6,10 +6,10 @@ import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/models/project_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/add_subtask.dart';
-import 'package:tasklyai/presentation/task_project/widgets/list_project_add_task.dart';
-import 'package:tasklyai/presentation/task_project/widgets/priority_widget.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/widgets/add_subtask.dart';
+import 'package:tasklyai/presentation/project/widgets/list_project_add_task.dart';
+import 'package:tasklyai/presentation/project/widgets/priority_widget.dart';
 
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen(this.projectModel, {super.key});

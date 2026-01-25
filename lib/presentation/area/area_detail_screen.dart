@@ -6,8 +6,8 @@ import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_list.dart';
-import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/project_list.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/project/widgets/project_list.dart';
 
 class AreaDetailScreen extends StatefulWidget {
   const AreaDetailScreen(this.item, {super.key});

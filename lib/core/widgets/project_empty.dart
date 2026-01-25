@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/models/area_model.dart';
-import 'package:tasklyai/presentation/task_project/new_project_screen.dart';
+import 'package:tasklyai/presentation/project/new_project_screen.dart';
 
 class ProjectEmpty extends StatelessWidget {
   const ProjectEmpty(this.areaModel, {super.key});

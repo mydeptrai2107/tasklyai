@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 
 class VoiceRecordText extends StatefulWidget {
   const VoiceRecordText({super.key, required this.onChange});
@@ -16,7 +16,8 @@ class VoiceRecordText extends StatefulWidget {
 class _VoiceRecordTextState extends State<VoiceRecordText> {
   final SpeechToText _speech = SpeechToText();
   bool _isRecording = false;
-  String _text = '';
+  String _text =
+      '"I need to:\n1. Review the quarterly sales report\n2. Prepare presentation slides for the board meeting\n3. Schedule follow-up calls with top 5 clients\n4. Update the CRM system with latest deals';
 
   @override
   void initState() {

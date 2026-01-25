@@ -6,8 +6,8 @@ import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/quick_note_model.dart';
 import 'package:tasklyai/models/suggestion_model.dart';
 import 'package:tasklyai/presentation/notes/note_ai_suggestion_screen.dart';
-import 'package:tasklyai/presentation/task_project/ai_task_suggestion_screen.dart';
-import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/project/ai_task_suggestion_screen.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/repository/ai_repository.dart';
 import 'package:provider/provider.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/models/card_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/task_item.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/widgets/task_item.dart';
 
 class ListTask extends StatelessWidget {
   const ListTask({super.key});

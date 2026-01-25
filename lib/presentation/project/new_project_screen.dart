@@ -9,8 +9,8 @@ import 'package:tasklyai/core/widgets/workspace_dropdown.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/voice_to_task_bottom_sheet.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
-import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 
 class NewProjectScreen extends StatefulWidget {
   const NewProjectScreen(this.areaModel, {super.key});

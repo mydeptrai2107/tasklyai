@@ -5,7 +5,7 @@ import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/models/checklist_item.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
 
 class EditSubtask extends StatefulWidget {
   const EditSubtask(this.subtasks, this.task, {super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/presentation/notes/widgets/voice_to_note_bottom_sheet.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 
 class CreateNoteAIScreen extends StatefulWidget {
   const CreateNoteAIScreen({super.key});
@@ -19,10 +19,7 @@ class _CreateNoteAIScreenState extends State<CreateNoteAIScreen> {
     final textTheme = context.theme.textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AI Note', style: textTheme.titleSmall),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text('AI Note', style: textTheme.titleMedium)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -57,43 +54,34 @@ class _CreateNoteAIScreenState extends State<CreateNoteAIScreen> {
   }
 
   Widget _aiActions(BuildContext context) {
-    return Row(
-      children: [
-        _actionIcon(Icons.mic_rounded, 'Voice'),
-        const SizedBox(width: 12),
-        _actionIcon(Icons.image_rounded, 'Image'),
-        const SizedBox(width: 12),
-        _actionIcon(Icons.auto_awesome, 'AI'),
-      ],
-    );
-  }
-
-  Widget _actionIcon(IconData icon, String label) {
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            backgroundColor: Colors.transparent,
-            isScrollControlled: true,
-            builder: (_) => VoiceToNoteBottomSheet(
-              onChange: (value) {
-                _controller.text = value;
-              },
-            ),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.blueAccent.withAlpha(22),
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          builder: (_) => VoiceToNoteBottomSheet(
+            onChange: (value) {
+              _controller.text = value;
+            },
           ),
+        );
+      },
+      child: Container(
+        width: 80,
+        height: 80,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.blueAccent.withAlpha(22),
+        ),
+        child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: Colors.blueAccent),
+              Icon(Icons.mic_rounded, color: Colors.blueAccent),
               const SizedBox(height: 4),
-              Text(label, style: const TextStyle(fontSize: 12)),
+              Text('Voice', style: const TextStyle(fontSize: 12)),
             ],
           ),
         ),

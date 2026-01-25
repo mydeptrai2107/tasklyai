@@ -4,7 +4,7 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/models/ai_task_model.dart';
 import 'package:tasklyai/models/area_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 
 class AiTaskSuggestionScreen extends StatelessWidget {
   const AiTaskSuggestionScreen(this.areaModel, {super.key});

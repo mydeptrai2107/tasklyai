@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/models/card_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
-import 'package:tasklyai/presentation/task_project/task_detail_screen.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/task_detail_screen.dart';
 
 class TaskItem extends StatelessWidget {
   const TaskItem(this.task, {super.key});

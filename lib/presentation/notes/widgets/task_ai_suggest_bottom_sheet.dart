@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/presentation/notes/widgets/ai_task_item.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 
 class TaskAiSuggestBottomSheet extends StatefulWidget {
   const TaskAiSuggestBottomSheet({

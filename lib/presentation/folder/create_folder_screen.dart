@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/data/requests/create_folder_req.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
@@ -57,9 +58,9 @@ class _CreateFolderScreenState extends State<CreateFolderScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7F9),
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Create Folder',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: context.theme.textTheme.titleMedium,
         ),
       ),
       body: SingleChildScrollView(
@@ -97,7 +98,6 @@ class _CreateFolderScreenState extends State<CreateFolderScreen> {
                   final isSelected = icon == selectedIcon;
                   return GestureDetector(
                     onTap: () {
-                      print(icon.codePoint);
                       setState(() => selectedIcon = icon);
                     },
                     child: Container(

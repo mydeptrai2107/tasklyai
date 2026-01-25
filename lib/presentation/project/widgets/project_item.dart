@@ -3,7 +3,7 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/project_model.dart';
-import 'package:tasklyai/presentation/task_project/project_detail_screen.dart';
+import 'package:tasklyai/presentation/project/project_detail_screen.dart';
 
 class ProjectItem extends StatelessWidget {
   const ProjectItem(this.project, {super.key});

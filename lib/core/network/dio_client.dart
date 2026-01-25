@@ -41,7 +41,6 @@ class DioClient {
   }
 
   Future<Response> post(String endpoint, {dynamic data}) async {
-    print(data);
     try {
       return await _dio.post(
         endpoint,

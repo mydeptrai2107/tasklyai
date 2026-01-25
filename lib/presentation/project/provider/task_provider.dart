@@ -4,7 +4,7 @@ import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/data/requests/fetch_task_params.dart';
 import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/models/project_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/repository/task_repository.dart';
 
 class TaskProvider extends ChangeNotifier {

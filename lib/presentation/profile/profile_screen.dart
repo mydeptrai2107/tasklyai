@@ -33,7 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF6FA1FF),
         elevation: 0,
-        leading: const BackButton(color: Colors.white),
         title: const Text('Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [

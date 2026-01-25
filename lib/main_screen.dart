@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
+import 'package:tasklyai/presentation/folder/folder_screen.dart';
 import 'package:tasklyai/presentation/home/home_screen.dart';
 import 'package:tasklyai/presentation/profile/profile_screen.dart';
+import 'package:tasklyai/presentation/project/project_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -47,8 +49,11 @@ class _MainScreenState extends State<MainScreen> {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.note), label: 'Notes'),
-          BottomNavigationBarItem(icon: Icon(Icons.check_box), label: 'Tasks'),
+          BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'Folder'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.workspaces),
+            label: 'Project',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
@@ -60,9 +65,9 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return const HomeScreen();
       case 1:
-        return const SizedBox();
+        return const FolderScreen();
       case 2:
-        return const SizedBox();
+        return const ProjectScreen();
       case 3:
         return const ProfileScreen();
       default:

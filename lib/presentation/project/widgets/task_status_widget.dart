@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/enum/task_status.dart';
 import 'package:tasklyai/models/card_model.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
 
 class TaskStatusWidget extends StatefulWidget {
   const TaskStatusWidget(this.task, {super.key});

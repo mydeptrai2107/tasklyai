@@ -4,7 +4,7 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/models/quick_note_model.dart';
 import 'package:tasklyai/presentation/home/home_screen.dart';
-import 'package:tasklyai/presentation/task_project/provider/ai_provider.dart';
+import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 
 class QuickNoteAIResultScreen extends StatelessWidget {
   const QuickNoteAIResultScreen({super.key});

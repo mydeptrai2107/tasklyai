@@ -4,10 +4,10 @@ import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/widgets/dashed_outline_button.dart';
 import 'package:tasklyai/core/widgets/task_empty.dart';
 import 'package:tasklyai/models/project_model.dart';
-import 'package:tasklyai/presentation/task_project/new_task_screen.dart';
-import 'package:tasklyai/presentation/task_project/provider/task_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/project_appbar.dart';
-import 'package:tasklyai/presentation/task_project/widgets/task_item.dart';
+import 'package:tasklyai/presentation/project/new_task_screen.dart';
+import 'package:tasklyai/presentation/project/provider/task_provider.dart';
+import 'package:tasklyai/presentation/project/widgets/project_appbar.dart';
+import 'package:tasklyai/presentation/project/widgets/task_item.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
   const ProjectDetailScreen(this.project, {super.key});
@@ -35,9 +35,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(170),
-        child: const ProjectAppbar(),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        title: Text(
+          'Project Detail',
+          style: context.theme.textTheme.titleMedium,
+        ),
       ),
       body: Column(
         children: [
@@ -167,7 +172,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
             return ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: provider.taskByProject.length,
-              separatorBuilder: (_, __) => SizedBox(height: 8),
+              separatorBuilder: (_, child) => SizedBox(height: 8),
               itemBuilder: (context, index) {
                 return TaskItem(provider.taskByProject[index]);
               },

@@ -5,9 +5,9 @@ import 'package:tasklyai/core/widgets/dashed_outline_button.dart';
 import 'package:tasklyai/core/widgets/project_empty.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/project_model.dart';
-import 'package:tasklyai/presentation/task_project/new_project_screen.dart';
-import 'package:tasklyai/presentation/task_project/provider/project_provider.dart';
-import 'package:tasklyai/presentation/task_project/widgets/project_item.dart';
+import 'package:tasklyai/presentation/project/new_project_screen.dart';
+import 'package:tasklyai/presentation/project/provider/project_provider.dart';
+import 'package:tasklyai/presentation/project/widgets/project_item.dart';
 
 class ProjectList extends StatelessWidget {
   const ProjectList(this.item, {super.key});
@@ -32,6 +32,7 @@ class ProjectList extends StatelessWidget {
                 },
               ),
             ),
+            SizedBox(height: 15),
             DashedOutlineButton(
               onPressed: () {
                 Navigator.push(
