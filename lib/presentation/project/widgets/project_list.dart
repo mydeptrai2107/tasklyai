@@ -10,16 +10,16 @@ import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/project/widgets/project_item.dart';
 
 class ProjectList extends StatelessWidget {
-  const ProjectList(this.item, {super.key});
+  const ProjectList({super.key, this.item});
 
-  final AreaModel item;
+  final AreaModel? item;
 
   @override
   Widget build(BuildContext context) {
     return Selector<ProjectProvider, List<ProjectModel>>(
       builder: (context, value, child) {
         if (value.isEmpty) {
-          return ProjectEmpty(item);
+          return ProjectEmpty(areaModel: item);
         }
         return Column(
           children: [
@@ -38,7 +38,7 @@ class ProjectList extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NewProjectScreen(item),
+                    builder: (context) => NewProjectScreen(areaModel: item),
                   ),
                 );
               },

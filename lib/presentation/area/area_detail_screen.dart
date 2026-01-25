@@ -44,13 +44,13 @@ class _AreaDetailScreenState extends State<AreaDetailScreen> {
                   /// TAB FOLDERS
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: FolderList(widget.item),
+                    child: FolderList(areaModel: widget.item),
                   ),
 
                   /// TAB PROJECTS (fake)
                   Padding(
                     padding: EdgeInsets.all(16),
-                    child: ProjectList(widget.item),
+                    child: ProjectList(item: widget.item),
                   ),
                 ],
               ),

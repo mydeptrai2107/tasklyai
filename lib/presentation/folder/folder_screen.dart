@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_list.dart';
 
@@ -31,19 +30,7 @@ class _FolderScreenState extends State<FolderScreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: FolderList(
-                AreaModel(
-                  id: '69651b0819c4b0e77870bb69',
-                  userId: '69651b0819c4b0e77870bb69',
-                  name: '',
-                  description: '',
-                  color: 1,
-                  icon: 1,
-                  folderCount: 3,
-                  noteCount: 2,
-                  projectCount: 3,
-                ),
-              ),
+              child: FolderList(),
             ),
           ),
         ],

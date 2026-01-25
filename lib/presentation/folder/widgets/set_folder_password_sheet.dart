@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 
 class SetFolderPasswordSheet extends StatefulWidget {
   final FolderModel folder;
-  final AreaModel area;
 
   final Function(String? pw) onChange;
 
   const SetFolderPasswordSheet({
     super.key,
     required this.folder,
-    required this.area,
     required this.onChange,
   });
 
@@ -121,7 +118,7 @@ class _SetFolderPasswordSheetState extends State<SetFolderPasswordSheet> {
           try {
             final password = _passwordController.text.trim();
             context.read<FolderProvider>().protectFolder(
-              widget.area.id,
+              widget.folder.areaId,
               widget.folder.id,
               password,
             );

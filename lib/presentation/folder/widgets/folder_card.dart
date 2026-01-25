@@ -7,10 +7,10 @@ import 'package:tasklyai/presentation/folder/folder_detail_screen.dart';
 import 'package:tasklyai/presentation/folder/widgets/unlock_folder_sheet.dart';
 
 class FolderCard extends StatelessWidget {
-  const FolderCard({super.key, required this.item, required this.areaModel});
+  const FolderCard({super.key, required this.item, this.areaModel});
 
   final FolderModel item;
-  final AreaModel areaModel;
+  final AreaModel? areaModel;
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +79,7 @@ class FolderCard extends StatelessWidget {
   void _openFolder(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => FolderDetailScreen(folder: item, areaModel: areaModel),
-      ),
+      MaterialPageRoute(builder: (_) => FolderDetailScreen(folder: item)),
     );
   }
 
@@ -92,7 +90,6 @@ class FolderCard extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => UnlockFolderSheet(
         folder: item,
-        areaModel: areaModel,
         onSuccess: () => _openFolder(context),
       ),
     );

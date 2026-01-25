@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
+import 'package:tasklyai/presentation/folder/update_folder_screen.dart';
 import 'package:tasklyai/presentation/folder/widgets/set_folder_password_sheet.dart';
 
 enum _HeaderAction { edit, delete }
 
 class FolderHeaderAppBar extends StatelessWidget {
   final FolderModel folder;
-  final AreaModel area;
 
   final Function(String? pw) onChange;
+  final VoidCallback onUpdated;
 
   const FolderHeaderAppBar({
     super.key,
     required this.folder,
-    required this.area,
     required this.onChange,
+    required this.onUpdated,
   });
 
   @override
@@ -35,11 +35,7 @@ class FolderHeaderAppBar extends StatelessWidget {
             if (!hasPassword) {
               _showSetPasswordSheet(context);
             } else {
-              context.read<FolderProvider>().unlockFolder(
-                context,
-                area.id,
-                folder.id,
-              );
+              context.read<FolderProvider>().unlockFolder(context, folder);
               onChange.call(null);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Folder unlocked 🔓')),
@@ -65,9 +61,18 @@ class FolderHeaderAppBar extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          onSelected: (value) {
+          onSelected: (value) async {
             switch (value) {
               case _HeaderAction.edit:
+                final updated = await Navigator.push<bool>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UpdateFolderScreen(folder: folder),
+                  ),
+                );
+                if (updated == true) {
+                  onUpdated();
+                }
                 break;
               case _HeaderAction.delete:
                 DialogService.confirm(
@@ -76,8 +81,7 @@ class FolderHeaderAppBar extends StatelessWidget {
                   onConfirm: () {
                     context.read<FolderProvider>().deleteFolder(
                       context,
-                      folder.id,
-                      area.id,
+                      folder,
                     );
                   },
                 );
@@ -110,7 +114,6 @@ class FolderHeaderAppBar extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => SetFolderPasswordSheet(
         folder: folder,
-        area: area,
         onChange: onChange,
       ),
     );

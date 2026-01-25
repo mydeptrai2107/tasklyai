@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/notes/create_note_screen.dart';
@@ -8,14 +7,9 @@ import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 import 'package:tasklyai/presentation/notes/widgets/note_card.dart';
 
 class FolderContent extends StatelessWidget {
-  const FolderContent({
-    super.key,
-    required this.folder,
-    required this.areaModel,
-  });
+  const FolderContent({super.key, required this.folder});
 
   final FolderModel folder;
-  final AreaModel areaModel;
 
   @override
   Widget build(BuildContext context) {

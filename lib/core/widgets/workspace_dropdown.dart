@@ -52,7 +52,6 @@ class _WorkspaceDropdownState extends State<WorkspaceDropdown> {
                   ),
                 ),
               ),
-            Spacer(),
             const Icon(Icons.keyboard_arrow_down),
           ],
         ),

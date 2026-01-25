@@ -20,7 +20,14 @@ class ProjectProvider extends ChangeNotifier {
     try {
       await repository.createProject(project);
       if (context.mounted) {
-        DialogService.success(context, message: 'Tạo dự án thành cộng');
+        DialogService.success(
+          context,
+          message: 'Tạo dự án thành cộng',
+          onOk: () {
+            Navigator.pop(context);
+            fetchProjectByArea(areaId);
+          },
+        );
       }
     } on FormatException catch (e) {
       if (context.mounted) {

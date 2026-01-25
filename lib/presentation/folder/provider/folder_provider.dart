@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/data/requests/create_folder_req.dart';
+import 'package:tasklyai/data/requests/update_folder_req.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
 import 'package:tasklyai/repository/folder_repository.dart';
@@ -39,6 +40,38 @@ class FolderProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateFolder(
+    BuildContext context,
+    FolderModel folder,
+    UpdateFolderReq req,
+  ) async {
+    try {
+      await _folderRepository.updateFolder(folder.id, req.toJson());
+      folder.name = req.name;
+      folder.description = req.description;
+      folder.color = req.color;
+      folder.icon = req.icon;
+      final index = _folders.indexWhere((item) => item.id == folder.id);
+      if (index != -1) {
+        _folders[index] = folder;
+      }
+      notifyListeners();
+      if (context.mounted) {
+        DialogService.success(
+          context,
+          message: 'Update folder successfully',
+          onOk: () {
+            Navigator.pop(context, true);
+          },
+        );
+      }
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+    }
+  }
+
   Future<void> protectFolder(
     String areaId,
     String folderId,
@@ -54,14 +87,10 @@ class FolderProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteFolder(
-    BuildContext context,
-    String folderId,
-    String areaId,
-  ) async {
+  Future<void> deleteFolder(BuildContext context, FolderModel folder) async {
     try {
-      await _folderRepository.deleteFolder(folderId);
-      fetchFolder(areaId);
+      await _folderRepository.deleteFolder(folder.id);
+      fetchFolder(folder.areaId);
 
       if (context.mounted) {
         context.read<AreaProvider>().fetchArea();
@@ -75,14 +104,10 @@ class FolderProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> unlockFolder(
-    BuildContext context,
-    String areaId,
-    String folderId,
-  ) async {
+  Future<void> unlockFolder(BuildContext context, FolderModel folder) async {
     try {
-      await _folderRepository.updateFolder(folderId, {"passwordHash": null});
-      fetchFolder(areaId);
+      await _folderRepository.updateFolder(folder.id, {"passwordHash": null});
+      fetchFolder(folder.areaId);
     } on FormatException catch (_) {}
   }
 

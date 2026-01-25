@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/project/widgets/project_list.dart';
 
@@ -32,19 +31,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: ProjectList(
-                AreaModel(
-                  id: '69651b0819c4b0e77870bb69',
-                  userId: '69651b0819c4b0e77870bb69',
-                  name: '',
-                  description: '',
-                  color: 1,
-                  icon: 1,
-                  folderCount: 3,
-                  noteCount: 2,
-                  projectCount: 3,
-                ),
-              ),
+              child: ProjectList(),
             ),
           ),
         ],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_content.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_header_appbar.dart';
@@ -9,13 +8,8 @@ import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
 
 class FolderDetailScreen extends StatefulWidget {
   final FolderModel folder;
-  final AreaModel areaModel;
 
-  const FolderDetailScreen({
-    super.key,
-    required this.folder,
-    required this.areaModel,
-  });
+  const FolderDetailScreen({super.key, required this.folder});
 
   @override
   State<FolderDetailScreen> createState() => _FolderDetailScreenState();
@@ -38,9 +32,11 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         children: [
           _Header(
             folder: widget.folder,
-            area: widget.areaModel,
             onChange: (value) {
               widget.folder.passwordHash = value;
+              setState(() {});
+            },
+            onUpdated: () {
               setState(() {});
             },
           ),
@@ -50,12 +46,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
               child: Column(
                 children: [
                   _SearchBox(),
-                  Expanded(
-                    child: FolderContent(
-                      areaModel: widget.areaModel,
-                      folder: widget.folder,
-                    ),
-                  ),
+                  Expanded(child: FolderContent(folder: widget.folder)),
                 ],
               ),
             ),
@@ -68,14 +59,14 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
 
 class _Header extends StatelessWidget {
   final FolderModel folder;
-  final AreaModel area;
 
   final Function(String? pw) onChange;
+  final VoidCallback onUpdated;
 
   const _Header({
     required this.folder,
-    required this.area,
     required this.onChange,
+    required this.onUpdated,
   });
 
   @override
@@ -94,7 +85,11 @@ class _Header extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FolderHeaderAppBar(folder: folder, area: area, onChange: onChange),
+          FolderHeaderAppBar(
+            folder: folder,
+            onChange: onChange,
+            onUpdated: onUpdated,
+          ),
           const SizedBox(height: 16),
           _FolderInfo(folder: folder),
           const SizedBox(height: 16),

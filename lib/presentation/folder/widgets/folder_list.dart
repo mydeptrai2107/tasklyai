@@ -10,16 +10,16 @@ import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_card.dart';
 
 class FolderList extends StatelessWidget {
-  const FolderList(this.areaModel, {super.key});
+  const FolderList({super.key, this.areaModel});
 
-  final AreaModel areaModel;
+  final AreaModel? areaModel;
 
   @override
   Widget build(BuildContext context) {
     return Selector<FolderProvider, List<FolderModel>>(
       builder: (context, value, child) {
         if (value.isEmpty) {
-          return FolderEmpty(areaModel);
+          return FolderEmpty(areaModel: areaModel);
         }
 
         return Column(

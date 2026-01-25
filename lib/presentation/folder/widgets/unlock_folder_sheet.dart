@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/folder_model.dart';
 import 'package:tasklyai/presentation/folder/folder_detail_screen.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 
 class UnlockFolderSheet extends StatefulWidget {
   final FolderModel folder;
-  final AreaModel areaModel;
   final VoidCallback onSuccess;
 
   const UnlockFolderSheet({
     super.key,
     required this.folder,
     required this.onSuccess,
-    required this.areaModel,
   });
 
   @override
@@ -129,10 +126,7 @@ class _UnlockFolderSheetState extends State<UnlockFolderSheet> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => FolderDetailScreen(
-              folder: widget.folder,
-              areaModel: widget.areaModel,
-            ),
+            builder: (_) => FolderDetailScreen(folder: widget.folder),
           ),
         );
       }

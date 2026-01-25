@@ -13,9 +13,9 @@ import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 
 class NewProjectScreen extends StatefulWidget {
-  const NewProjectScreen(this.areaModel, {super.key});
+  const NewProjectScreen({super.key, this.areaModel});
 
-  final AreaModel areaModel;
+  final AreaModel? areaModel;
 
   @override
   State<NewProjectScreen> createState() => _NewProjectScreenState();
@@ -32,7 +32,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
 
   Color selectedColor = Colors.deepPurple;
   IconData selectedIcon = Icons.work;
-  late AreaModel areaSelected;
+  late AreaModel? areaSelected;
 
   @override
   void initState() {
@@ -97,10 +97,10 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                     ? () {
                         context.read<ProjectProvider>().createProject(
                           context,
-                          widget.areaModel.id,
+                          areaSelected!.id,
                           ProjectReq(
                             name: nameController.text,
-                            areaId: areaSelected.id,
+                            areaId: areaSelected!.id,
                             description: descController.text,
                             icon: selectedIcon.codePoint,
                             color: selectedColor.toARGB32(),
@@ -155,8 +155,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                         context: context,
                         backgroundColor: Colors.transparent,
                         isScrollControlled: true,
-                        builder: (_) =>
-                            VoiceToTaskBottomSheet(widget.areaModel),
+                        builder: (_) => VoiceToTaskBottomSheet(areaSelected!),
                       );
                     },
                     child: const Text('Use AI'),
@@ -210,8 +209,6 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             ChooseIcon(
               selectedColor: selectedColor,
               onChange: (value) {
-                print(value.codePoint);
-                print(Colors.yellowAccent.toARGB32());
                 selectedIcon = value;
               },
             ),

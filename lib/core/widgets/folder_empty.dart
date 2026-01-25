@@ -4,9 +4,9 @@ import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/folder/create_folder_screen.dart';
 
 class FolderEmpty extends StatelessWidget {
-  const FolderEmpty(this.areaModel, {super.key});
+  const FolderEmpty({super.key, this.areaModel});
 
-  final AreaModel areaModel;
+  final AreaModel? areaModel;
 
   @override
   Widget build(BuildContext context) {

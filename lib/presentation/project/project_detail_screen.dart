@@ -6,7 +6,6 @@ import 'package:tasklyai/core/widgets/task_empty.dart';
 import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/project/new_task_screen.dart';
 import 'package:tasklyai/presentation/project/provider/task_provider.dart';
-import 'package:tasklyai/presentation/project/widgets/project_appbar.dart';
 import 'package:tasklyai/presentation/project/widgets/task_item.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
