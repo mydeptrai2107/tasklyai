@@ -8,6 +8,7 @@ import 'package:tasklyai/presentation/profile/edit_profile_bottom_sheet.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/presentation/profile/widgets/logout_button.dart';
 import 'package:tasklyai/presentation/profile/widgets/profile_header.dart';
+import 'package:tasklyai/presentation/project/shared_projects_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -54,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -63,13 +64,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _ProgressCard(),
             const SizedBox(height: 24),
             _AccountSection(),
-            Spacer(),
+            const SizedBox(height: 24),
+
             LogoutButton(
-              onLogout: () {
-                LocalStorage.remove(kToken);
-                Navigator.pushReplacement(
-                  context,
+              onLogout: () async {
+                await LocalStorage.remove(kToken);
+                if (!context.mounted) return;
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => AuthScreen()),
+                  (route) => false,
                 );
               },
             ),
@@ -188,6 +191,21 @@ class _AccountSection extends StatelessWidget {
           },
           icon: Icons.lock_outline,
           title: 'Change Password',
+        ),
+        const SizedBox(height: 12),
+        _AccountItem(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const SharedProjectsScreen();
+                },
+              ),
+            );
+          },
+          icon: Icons.share_outlined,
+          title: 'Shared Projects',
         ),
       ],
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
 import 'package:tasklyai/models/project_model.dart';
+import 'package:tasklyai/models/project_share_model.dart';
 import 'package:tasklyai/repository/project_repository.dart';
 
 class ProjectProvider extends ChangeNotifier {
@@ -14,6 +15,15 @@ class ProjectProvider extends ChangeNotifier {
 
   List<ProjectModel> _allProjects = [];
   List<ProjectModel> get allProjects => _allProjects;
+
+  List<ProjectModel> _sharedWithMe = [];
+  List<ProjectModel> get sharedWithMe => _sharedWithMe;
+
+  ProjectShareSummary? _shareSummary;
+  ProjectShareSummary? get shareSummary => _shareSummary;
+
+  bool _shareLoading = false;
+  bool get shareLoading => _shareLoading;
 
   Future<void> fetchAllProjects() async {
     try {
@@ -54,6 +64,15 @@ class ProjectProvider extends ChangeNotifier {
     } on FormatException catch (_) {}
   }
 
+  Future<void> fetchSharedWithMe() async {
+    try {
+      _sharedWithMe = await repository.fetchSharedWithMe();
+      notifyListeners();
+    } on FormatException catch (e) {
+      print(e);
+    }
+  }
+
   Future<ProjectModel?> updateProject(
     BuildContext context,
     String areaId,
@@ -82,6 +101,49 @@ class ProjectProvider extends ChangeNotifier {
       await repository.deleteProject(projectId);
       await fetchProjectByArea(areaId);
       await fetchAllProjects();
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+    }
+  }
+
+  Future<void> fetchSharedUsers(String projectId) async {
+    try {
+      _shareLoading = true;
+      notifyListeners();
+      final data = await repository.fetchSharedUsers(projectId);
+      _shareSummary = ProjectShareSummary.fromJson(data);
+    } on FormatException catch (_) {
+    } finally {
+      _shareLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> shareProject(
+    BuildContext context,
+    String projectId,
+    String email,
+  ) async {
+    try {
+      await repository.shareProject(projectId, email);
+      await fetchSharedUsers(projectId);
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+    }
+  }
+
+  Future<void> unshareProject(
+    BuildContext context,
+    String projectId,
+    String userId,
+  ) async {
+    try {
+      await repository.unshareProject(projectId, userId);
+      await fetchSharedUsers(projectId);
     } on FormatException catch (e) {
       if (context.mounted) {
         DialogService.error(context, message: e.message);

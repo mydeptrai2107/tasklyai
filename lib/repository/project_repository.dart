@@ -65,4 +65,56 @@ class ProjectRepository {
       rethrow;
     }
   }
+
+  Future<Map<String, dynamic>> shareProject(
+    String projectId,
+    String email,
+  ) async {
+    try {
+      final res = await _dioClient.post(
+        '${ApiEndpoint.projects}/$projectId/share',
+        data: {'email': email},
+      );
+      return res.data as Map<String, dynamic>;
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<void> unshareProject(String projectId, String userId) async {
+    try {
+      await _dioClient.delete(
+        '${ApiEndpoint.projects}/$projectId/share/$userId',
+      );
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchSharedUsers(String projectId) async {
+    try {
+      final res = await _dioClient.get(
+        '${ApiEndpoint.projects}/$projectId/shares',
+      );
+      return res.data as Map<String, dynamic>;
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<List<ProjectModel>> fetchSharedWithMe({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final res = await _dioClient.get(
+        '${ApiEndpoint.projects}/shared/with-me',
+        params: {'page': page, 'limit': limit},
+      );
+      final data = (res.data['projects'] as List<dynamic>? ?? []);
+      return data.map((e) => ProjectModel.fromJson(e)).toList();
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
 }

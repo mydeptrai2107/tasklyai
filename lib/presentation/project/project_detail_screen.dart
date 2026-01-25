@@ -9,6 +9,7 @@ import 'package:tasklyai/presentation/project/new_task_screen.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 import 'package:tasklyai/presentation/project/provider/task_provider.dart';
 import 'package:tasklyai/presentation/project/update_project_screen.dart';
+import 'package:tasklyai/presentation/project/project_share_screen.dart';
 import 'package:tasklyai/presentation/project/widgets/task_item.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
@@ -51,6 +52,8 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
             onSelected: (value) {
               if (value == _ProjectAction.edit) {
                 _editProject();
+              } else if (value == _ProjectAction.share) {
+                _shareProject();
               } else if (value == _ProjectAction.delete) {
                 _deleteProject();
               }
@@ -59,6 +62,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
               PopupMenuItem(
                 value: _ProjectAction.edit,
                 child: _MenuItem(icon: Icons.edit_outlined, text: 'Edit'),
+              ),
+              PopupMenuItem(
+                value: _ProjectAction.share,
+                child: _MenuItem(icon: Icons.share_outlined, text: 'Share'),
               ),
               PopupMenuItem(
                 value: _ProjectAction.delete,
@@ -292,6 +299,15 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     }
   }
 
+  void _shareProject() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ProjectShareScreen(project: _project),
+      ),
+    );
+  }
+
   void _deleteProject() {
     DialogService.confirm(
       context,
@@ -309,7 +325,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   }
 }
 
-enum _ProjectAction { edit, delete }
+enum _ProjectAction { edit, share, delete }
 
 class _MenuItem extends StatelessWidget {
   final IconData icon;

@@ -29,6 +29,8 @@ class ProjectModel {
   int completionRate;
   bool isOverdue;
   int duration;
+  String? permission;
+  DateTime? sharedAt;
 
   ProjectModel({
     required this.id,
@@ -50,12 +52,18 @@ class ProjectModel {
     required this.completionRate,
     required this.isOverdue,
     required this.duration,
+    this.permission,
+    this.sharedAt,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) => ProjectModel(
     id: json["_id"],
-    userId: json["userId"],
-    areaId: json["areaId"],
+    userId: json["userId"] is Map<String, dynamic>
+        ? (json["userId"]["_id"] ?? '')
+        : (json["userId"] ?? ''),
+    areaId: json["areaId"] is Map<String, dynamic>
+        ? (json["areaId"]["_id"] ?? '')
+        : (json["areaId"] ?? ''),
     name: json["name"],
     description: json["description"],
     color: json["color"],
@@ -76,6 +84,10 @@ class ProjectModel {
     completionRate: json["completionRate"] ?? 0,
     isOverdue: json["isOverdue"] ?? false,
     duration: json["duration"] ?? 0,
+    permission: json["permission"],
+    sharedAt: json["sharedAt"] != null
+        ? DateTime.tryParse(json["sharedAt"])
+        : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -98,5 +110,7 @@ class ProjectModel {
     "completionRate": completionRate,
     "isOverdue": isOverdue,
     "duration": duration,
+    "permission": permission,
+    "sharedAt": sharedAt?.toIso8601String(),
   };
 }
