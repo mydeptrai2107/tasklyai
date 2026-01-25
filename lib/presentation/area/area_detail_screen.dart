@@ -4,6 +4,7 @@ import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/widgets/icon_int.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/area/provider/area_provider.dart';
+import 'package:tasklyai/presentation/area/update_area_screen.dart';
 import 'package:tasklyai/presentation/folder/provider/folder_provider.dart';
 import 'package:tasklyai/presentation/folder/widgets/folder_list.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
@@ -36,7 +37,12 @@ class _AreaDetailScreenState extends State<AreaDetailScreen> {
         backgroundColor: const Color(0xFFF5F6FA),
         body: Column(
           children: [
-            _Header(widget.item),
+            _Header(
+              widget.item,
+              onUpdated: () {
+                setState(() {});
+              },
+            ),
             _Tabs(),
             Expanded(
               child: TabBarView(
@@ -91,9 +97,10 @@ class _Tabs extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header(this.item);
+  const _Header(this.item, {required this.onUpdated});
 
   final AreaModel item;
+  final VoidCallback onUpdated;
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +118,11 @@ class _Header extends StatelessWidget {
       child: Column(
         spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_HeaderAppBar(item.id), _AreaInfo(item), _StatsRow(item)],
+        children: [
+          _HeaderAppBar(item, onUpdated: onUpdated),
+          _AreaInfo(item),
+          _StatsRow(item),
+        ],
       ),
     );
   }
@@ -120,9 +131,10 @@ class _Header extends StatelessWidget {
 enum _HeaderAction { edit, delete }
 
 class _HeaderAppBar extends StatelessWidget {
-  final String areaId;
+  final AreaModel area;
+  final VoidCallback onUpdated;
 
-  const _HeaderAppBar(this.areaId);
+  const _HeaderAppBar(this.area, {required this.onUpdated});
 
   @override
   Widget build(BuildContext context) {
@@ -136,16 +148,25 @@ class _HeaderAppBar extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          onSelected: (value) {
+          onSelected: (value) async {
             switch (value) {
               case _HeaderAction.edit:
+                final updated = await Navigator.push<bool>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UpdateAreaScreen(area: area),
+                  ),
+                );
+                if (updated == true) {
+                  onUpdated();
+                }
                 break;
               case _HeaderAction.delete:
                 DialogService.confirm(
                   context,
                   message: 'Bạn có chắc chắn muốn xóa?',
                   onConfirm: () {
-                    context.read<AreaProvider>().deleteArea(context, areaId);
+                    context.read<AreaProvider>().deleteArea(context, area.id);
                   },
                 );
                 break;

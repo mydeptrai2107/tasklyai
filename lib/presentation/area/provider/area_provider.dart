@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/data/requests/create_area_req.dart';
+import 'package:tasklyai/data/requests/update_area_req.dart';
 import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/repository/area_repository.dart';
 
@@ -45,6 +46,38 @@ class AreaProvider extends ChangeNotifier {
       }
     } on FormatException catch (e) {
       DialogService.error(context, message: e.message);
+    }
+  }
+
+  Future<void> updateArea(
+    BuildContext context,
+    AreaModel area,
+    UpdateAreaReq req,
+  ) async {
+    try {
+      await areaRepository.updateArea(area.id, req.toJson());
+      area.name = req.name;
+      area.description = req.description;
+      area.color = req.color;
+      area.icon = req.icon;
+      final index = _areas.indexWhere((item) => item.id == area.id);
+      if (index != -1) {
+        _areas[index] = area;
+      }
+      notifyListeners();
+      if (context.mounted) {
+        DialogService.success(
+          context,
+          message: 'Update area successfully',
+          onOk: () {
+            Navigator.pop(context, true);
+          },
+        );
+      }
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
     }
   }
 }

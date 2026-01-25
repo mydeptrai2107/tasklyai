@@ -32,4 +32,12 @@ class AreaRepository {
       rethrow;
     }
   }
+
+  Future<void> updateArea(String id, Map<String, dynamic> req) async {
+    try {
+      await _dioClient.put('${ApiEndpoint.area}/$id', data: req);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
 }
