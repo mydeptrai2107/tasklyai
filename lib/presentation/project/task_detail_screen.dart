@@ -61,10 +61,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
       appBar: AppBar(
         title: Text('Task Details', style: textTheme.titleMedium),
         centerTitle: true,
-        actions: [
-          _buildArchive(context, task),
-          _buildSave(context, task),
-        ],
+        actions: [_buildArchive(context, task), _buildSave(context, task)],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
@@ -172,9 +169,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   void update(
     BuildContext context,
     String taskId,
-    Map<String, dynamic> params,
-  ) {
+    Map<String, dynamic> params, {
+    bool isShowDialog = false,
+  }) {
     context.read<TaskProvider>().updateTask(
+      isShowDialog: isShowDialog,
       context: context,
       taskId: taskId,
       areaId: widget.task.area?.id,
@@ -219,7 +218,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               update(context, task.id, {
                 "title": _titleController.text.trim(),
                 "content": _descController.text.trim(),
-              });
+              }, isShowDialog: true);
             }
           },
           child: Container(

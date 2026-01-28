@@ -281,8 +281,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: primaryColor.withAlpha(20),
                   borderRadius: BorderRadius.circular(12),
@@ -316,8 +315,10 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
               ),
               child: const Text('Use this folder'),
             ),
@@ -550,10 +551,17 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
 
   List<String> _extractTags(String input) {
     final reg = RegExp(r'#([\p{L}0-9_]+)', unicode: true);
-    return reg
+    final matches = reg
         .allMatches(input)
         .map((m) => m.group(1) ?? '')
         .where((tag) => tag.isNotEmpty)
+        .toSet()
+        .toList();
+    if (matches.isNotEmpty) return matches;
+    return input
+        .split(RegExp(r'[\s,]+'))
+        .map((e) => e.replaceAll('#', '').trim())
+        .where((e) => e.isNotEmpty)
         .toSet()
         .toList();
   }
@@ -609,7 +617,6 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         folderId: folderSelected!.id,
         noteId: _cardId!,
         req: {'blocks': _blocks.map((e) => e.toJson()).toList()},
-        isShowDialog: false,
       );
     }
 
@@ -667,9 +674,9 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     if (text.isEmpty) return;
     setState(() => _isSuggesting = true);
     final result = await context.read<AiProvider>().suggestFolder(
-          context,
-          text,
-        );
+      context,
+      text,
+    );
     if (!mounted) return;
     setState(() {
       _folderSuggestion = result;
@@ -846,15 +853,6 @@ class _TextBlockCard extends StatelessWidget {
               hintText: 'Type here...',
             ),
           ),
-          SwitchListTile(
-            value: block.isPinned,
-            onChanged: (value) {
-              block.isPinned = value;
-              onChanged();
-            },
-            title: const Text('Pin block'),
-            contentPadding: EdgeInsets.zero,
-          ),
         ],
       ),
     );
@@ -902,15 +900,6 @@ class _CheckboxBlockCard extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          SwitchListTile(
-            value: block.isPinned,
-            onChanged: (value) {
-              block.isPinned = value;
-              onChanged();
-            },
-            title: const Text('Pin block'),
-            contentPadding: EdgeInsets.zero,
           ),
         ],
       ),
@@ -976,15 +965,6 @@ class _ListBlockCard extends StatelessWidget {
             icon: const Icon(Icons.add),
             label: const Text('Add item'),
           ),
-          SwitchListTile(
-            value: block.isPinned,
-            onChanged: (value) {
-              block.isPinned = value;
-              onChanged();
-            },
-            title: const Text('Pin block'),
-            contentPadding: EdgeInsets.zero,
-          ),
         ],
       ),
     );
@@ -1035,15 +1015,6 @@ class _AudioBlockCard extends StatelessWidget {
               hintText: 'Duration (seconds)',
             ),
           ),
-          SwitchListTile(
-            value: block.isPinned,
-            onChanged: (value) {
-              block.isPinned = value;
-              onChanged();
-            },
-            title: const Text('Pin block'),
-            contentPadding: EdgeInsets.zero,
-          ),
         ],
       ),
     );
@@ -1083,15 +1054,6 @@ class _ImageBlockCard extends StatelessWidget {
               border: OutlineInputBorder(),
               hintText: 'Caption (optional)',
             ),
-          ),
-          SwitchListTile(
-            value: block.isPinned,
-            onChanged: (value) {
-              block.isPinned = value;
-              onChanged();
-            },
-            title: const Text('Pin block'),
-            contentPadding: EdgeInsets.zero,
           ),
         ],
       ),

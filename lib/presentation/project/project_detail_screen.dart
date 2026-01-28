@@ -50,7 +50,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
-        title: Text('Project Detail', style: context.theme.textTheme.titleMedium),
+        title: Text(
+          'Project Detail',
+          style: context.theme.textTheme.titleMedium,
+        ),
         actions: _isReadOnly
             ? null
             : [
@@ -72,7 +75,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                     ),
                     PopupMenuItem(
                       value: _ProjectAction.share,
-                      child: _MenuItem(icon: Icons.share_outlined, text: 'Share'),
+                      child: _MenuItem(
+                        icon: Icons.share_outlined,
+                        text: 'Share',
+                      ),
                     ),
                     PopupMenuItem(
                       value: _ProjectAction.delete,
@@ -269,7 +275,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => NewTaskScreen(projectModel: _project)),
+            MaterialPageRoute(
+              builder: (_) => NewTaskScreen(projectModel: _project),
+            ),
           );
         },
         child: Row(
@@ -332,9 +340,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   Future<void> _editProject() async {
     final updated = await Navigator.push<ProjectModel>(
       context,
-      MaterialPageRoute(
-        builder: (_) => UpdateProjectScreen(project: _project),
-      ),
+      MaterialPageRoute(builder: (_) => UpdateProjectScreen(project: _project)),
     );
     if (!mounted) return;
     if (updated != null) {
@@ -345,9 +351,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   void _shareProject() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ProjectShareScreen(project: _project),
-      ),
+      MaterialPageRoute(builder: (_) => ProjectShareScreen(project: _project)),
     );
   }
 
@@ -357,10 +361,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       message: 'Ban co chac chan muon xoa project?',
       onConfirm: () async {
         await context.read<ProjectProvider>().deleteProject(
-              context,
-              _project.areaId,
-              _project.id,
-            );
+          context,
+          _project.areaId,
+          _project.id,
+        );
         if (!context.mounted) return;
         Navigator.pop(context, true);
       },
@@ -443,10 +447,7 @@ class _SharedTaskItem extends StatelessWidget {
                     task.content,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black54,
-                    ),
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
                   ),
               ],
             ),

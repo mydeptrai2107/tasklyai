@@ -68,7 +68,7 @@ class TaskProvider extends ChangeNotifier {
     String? areaId,
     required String taskId,
     required Map<String, dynamic> params,
-    bool isShowDialog = true,
+    bool isShowDialog = false,
   }) async {
     try {
       await _taskRepository.updateTask(params, taskId);
@@ -118,9 +118,9 @@ class TaskProvider extends ChangeNotifier {
         fetchTaskByProject(card.project!.id);
       }
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Archived task')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Archived task')));
       }
       return updated;
     } on FormatException catch (e) {
@@ -143,9 +143,9 @@ class TaskProvider extends ChangeNotifier {
         fetchTaskByProject(card.project!.id);
       }
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unarchived task')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Unarchived task')));
       }
       return updated;
     } on FormatException catch (e) {

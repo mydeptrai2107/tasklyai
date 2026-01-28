@@ -60,8 +60,8 @@ Widget _summaryGrid(RangeSummary s) {
     physics: const NeverScrollableScrollPhysics(),
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
       childAspectRatio: 1.4,
     ),
     children: [
@@ -128,7 +128,12 @@ Widget _summaryCard({
           ],
         ),
         const SizedBox(height: 4),
-        Text(title, style: const TextStyle(color: Colors.grey)),
+        Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(color: Colors.grey, fontSize: 12),
+        ),
       ],
     ),
   );

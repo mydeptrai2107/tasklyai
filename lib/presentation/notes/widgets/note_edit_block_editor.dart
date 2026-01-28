@@ -183,18 +183,7 @@ class _BlockEditor extends StatelessWidget {
             children: [
               _TypePill(label: block.type.toUpperCase()),
               const Spacer(),
-              IconButton(
-                icon: Icon(
-                  block.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-                  size: 18,
-                  color: block.isPinned ? Colors.orange : Colors.black54,
-                ),
-                onPressed: onTogglePin,
-              ),
-              ReorderableDragStartListener(
-                index: index,
-                child: const Icon(Icons.drag_handle),
-              ),
+
               if (onDelete != null)
                 IconButton(
                   icon: const Icon(Icons.delete_outline, color: Colors.red),
@@ -202,7 +191,7 @@ class _BlockEditor extends StatelessWidget {
                 ),
             ],
           ),
-          const Divider(height: 16),
+          const Divider(height: 1),
           body,
           const SizedBox(height: 8),
           Align(

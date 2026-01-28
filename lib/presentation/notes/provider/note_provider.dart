@@ -46,10 +46,7 @@ class NoteProvider extends ChangeNotifier {
     }
   }
 
-  Future<CardModel?> fetchNoteById(
-    BuildContext context,
-    String noteId,
-  ) async {
+  Future<CardModel?> fetchNoteById(BuildContext context, String noteId) async {
     try {
       return await noteRepository.fetchNoteById(noteId);
     } on FormatException catch (e) {
@@ -301,8 +298,8 @@ class NoteProvider extends ChangeNotifier {
     try {
       final dueDateValue = dateOnly
           ? '${dueDate.year.toString().padLeft(4, '0')}-'
-              '${dueDate.month.toString().padLeft(2, '0')}-'
-              '${dueDate.day.toString().padLeft(2, '0')}'
+                '${dueDate.month.toString().padLeft(2, '0')}-'
+                '${dueDate.day.toString().padLeft(2, '0')}'
           : dueDate.toIso8601String();
       final payload = {
         'dueDate': dueDateValue,

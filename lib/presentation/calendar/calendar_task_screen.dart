@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/presentation/calendar/widgets/card_calender_widget.dart';
 import 'package:tasklyai/presentation/notes/provider/note_provider.dart';
+import 'package:tasklyai/presentation/project/new_task_screen.dart';
 
 class CalendarTaskScreen extends StatefulWidget {
   const CalendarTaskScreen({super.key});
@@ -61,6 +62,7 @@ class _CalendarTaskScreenState extends State<CalendarTaskScreen> {
 
     return Scaffold(
       appBar: buildCalendarAppBar(context),
+      floatingActionButton: _createTaskButton(context),
       body: Column(
         children: [
           /// 📅 CALENDAR
@@ -136,9 +138,12 @@ class _CalendarTaskScreenState extends State<CalendarTaskScreen> {
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.all(16),
-                    itemCount: tasksToday.length,
+                    itemCount: tasksToday.length + 1,
                     separatorBuilder: (_, index) => const SizedBox(height: 8),
                     itemBuilder: (_, index) {
+                      if (index == tasksToday.length) {
+                        return SizedBox(height: 50);
+                      }
                       final task = tasksToday[index];
 
                       return CardCalenderWidget(task);
@@ -146,6 +151,47 @@ class _CalendarTaskScreenState extends State<CalendarTaskScreen> {
                   ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _createTaskButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => NewTaskScreen(initialDeadline: _selectedDay),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.withAlpha(40),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.add_task, color: Colors.white, size: 18),
+            SizedBox(width: 8),
+            Text(
+              'Create Task',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

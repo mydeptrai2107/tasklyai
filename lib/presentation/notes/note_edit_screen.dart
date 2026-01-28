@@ -31,6 +31,7 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
   late final TextEditingController _tagsController;
   late final TextEditingController _linkController;
 
+  final List<String> _tags = [];
   bool _isBusy = false;
   bool _didChange = false;
   List<_EditableBlock> _blocks = [];
@@ -42,7 +43,9 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
     folderSelected = widget.item.folder?.id;
     _titleController = TextEditingController(text: widget.item.title);
     _contentController = TextEditingController(text: widget.item.content);
-    _tagsController = TextEditingController(text: widget.item.tags.join(', '));
+    _tags.addAll(widget.item.tags);
+    _tagsController = TextEditingController();
+    _tagsController.addListener(_handleTagInput);
     _linkController = TextEditingController(text: widget.item.link ?? '');
     _blocks = _buildEditableBlocks(widget.item.blocks);
     super.initState();
@@ -50,6 +53,7 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
 
   @override
   void dispose() {
+    _tagsController.removeListener(_handleTagInput);
     _titleController.dispose();
     _contentController.dispose();
     _tagsController.dispose();
@@ -212,19 +216,61 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
             maxLines: 4,
           ),
           const SizedBox(height: 12),
-          _softField(
-            controller: _tagsController,
-            hintText: 'Tags (comma separated)',
-            maxLines: 1,
-          ),
-          const SizedBox(height: 12),
-          _softField(
-            controller: _linkController,
-            hintText: 'https://...',
-            maxLines: 1,
-          ),
+          _tagInput(),
         ],
       ),
+    );
+  }
+
+  Widget _tagInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_tags.isNotEmpty)
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: _tags
+                .map(
+                  (tag) =>
+                      _TagInputChip(tag: tag, onRemove: () => _removeTag(tag)),
+                )
+                .toList(),
+          ),
+        if (_tags.isNotEmpty) const SizedBox(height: 8),
+        TextFormField(
+          controller: _tagsController,
+          onChanged: (value) {
+            if (value.contains(' ')) {
+              _commitTagInputFrom(value);
+            }
+          },
+          onFieldSubmitted: (_) => _commitTagInput(),
+          decoration: InputDecoration(
+            hintText: '#urgent #documentation',
+            filled: true,
+            fillColor: const Color(0xFFF2F3F7),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Colors.black.withValues(alpha: 0.08),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -335,12 +381,52 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
   }
 
   List<String> _parseTags() {
+    _commitTagInput();
+    return _tags;
+  }
+
+  void _handleTagInput() {
+    final raw = _tagsController.text;
+    if (raw.isEmpty || !raw.contains(' ')) return;
+    if (raw.endsWith(' ')) {
+      _commitTagInputFrom(raw);
+    }
+  }
+
+  void _removeTag(String tag) {
+    setState(() => _tags.remove(tag));
+  }
+
+  void _commitTagInput() {
     final raw = _tagsController.text.trim();
-    if (raw.isEmpty) return [];
-    return raw
-        .split(',')
-        .map((e) => e.trim())
+    if (raw.isEmpty) return;
+    _commitTagInputFrom(raw);
+  }
+
+  void _commitTagInputFrom(String raw) {
+    final extracted = _extractTags(raw.trim());
+    if (extracted.isEmpty) return;
+    for (final tag in extracted) {
+      if (!_tags.contains(tag)) _tags.add(tag);
+    }
+    _tagsController.clear();
+    setState(() {});
+  }
+
+  List<String> _extractTags(String input) {
+    final reg = RegExp(r'#([\\p{L}0-9_]+)', unicode: true);
+    final matches = reg
+        .allMatches(input)
+        .map((m) => m.group(1) ?? '')
+        .where((tag) => tag.isNotEmpty)
+        .toSet()
+        .toList();
+    if (matches.isNotEmpty) return matches;
+    return input
+        .split(RegExp(r'[\\s,]+'))
+        .map((e) => e.replaceAll('#', '').trim())
         .where((e) => e.isNotEmpty)
+        .toSet()
         .toList();
   }
 
@@ -593,6 +679,43 @@ class _HeaderMenuItem extends StatelessWidget {
           style: TextStyle(color: color, fontWeight: FontWeight.w500),
         ),
       ],
+    );
+  }
+}
+
+class _TagInputChip extends StatelessWidget {
+  final String tag;
+  final VoidCallback onRemove;
+
+  const _TagInputChip({required this.tag, required this.onRemove});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.blue.withAlpha(15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.blue.withAlpha(40)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '#$tag',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.blue,
+            ),
+          ),
+          const SizedBox(width: 6),
+          InkWell(
+            onTap: onRemove,
+            child: const Icon(Icons.close, size: 14, color: Colors.blue),
+          ),
+        ],
+      ),
     );
   }
 }

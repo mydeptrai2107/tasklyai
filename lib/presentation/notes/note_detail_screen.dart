@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/core/network/dio_client.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/models/card_model.dart';
@@ -48,7 +49,9 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _headerCard(context),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+                  Container(height: 1, color: Colors.grey.shade200),
+                  const SizedBox(height: 12),
                   if (blocks.isEmpty)
                     const Text(
                       'No blocks yet.',
@@ -214,21 +217,88 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
   Widget _headerCard(BuildContext context) {
     final tags = _item.tags;
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 6)],
-      ),
+      padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_item.title, style: context.theme.textTheme.titleMedium),
-          const SizedBox(height: 6),
-          if (_item.content.isNotEmpty)
-            Text(_item.content, style: context.theme.textTheme.bodyMedium),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.folder_outlined,
+                      size: 14,
+                      color: Colors.black54,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _item.folder?.name ?? 'No folder',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              if (_item.isArchived)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withAlpha(20),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    'Archived',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.orange,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              const Spacer(),
+              Text(
+                Formatter.date(_item.updatedAt),
+                style: const TextStyle(fontSize: 11, color: Colors.black45),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            _item.title,
+            style: context.theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+            ),
+          ),
+          if (_item.content.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              _item.content,
+              style: context.theme.textTheme.bodyMedium?.copyWith(
+                height: 1.4,
+                color: Colors.black87,
+              ),
+            ),
+          ],
           if (tags.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -236,7 +306,7 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
             ),
           ],
           if (_item.link != null && _item.link!.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Row(
               children: [
                 const Icon(Icons.link, size: 16, color: Colors.blue),
@@ -244,7 +314,10 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                 Expanded(
                   child: Text(
                     _item.link!,
-                    style: const TextStyle(color: Colors.blue),
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -355,10 +428,7 @@ class _DocBlockView extends StatelessWidget {
         break;
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: content,
-    );
+    return Padding(padding: const EdgeInsets.only(bottom: 12), child: content);
   }
 }
 
@@ -372,10 +442,10 @@ class _TagChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey.shade300,
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Text(tag, style: const TextStyle(fontSize: 12)),
+      child: Text('# $tag', style: const TextStyle(fontSize: 12)),
     );
   }
 }

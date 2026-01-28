@@ -12,9 +12,10 @@ import 'package:tasklyai/presentation/project/widgets/add_subtask.dart';
 import 'package:tasklyai/presentation/project/widgets/priority_widget.dart';
 
 class NewTaskScreen extends StatefulWidget {
-  const NewTaskScreen({super.key, this.projectModel});
+  const NewTaskScreen({super.key, this.projectModel, this.initialDeadline});
 
   final ProjectModel? projectModel;
+  final DateTime? initialDeadline;
 
   @override
   State<NewTaskScreen> createState() => _NewTaskScreenState();
@@ -32,6 +33,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   @override
   void initState() {
     projectSelected = widget.projectModel;
+    if (widget.initialDeadline != null) {
+      deadline = widget.initialDeadline;
+      _deadlineController.text = formatDate(deadline);
+    }
     setState(() {});
     super.initState();
   }
@@ -163,7 +168,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Future<void> pickDate({required bool isStart}) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: deadline ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2100),
     );

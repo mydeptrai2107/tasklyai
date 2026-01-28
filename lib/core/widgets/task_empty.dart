@@ -54,7 +54,7 @@ class TaskEmpty extends StatelessWidget {
               );
             },
             icon: const Icon(Icons.add),
-            label: const Text('Create Card'),
+            label: const Text('Create Task'),
             style: ElevatedButton.styleFrom(
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

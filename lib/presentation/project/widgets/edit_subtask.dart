@@ -161,7 +161,6 @@ class _EditSubtaskState extends State<EditSubtask> {
       areaId: widget.task.area?.id,
       projectId: widget.task.project?.id,
       params: params,
-      isShowDialog: false,
     );
   }
 }
