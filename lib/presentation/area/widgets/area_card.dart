@@ -78,9 +78,9 @@ class AreaCard extends StatelessWidget {
     return Row(
       children: [
         _StatDot(color: Colors.blue, text: '${area.folderCount} folders'),
-        const SizedBox(width: 12),
+        const SizedBox(width: 6),
         _StatDot(color: Colors.orange, text: '${area.projectCount} projects'),
-        const SizedBox(width: 12),
+        const SizedBox(width: 6),
         _StatDot(color: Colors.green, text: '${area.noteCount} notes'),
         const Spacer(),
         _TaskChip(count: area.projectCount, color: Color(area.color)),
@@ -104,8 +104,8 @@ class _StatDot extends StatelessWidget {
           height: 6,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 6),
-        Text(text, style: const TextStyle(fontSize: 12)),
+        const SizedBox(width: 4),
+        Text(text, style: const TextStyle(fontSize: 11)),
       ],
     );
   }
