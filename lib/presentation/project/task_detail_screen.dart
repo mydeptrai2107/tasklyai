@@ -61,7 +61,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
       appBar: AppBar(
         title: Text('Task Details', style: textTheme.titleMedium),
         centerTitle: true,
-        actions: [_buildSave(context, task)],
+        actions: [
+          _buildArchive(context, task),
+          _buildSave(context, task),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
@@ -232,6 +235,23 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             ),
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildArchive(BuildContext context, CardModel task) {
+    return IconButton(
+      tooltip: task.isArchived ? 'Unarchive' : 'Archive',
+      icon: Icon(task.isArchived ? Icons.unarchive : Icons.archive_outlined),
+      onPressed: () async {
+        final provider = context.read<TaskProvider>();
+        if (task.isArchived) {
+          await provider.unarchiveTask(context, task);
+        } else {
+          await provider.archiveTask(context, task);
+        }
+        if (!mounted) return;
+        Navigator.pop(context);
       },
     );
   }

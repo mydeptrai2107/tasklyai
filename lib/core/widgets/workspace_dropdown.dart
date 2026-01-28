@@ -8,8 +8,14 @@ import 'package:tasklyai/presentation/area/create_area_screen.dart';
 class WorkspaceDropdown extends StatefulWidget {
   final ValueChanged<AreaModel> onChanged;
   final AreaModel? initValue;
+  final String? initAreaId;
 
-  const WorkspaceDropdown({super.key, required this.onChanged, this.initValue});
+  const WorkspaceDropdown({
+    super.key,
+    required this.onChanged,
+    this.initValue,
+    this.initAreaId,
+  });
 
   @override
   State<WorkspaceDropdown> createState() => _WorkspaceDropdownState();
@@ -17,11 +23,46 @@ class WorkspaceDropdown extends StatefulWidget {
 
 class _WorkspaceDropdownState extends State<WorkspaceDropdown> {
   AreaModel? areaSelected;
+  bool _didInit = false;
 
   @override
   void initState() {
     areaSelected = widget.initValue;
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant WorkspaceDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initValue != null &&
+        widget.initValue?.id != oldWidget.initValue?.id) {
+      areaSelected = widget.initValue;
+      setState(() {});
+      return;
+    }
+    if (widget.initAreaId != null &&
+        widget.initAreaId != oldWidget.initAreaId) {
+      final areas = context.read<AreaProvider>().areas;
+      final match = areas.where((a) => a.id == widget.initAreaId).toList();
+      if (match.isNotEmpty) {
+        areaSelected = match.first;
+        setState(() {});
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didInit) return;
+    if (areaSelected == null && widget.initAreaId != null) {
+      final areas = context.read<AreaProvider>().areas;
+      final match = areas.where((a) => a.id == widget.initAreaId).toList();
+      if (match.isNotEmpty) {
+        areaSelected = match.first;
+      }
+    }
+    _didInit = true;
   }
 
   @override

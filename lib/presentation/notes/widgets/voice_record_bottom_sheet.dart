@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 
 class VoiceRecordBottomSheet extends StatefulWidget {
-  const VoiceRecordBottomSheet(this.areaModel, {super.key});
+  const VoiceRecordBottomSheet(this.areaId, {super.key});
 
-  final AreaModel areaModel;
+  final String areaId;
 
   @override
   State<VoiceRecordBottomSheet> createState() => _VoiceRecordBottomSheetState();
@@ -17,8 +16,7 @@ class VoiceRecordBottomSheet extends StatefulWidget {
 class _VoiceRecordBottomSheetState extends State<VoiceRecordBottomSheet> {
   final SpeechToText _speech = SpeechToText();
   bool _isRecording = false;
-  String _text =
-      '"I need to:\n1. Review the quarterly sales report\n2. Prepare presentation slides for the board meeting\n3. Schedule follow-up calls with top 5 clients\n4. Update the CRM system with latest deals';
+  String _text = '';
 
   @override
   void initState() {
@@ -134,7 +132,7 @@ class _VoiceRecordBottomSheetState extends State<VoiceRecordBottomSheet> {
                         : () {
                             context.read<AiProvider>().analyzeNote(
                               context,
-                              widget.areaModel,
+                              widget.areaId,
                               _text,
                             );
                           },

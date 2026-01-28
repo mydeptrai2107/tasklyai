@@ -3,13 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/extention.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/models/ai_task_model.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 
 class AiTaskSuggestionScreen extends StatelessWidget {
-  const AiTaskSuggestionScreen(this.areaModel, {super.key});
+  const AiTaskSuggestionScreen(this.areaId, {super.key});
 
-  final AreaModel areaModel;
+  final String areaId;
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +249,7 @@ class AiTaskSuggestionScreen extends StatelessWidget {
                   : () {
                       context.read<AiProvider>().createTaskFromAI(
                         context,
-                        areaModel,
+                        areaId,
                       );
                     },
               child: const Text('⚡ Add Tasks to Project'),

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/configs/extention.dart';
+import 'package:tasklyai/core/configs/formater.dart';
 import 'package:tasklyai/core/widgets/dashed_outline_button.dart';
 import 'package:tasklyai/core/widgets/task_empty.dart';
+import 'package:tasklyai/models/card_model.dart';
 import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/project/new_task_screen.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
@@ -29,11 +31,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     super.initState();
     _project = widget.project;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TaskProvider>().fetchTaskByProject(_project.id);
+      if (!_isReadOnly) {
+        context.read<TaskProvider>().fetchTaskByProject(_project.id);
+      }
     });
   }
 
   Color get _color => Color(_project.color);
+  bool get _isReadOnly => _project.permission == 'view';
 
   @override
   Widget build(BuildContext context) {
@@ -46,45 +51,47 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         title: Text('Project Detail', style: context.theme.textTheme.titleMedium),
-        actions: [
-          PopupMenuButton<_ProjectAction>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              if (value == _ProjectAction.edit) {
-                _editProject();
-              } else if (value == _ProjectAction.share) {
-                _shareProject();
-              } else if (value == _ProjectAction.delete) {
-                _deleteProject();
-              }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: _ProjectAction.edit,
-                child: _MenuItem(icon: Icons.edit_outlined, text: 'Edit'),
-              ),
-              PopupMenuItem(
-                value: _ProjectAction.share,
-                child: _MenuItem(icon: Icons.share_outlined, text: 'Share'),
-              ),
-              PopupMenuItem(
-                value: _ProjectAction.delete,
-                child: _MenuItem(
-                  icon: Icons.delete_outline,
-                  text: 'Delete',
-                  isDanger: true,
+        actions: _isReadOnly
+            ? null
+            : [
+                PopupMenuButton<_ProjectAction>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    if (value == _ProjectAction.edit) {
+                      _editProject();
+                    } else if (value == _ProjectAction.share) {
+                      _shareProject();
+                    } else if (value == _ProjectAction.delete) {
+                      _deleteProject();
+                    }
+                  },
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(
+                      value: _ProjectAction.edit,
+                      child: _MenuItem(icon: Icons.edit_outlined, text: 'Edit'),
+                    ),
+                    PopupMenuItem(
+                      value: _ProjectAction.share,
+                      child: _MenuItem(icon: Icons.share_outlined, text: 'Share'),
+                    ),
+                    PopupMenuItem(
+                      value: _ProjectAction.delete,
+                      child: _MenuItem(
+                        icon: Icons.delete_outline,
+                        text: 'Delete',
+                        isDanger: true,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
       ),
       body: Column(
         children: [
           _projectHeader(textTheme),
           const SizedBox(height: 8),
           _taskSection(),
-          _addTaskButton(),
+          if (!_isReadOnly) _addTaskButton(),
         ],
       ),
     );
@@ -193,6 +200,15 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
   /// TASK LIST
   Widget _taskSection() {
+    if (_isReadOnly) {
+      return Expanded(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: _sharedTaskList(),
+        ),
+      );
+    }
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -215,6 +231,33 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _sharedTaskList() {
+    final tasks = _project.cards;
+    if (tasks.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.inbox_outlined, size: 48, color: Colors.black38),
+            SizedBox(height: 12),
+            Text(
+              'No shared tasks in this project',
+              style: TextStyle(color: Colors.black54),
+            ),
+          ],
+        ),
+      );
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      itemCount: tasks.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        return _SharedTaskItem(task: tasks[index]);
+      },
     );
   }
 
@@ -350,6 +393,82 @@ class _MenuItem extends StatelessWidget {
           style: TextStyle(color: color, fontWeight: FontWeight.w500),
         ),
       ],
+    );
+  }
+}
+
+class _SharedTaskItem extends StatelessWidget {
+  final CardModel task;
+
+  const _SharedTaskItem({required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(8),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              color: task.status.color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  task.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                if (task.content.isNotEmpty)
+                  Text(
+                    task.content,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (task.dueDate != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.orange.withAlpha(20),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                Formatter.date(task.dueDate!),
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: Colors.orange,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

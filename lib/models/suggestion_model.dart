@@ -31,6 +31,8 @@ class SuggestionsModel {
   Map<String, dynamic> toJson() => {
     "areaId": areaId,
     "project": aiProjectModel.toJson(),
-    "tasks": List<dynamic>.from(aiTasks.map((x) => x.toJson())),
+    "tasks": List<dynamic>.from(
+      aiTasks.where((x) => x.isSelected).map((x) => x.toJson()),
+    ),
   };
 }

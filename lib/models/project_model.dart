@@ -3,6 +3,7 @@
 //     final projectModel = projectModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:tasklyai/models/card_model.dart';
 
 ProjectModel projectModelFromJson(String str) =>
     ProjectModel.fromJson(json.decode(str));
@@ -31,6 +32,10 @@ class ProjectModel {
   int duration;
   String? permission;
   DateTime? sharedAt;
+  String? ownerName;
+  String? ownerEmail;
+  String? ownerAvatarUrl;
+  List<CardModel> cards;
 
   ProjectModel({
     required this.id,
@@ -54,6 +59,10 @@ class ProjectModel {
     required this.duration,
     this.permission,
     this.sharedAt,
+    this.ownerName,
+    this.ownerEmail,
+    this.ownerAvatarUrl,
+    required this.cards,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) => ProjectModel(
@@ -88,6 +97,12 @@ class ProjectModel {
     sharedAt: json["sharedAt"] != null
         ? DateTime.tryParse(json["sharedAt"])
         : null,
+    ownerName: json["owner"]?["name"],
+    ownerEmail: json["owner"]?["email"],
+    ownerAvatarUrl: json["owner"]?["avatarUrl"],
+    cards: (json["cards"] as List<dynamic>? ?? [])
+        .map((e) => CardModel.fromJson(e))
+        .toList(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -112,5 +127,11 @@ class ProjectModel {
     "duration": duration,
     "permission": permission,
     "sharedAt": sharedAt?.toIso8601String(),
+    "owner": {
+      "name": ownerName,
+      "email": ownerEmail,
+      "avatarUrl": ownerAvatarUrl,
+    },
+    "cards": cards.map((e) => e.toJson()).toList(),
   };
 }

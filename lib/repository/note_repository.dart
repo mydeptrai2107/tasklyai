@@ -19,6 +19,20 @@ class NoteRepository {
     }
   }
 
+  Future<List<CardModel>> fetchArchivedCards() async {
+    try {
+      final res = await _dioClient.get(
+        ApiEndpoint.notes,
+        params: {'isArchived': true},
+      );
+      return (res.data['cards'] as List<dynamic>)
+          .map((e) => CardModel.fromJson(e))
+          .toList();
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
   Future<List<CardModel>> fetchNote(String folderId) async {
     try {
       final res = await _dioClient.get(
@@ -90,6 +104,36 @@ class NoteRepository {
   Future<void> deleteNote(String noteId) async {
     try {
       await _dioClient.delete('${ApiEndpoint.notes}/$noteId');
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<CardModel> archiveCard(
+    String cardId, {
+    List<Map<String, dynamic>>? checklist,
+  }) async {
+    try {
+      final res = await _dioClient.put(
+        '${ApiEndpoint.notes}/$cardId/archive',
+        data: {'checklist': checklist ?? []},
+      );
+      return CardModel.fromJson(res.data);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<CardModel> unarchiveCard(
+    String cardId, {
+    List<Map<String, dynamic>>? checklist,
+  }) async {
+    try {
+      final res = await _dioClient.put(
+        '${ApiEndpoint.notes}/$cardId/unarchive',
+        data: {'checklist': checklist ?? []},
+      );
+      return CardModel.fromJson(res.data);
     } on FormatException catch (_) {
       rethrow;
     }

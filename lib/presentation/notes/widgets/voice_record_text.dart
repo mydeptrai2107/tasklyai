@@ -16,8 +16,7 @@ class VoiceRecordText extends StatefulWidget {
 class _VoiceRecordTextState extends State<VoiceRecordText> {
   final SpeechToText _speech = SpeechToText();
   bool _isRecording = false;
-  String _text =
-      '"I need to:\n1. Review the quarterly sales report\n2. Prepare presentation slides for the board meeting\n3. Schedule follow-up calls with top 5 clients\n4. Update the CRM system with latest deals';
+  String _text = '';
 
   @override
   void initState() {

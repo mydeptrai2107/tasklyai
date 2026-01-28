@@ -105,4 +105,54 @@ class TaskProvider extends ChangeNotifier {
       }
     }
   }
+
+  Future<CardModel?> archiveTask(BuildContext context, CardModel card) async {
+    try {
+      final updated = await _taskRepository.archiveTask(
+        card.id,
+        checklist: card.checklist
+            .map((e) => {'text': e.text, 'checked': e.checked})
+            .toList(),
+      );
+      if (card.project != null) {
+        fetchTaskByProject(card.project!.id);
+      }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Archived task')),
+        );
+      }
+      return updated;
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+      return null;
+    }
+  }
+
+  Future<CardModel?> unarchiveTask(BuildContext context, CardModel card) async {
+    try {
+      final updated = await _taskRepository.unarchiveTask(
+        card.id,
+        checklist: card.checklist
+            .map((e) => {'text': e.text, 'checked': e.checked})
+            .toList(),
+      );
+      if (card.project != null) {
+        fetchTaskByProject(card.project!.id);
+      }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unarchived task')),
+        );
+      }
+      return updated;
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+      return null;
+    }
+  }
 }

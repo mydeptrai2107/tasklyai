@@ -3,7 +3,6 @@ import 'package:tasklyai/core/configs/dialog_service.dart';
 import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/models/ai_folder_suggestion.dart';
 import 'package:tasklyai/models/ai_task_model.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/models/quick_note_model.dart';
 import 'package:tasklyai/models/suggestion_model.dart';
 import 'package:tasklyai/presentation/notes/note_ai_suggestion_screen.dart';
@@ -75,7 +74,7 @@ class AiProvider extends ChangeNotifier {
 
   Future<void> analyzeNote(
     BuildContext context,
-    AreaModel areaModel,
+    String areaId,
     String text,
   ) async {
     try {
@@ -91,7 +90,7 @@ class AiProvider extends ChangeNotifier {
         Navigator.pop(context);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => AiTaskSuggestionScreen(areaModel)),
+          MaterialPageRoute(builder: (_) => AiTaskSuggestionScreen(areaId)),
         );
       }
     } catch (e) {
@@ -103,16 +102,16 @@ class AiProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createTaskFromAI(BuildContext context, AreaModel req) async {
+  Future<void> createTaskFromAI(BuildContext context, String areaId) async {
     try {
       if (_aiProject == null) {
         return;
       }
-      _aiProject!.areaId = req.id;
+      _aiProject!.areaId = areaId;
       await _aiRepository.createTaskFromAi(aiProject!);
 
       if (context.mounted) {
-        context.read<ProjectProvider>().fetchProjectByArea(req.id);
+        context.read<ProjectProvider>().fetchProjectByArea(areaId);
         DialogService.success(
           context,
           message: 'Tạo project thành công',

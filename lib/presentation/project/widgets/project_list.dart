@@ -30,7 +30,7 @@ class ProjectList extends StatelessWidget {
 
         if (filtered.isEmpty) {
           if (value.isEmpty) {
-            return ProjectEmpty(areaModel: item);
+            return ProjectEmpty(areaId: item?.id);
           }
           return const Center(
             child: Text(
@@ -57,7 +57,7 @@ class ProjectList extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NewProjectScreen(areaModel: item),
+                    builder: (context) => NewProjectScreen(areaId: item?.id),
                   ),
                 );
               },

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/voice_record_bottom_sheet.dart';
 
 class VoiceToTaskBottomSheet extends StatelessWidget {
-  const VoiceToTaskBottomSheet(this.areaModel, {super.key});
+  const VoiceToTaskBottomSheet(this.areaId, {super.key});
 
-  final AreaModel areaModel;
+  final String areaId;
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +104,7 @@ class VoiceToTaskBottomSheet extends StatelessWidget {
                     context: context,
                     isScrollControlled: true,
                     backgroundColor: Colors.transparent,
-                    builder: (_) => VoiceRecordBottomSheet(areaModel),
+                    builder: (_) => VoiceRecordBottomSheet(areaId),
                   );
                 },
                 icon: const Icon(Icons.mic),

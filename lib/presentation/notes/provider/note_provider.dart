@@ -14,6 +14,9 @@ class NoteProvider extends ChangeNotifier {
   List<CardModel> _allCard = [];
   List<CardModel> get allCard => _allCard;
 
+  List<CardModel> _archivedCards = [];
+  List<CardModel> get archivedCards => _archivedCards;
+
   bool get hasNotes => _notes.isNotEmpty;
 
   Future<void> fetchAllCard() async {
@@ -28,6 +31,15 @@ class NoteProvider extends ChangeNotifier {
   Future<void> fetchNote(String folderId) async {
     try {
       _notes = await noteRepository.fetchNote(folderId);
+    } on FormatException catch (_) {
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchArchivedCards() async {
+    try {
+      _archivedCards = await noteRepository.fetchArchivedCards();
     } on FormatException catch (_) {
     } finally {
       notifyListeners();
@@ -136,6 +148,54 @@ class NoteProvider extends ChangeNotifier {
       if (context.mounted) {
         DialogService.error(context, message: e.message);
       }
+    }
+  }
+
+  Future<CardModel?> archiveCard({
+    required BuildContext context,
+    required CardModel card,
+  }) async {
+    try {
+      final updated = await noteRepository.archiveCard(
+        card.id,
+        checklist: card.checklist
+            .map((e) => {'text': e.text, 'checked': e.checked})
+            .toList(),
+      );
+      if (card.folder?.id != null) {
+        fetchNote(card.folder!.id);
+      }
+      fetchArchivedCards();
+      return updated;
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+      return null;
+    }
+  }
+
+  Future<CardModel?> unarchiveCard({
+    required BuildContext context,
+    required CardModel card,
+  }) async {
+    try {
+      final updated = await noteRepository.unarchiveCard(
+        card.id,
+        checklist: card.checklist
+            .map((e) => {'text': e.text, 'checked': e.checked})
+            .toList(),
+      );
+      if (card.folder?.id != null) {
+        fetchNote(card.folder!.id);
+      }
+      fetchArchivedCards();
+      return updated;
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        DialogService.error(context, message: e.message);
+      }
+      return null;
     }
   }
 

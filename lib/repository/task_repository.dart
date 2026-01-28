@@ -45,4 +45,34 @@ class TaskRepository {
       rethrow;
     }
   }
+
+  Future<CardModel> archiveTask(
+    String taskId, {
+    List<Map<String, dynamic>>? checklist,
+  }) async {
+    try {
+      final res = await _dioClient.put(
+        '${ApiEndpoint.tasks}/$taskId/archive',
+        data: {'checklist': checklist ?? []},
+      );
+      return CardModel.fromJson(res.data);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<CardModel> unarchiveTask(
+    String taskId, {
+    List<Map<String, dynamic>>? checklist,
+  }) async {
+    try {
+      final res = await _dioClient.put(
+        '${ApiEndpoint.tasks}/$taskId/unarchive',
+        data: {'checklist': checklist ?? []},
+      );
+      return CardModel.fromJson(res.data);
+    } on FormatException catch (_) {
+      rethrow;
+    }
+  }
 }

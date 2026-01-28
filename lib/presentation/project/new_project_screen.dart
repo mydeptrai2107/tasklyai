@@ -7,15 +7,14 @@ import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/core/widgets/choose_icon.dart';
 import 'package:tasklyai/core/widgets/workspace_dropdown.dart';
 import 'package:tasklyai/data/requests/project_req.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/notes/widgets/voice_to_task_bottom_sheet.dart';
 import 'package:tasklyai/presentation/project/provider/ai_provider.dart';
 import 'package:tasklyai/presentation/project/provider/project_provider.dart';
 
 class NewProjectScreen extends StatefulWidget {
-  const NewProjectScreen({super.key, this.areaModel});
+  const NewProjectScreen({super.key, this.areaId});
 
-  final AreaModel? areaModel;
+  final String? areaId;
 
   @override
   State<NewProjectScreen> createState() => _NewProjectScreenState();
@@ -32,11 +31,11 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
 
   Color selectedColor = Colors.deepPurple;
   IconData selectedIcon = Icons.work;
-  late AreaModel? areaSelected;
+  late String? areaSelected;
 
   @override
   void initState() {
-    areaSelected = widget.areaModel;
+    areaSelected = widget.areaId;
     super.initState();
   }
 
@@ -97,10 +96,10 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                     ? () {
                         context.read<ProjectProvider>().createProject(
                           context,
-                          areaSelected!.id,
+                          areaSelected!,
                           ProjectReq(
                             name: nameController.text,
-                            areaId: areaSelected!.id,
+                            areaId: areaSelected!,
                             description: descController.text,
                             icon: selectedIcon.codePoint,
                             color: selectedColor.toARGB32(),
@@ -151,6 +150,14 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      if (areaSelected == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please select a workspace first.'),
+                          ),
+                        );
+                        return;
+                      }
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: Colors.transparent,
@@ -169,9 +176,9 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             Text('Workspace', style: textTheme.titleSmall),
             const SizedBox(height: 12),
             WorkspaceDropdown(
-              initValue: areaSelected,
+              initAreaId: areaSelected,
               onChanged: (value) {
-                areaSelected = value;
+                areaSelected = value.id;
               },
             ),
 

@@ -8,6 +8,7 @@ import 'package:tasklyai/presentation/profile/edit_profile_bottom_sheet.dart';
 import 'package:tasklyai/presentation/profile/provider/profile_provider.dart';
 import 'package:tasklyai/presentation/profile/widgets/logout_button.dart';
 import 'package:tasklyai/presentation/profile/widgets/profile_header.dart';
+import 'package:tasklyai/presentation/notes/archived_cards_screen.dart';
 import 'package:tasklyai/presentation/project/shared_projects_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -206,6 +207,21 @@ class _AccountSection extends StatelessWidget {
           },
           icon: Icons.share_outlined,
           title: 'Shared Projects',
+        ),
+        const SizedBox(height: 12),
+        _AccountItem(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const ArchivedCardsScreen();
+                },
+              ),
+            );
+          },
+          icon: Icons.archive_outlined,
+          title: 'Archived',
         ),
       ],
     );

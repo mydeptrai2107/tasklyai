@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tasklyai/core/configs/extention.dart';
-import 'package:tasklyai/models/area_model.dart';
 import 'package:tasklyai/presentation/project/new_project_screen.dart';
 
 class ProjectEmpty extends StatelessWidget {
-  const ProjectEmpty({super.key, this.areaModel});
+  const ProjectEmpty({super.key, this.areaId});
 
-  final AreaModel? areaModel;
+  final String? areaId;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,7 @@ class ProjectEmpty extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NewProjectScreen(areaModel: areaModel),
+                  builder: (context) => NewProjectScreen(areaId: areaId),
                 ),
               );
             },

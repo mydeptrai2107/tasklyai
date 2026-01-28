@@ -49,15 +49,13 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                 children: [
                   _headerCard(context),
                   const SizedBox(height: 16),
-                  Text('Blocks', style: context.theme.textTheme.titleSmall),
-                  const SizedBox(height: 8),
                   if (blocks.isEmpty)
                     const Text(
                       'No blocks yet.',
                       style: TextStyle(color: Colors.black54),
                     )
                   else
-                    ...blocks.map((block) => _BlockView(block)),
+                    ...blocks.map((block) => _DocBlockView(block)),
                 ],
               ),
             ),
@@ -103,25 +101,34 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
             onSelected: (value) {
               if (value == _DetailHeaderAction.edit) {
                 _openEdit(context);
+              } else if (value == _DetailHeaderAction.archive) {
+                _toggleArchive();
               } else if (value == _DetailHeaderAction.convert) {
                 showConvertToTaskDialog(context, _folderId, _item);
               } else if (value == _DetailHeaderAction.delete) {
                 _confirmDelete();
               }
             },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
+            itemBuilder: (context) => [
+              const PopupMenuItem(
                 value: _DetailHeaderAction.edit,
                 child: _HeaderMenuItem(icon: Icons.edit_outlined, text: 'Edit'),
               ),
               PopupMenuItem(
+                value: _DetailHeaderAction.archive,
+                child: _HeaderMenuItem(
+                  icon: Icons.archive_outlined,
+                  text: _item.isArchived ? 'Unarchive' : 'Archive',
+                ),
+              ),
+              const PopupMenuItem(
                 value: _DetailHeaderAction.convert,
                 child: _HeaderMenuItem(
                   icon: Icons.task_alt_outlined,
                   text: 'Convert to task',
                 ),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: _DetailHeaderAction.delete,
                 child: _HeaderMenuItem(
                   icon: Icons.delete_outline,
@@ -174,6 +181,20 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
         context.read<NoteProvider>().deleteNote(context, _folderId!, _item.id);
       },
     );
+  }
+
+  Future<void> _toggleArchive() async {
+    final provider = context.read<NoteProvider>();
+    CardModel? updated;
+    if (_item.isArchived) {
+      updated = await provider.unarchiveCard(context: context, card: _item);
+    } else {
+      updated = await provider.archiveCard(context: context, card: _item);
+    }
+    if (!mounted) return;
+    if (updated != null) {
+      setState(() => _item = updated!);
+    }
   }
 
   List<CardBlock> _sortedBlocks(List<CardBlock> blocks) {
@@ -236,10 +257,10 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
   }
 }
 
-class _BlockView extends StatelessWidget {
+class _DocBlockView extends StatelessWidget {
   final CardBlock block;
 
-  const _BlockView(this.block);
+  const _DocBlockView(this.block);
 
   @override
   Widget build(BuildContext context) {
@@ -334,36 +355,9 @@ class _BlockView extends StatelessWidget {
         break;
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 6)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                type.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black54,
-                ),
-              ),
-              const Spacer(),
-              if (block.isPinned)
-                const Icon(Icons.push_pin, size: 14, color: Colors.orange),
-            ],
-          ),
-          const SizedBox(height: 8),
-          content,
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: content,
     );
   }
 }
@@ -386,7 +380,7 @@ class _TagChip extends StatelessWidget {
   }
 }
 
-enum _DetailHeaderAction { edit, convert, delete }
+enum _DetailHeaderAction { edit, archive, convert, delete }
 
 class _HeaderMenuItem extends StatelessWidget {
   final IconData icon;

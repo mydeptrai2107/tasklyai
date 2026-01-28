@@ -29,6 +29,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
   final TextEditingController _tagsController = TextEditingController();
   final TextEditingController _linkController = TextEditingController();
 
+  final List<String> _tags = [];
   final List<DraftBlock> _blocks = [];
   final List<_ImageBlock> _imageBlocks = [];
 
@@ -47,12 +48,14 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
   @override
   void initState() {
     folderSelected = widget.folderModel;
+    _tagsController.addListener(_handleTagInput);
     setState(() {});
     super.initState();
   }
 
   @override
   void dispose() {
+    _tagsController.removeListener(_handleTagInput);
     _titleController.dispose();
     _contentController.dispose();
     _tagsController.dispose();
@@ -158,13 +161,38 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               ),
             ),
             _inputCard(
-              title: 'Tags (được phân tách bằng dấu phẩy)',
-              child: TextFormField(
-                controller: _tagsController,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'urgent, documentation',
-                ),
+              title: 'Tags (type #tag + space)',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_tags.isNotEmpty)
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: _tags
+                          .map(
+                            (tag) => _TagInputChip(
+                              tag: tag,
+                              onRemove: () => _removeTag(tag),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  if (_tags.isNotEmpty) const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _tagsController,
+                    onChanged: (value) {
+                      if (value.endsWith(' ')) {
+                        _commitTagInputFrom(value);
+                      }
+                    },
+                    onFieldSubmitted: (_) => _commitTagInput(),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: '#urgent #documentation',
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 8),
@@ -485,14 +513,54 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     setState(() => _imageBlocks.remove(block));
   }
 
-  List<String> _parseTags() {
+  void _removeTag(String tag) {
+    setState(() => _tags.remove(tag));
+  }
+
+  void _handleTagInput() {
+    final raw = _tagsController.text;
+    if (raw.isEmpty || !raw.contains(' ')) return;
+    if (raw.endsWith(' ')) {
+      _commitTagInputFrom(raw);
+    }
+  }
+
+  void _commitTagInput() {
     final raw = _tagsController.text.trim();
-    if (raw.isEmpty) return [];
-    return raw
-        .split(',')
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
+    if (raw.isEmpty) return;
+    final extracted = _extractTags(raw);
+    if (extracted.isNotEmpty) {
+      for (final tag in extracted) {
+        if (!_tags.contains(tag)) _tags.add(tag);
+      }
+      _tagsController.clear();
+      setState(() {});
+    }
+  }
+
+  void _commitTagInputFrom(String raw) {
+    final extracted = _extractTags(raw.trim());
+    if (extracted.isEmpty) return;
+    for (final tag in extracted) {
+      if (!_tags.contains(tag)) _tags.add(tag);
+    }
+    _tagsController.clear();
+    setState(() {});
+  }
+
+  List<String> _extractTags(String input) {
+    final reg = RegExp(r'#([\p{L}0-9_]+)', unicode: true);
+    return reg
+        .allMatches(input)
+        .map((m) => m.group(1) ?? '')
+        .where((tag) => tag.isNotEmpty)
+        .toSet()
         .toList();
+  }
+
+  List<String> _parseTags() {
+    _commitTagInput();
+    return _tags;
   }
 
   Future<bool> _createCard() async {
@@ -629,6 +697,43 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
       );
     }
     setState(() {});
+  }
+}
+
+class _TagInputChip extends StatelessWidget {
+  final String tag;
+  final VoidCallback onRemove;
+
+  const _TagInputChip({required this.tag, required this.onRemove});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.blue.withAlpha(15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.blue.withAlpha(40)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '#$tag',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.blue,
+            ),
+          ),
+          const SizedBox(width: 6),
+          InkWell(
+            onTap: onRemove,
+            child: const Icon(Icons.close, size: 14, color: Colors.blue),
+          ),
+        ],
+      ),
+    );
   }
 }
 
