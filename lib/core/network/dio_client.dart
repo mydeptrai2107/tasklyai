@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:tasklyai/core/configs/constant.dart';
 import 'package:tasklyai/core/configs/local_storage.dart';
 
-String baseUrl = 'http://192.168.2.10:4000';
+String baseUrl = 'http://192.168.0.7:4000';
 
 class DioClient {
   final Dio _dio;

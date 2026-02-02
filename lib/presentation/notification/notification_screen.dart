@@ -38,9 +38,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (provider.notifications.isEmpty) {
-                  return const Center(
-                    child: Text('No notifications yet.'),
-                  );
+                  return const Center(child: Text('No notifications yet.'));
                 }
                 return ListView.separated(
                   padding: const EdgeInsets.all(16),
@@ -61,17 +59,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         child: const Icon(Icons.delete, color: Colors.white),
                       ),
                       onDismissed: (_) {
-                        context
-                            .read<NotificationProvider>()
-                            .deleteNotification(context, item.id);
+                        context.read<NotificationProvider>().deleteNotification(
+                          context,
+                          item.id,
+                        );
                       },
                       child: _NotificationTile(
                         item,
                         onTap: () {
                           if (!item.isRead) {
-                            context
-                                .read<NotificationProvider>()
-                                .markAsRead(context, item.id);
+                            context.read<NotificationProvider>().markAsRead(
+                              context,
+                              item.id,
+                            );
                           }
                         },
                       ),
@@ -123,13 +123,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 ),
                 onSelected: (value) {
                   if (value == _HeaderAction.markAllRead) {
-                    context
-                        .read<NotificationProvider>()
-                        .markAllAsRead(context);
+                    context.read<NotificationProvider>().markAllAsRead(context);
                   } else if (value == _HeaderAction.deleteRead) {
-                    context
-                        .read<NotificationProvider>()
-                        .deleteAllRead(context);
+                    context.read<NotificationProvider>().deleteAllRead(context);
                   }
                 },
                 itemBuilder: (context) => const [
@@ -183,26 +179,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   _fetch();
                 },
                 itemBuilder: (context) => const [
-                  PopupMenuItem(
-                    value: null,
-                    child: Text('All types'),
-                  ),
-                  PopupMenuItem(
-                    value: 'due_soon',
-                    child: Text('Due soon'),
-                  ),
-                  PopupMenuItem(
-                    value: 'overdue',
-                    child: Text('Overdue'),
-                  ),
-                  PopupMenuItem(
-                    value: 'reminder',
-                    child: Text('Reminder'),
-                  ),
+                  PopupMenuItem(value: null, child: Text('All types')),
+                  PopupMenuItem(value: 'due_soon', child: Text('Due soon')),
+                  PopupMenuItem(value: 'overdue', child: Text('Overdue')),
+                  PopupMenuItem(value: 'reminder', child: Text('Reminder')),
                 ],
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withAlpha(40),
                     borderRadius: BorderRadius.circular(12),
@@ -233,9 +219,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void _fetch() {
     context.read<NotificationProvider>().fetchNotifications(
-          isRead: _showUnreadOnly ? false : null,
-          type: _typeFilter,
-        );
+      isRead: _showUnreadOnly ? false : null,
+      type: _typeFilter,
+    );
   }
 }
 
@@ -289,13 +275,14 @@ class _NotificationTile extends StatelessWidget {
                       Expanded(
                         child: Text(
                           item.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
                       ),
                       const SizedBox(width: 6),
-                      _TypeBadge(label: _typeLabel(item.type), color: style.color),
+                      _TypeBadge(
+                        label: _typeLabel(item.type),
+                        color: style.color,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 6),

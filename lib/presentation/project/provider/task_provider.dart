@@ -82,7 +82,7 @@ class TaskProvider extends ChangeNotifier {
         }
       }
     } on FormatException catch (e) {
-      if (context.mounted) {
+      if (context.mounted && isShowDialog) {
         DialogService.error(context, message: e.message);
       }
     }

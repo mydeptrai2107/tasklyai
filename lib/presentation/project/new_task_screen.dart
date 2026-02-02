@@ -6,6 +6,7 @@ import 'package:tasklyai/core/enum/priority_enum.dart';
 import 'package:tasklyai/core/theme/color_app.dart';
 import 'package:tasklyai/core/widgets/app_text_field.dart';
 import 'package:tasklyai/core/widgets/project_dropdown.dart';
+import 'package:tasklyai/models/checklist_item.dart';
 import 'package:tasklyai/models/project_model.dart';
 import 'package:tasklyai/presentation/project/provider/task_provider.dart';
 import 'package:tasklyai/presentation/project/widgets/add_subtask.dart';
@@ -28,7 +29,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   late ProjectModel? projectSelected;
   Priority prioritySelected = Priority.low;
-  List<String> subTask = [];
+  List<ChecklistItem> subTask = [];
 
   @override
   void initState() {
@@ -202,7 +203,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 'status': 'todo',
                 'dueDate': deadline?.toIso8601String(),
                 'checklist': subTask
-                    .map((e) => {'text': e, 'checked': false})
+                    .map((e) => {'text': e.text, 'checked': e.checked})
                     .toList(),
               };
 
